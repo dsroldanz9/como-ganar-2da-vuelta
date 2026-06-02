@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Cómo ganar la segunda vuelta · Análisis territorial 2026</title>
+<meta name="description" content="Herramienta territorial para orientar la estrategia de segunda vuelta: mapa, tarjetas por ciudad y análisis por comuna o localidad." />
+<meta name="author" content="Daniel Santiago Roldán" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700;6..12,800;6..12,900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<header class="top">
+  <div class="wrap top-in">
+    <div class="brand">
+      <img class="logo-img" src="img/brand_lockup.webp" alt="Iván Cepeda y Aída Quilcué">
+      <div>
+        <div class="brand-t">Cómo ganar la segunda vuelta</div>
+        <div class="brand-s">Caja territorial para orientar estrategia electoral</div>
+      </div>
+    </div>
+    <a class="pill" href="#detalle">Ver análisis</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-in">
+    <div>
+      <p class="eyebrow">Segunda vuelta 2026 · 13 capitales</p>
+      <h1>Mapa, municipios y rutas de acción para recuperar o fortalecer voto.</h1>
+      <p>Empieza por el panorama general. Cada tarjeta muestra el resultado, el cambio frente a 2022 y el mapa municipal por comuna o localidad. Al hacer clic entras al análisis estratégico de esa ciudad.</p>
+    </div>
+    <div class="hero-metrics" aria-label="Resumen de la herramienta">
+      <div><b id="m-ciudades">13</b><span>ciudades</span></div>
+      <div><b id="m-ganadas">0</b><span>ganadas</span></div>
+      <div><b id="m-disputa">0</b><span>en disputa</span></div>
+    </div>
+  </div>
+</section>
+
+<main class="wrap">
+  <section class="landing" id="inicio">
+    <div class="national">
+      <div class="section-head">
+        <div>
+          <h2>Panorama nacional</h2>
+          <p>Selecciona una ciudad en el mapa o en las tarjetas.</p>
+        </div>
+        <div class="legend">
+          <span><i class="dot g"></i> Ganamos</span>
+          <span><i class="dot d"></i> En disputa</span>
+          <span><i class="dot a"></i> Difícil</span>
+        </div>
+      </div>
+      <div id="map"></div>
+    </div>
+    <div class="city-index">
+      <div class="section-head">
+        <div>
+          <h2>Municipios priorizados</h2>
+          <p>Mapa local, porcentaje y lectura rápida.</p>
+        </div>
+        <button id="reset-sort" class="ghost" type="button">Orden estratégico</button>
+      </div>
+      <div id="cityCards" class="city-cards"></div>
+    </div>
+  </section>
+
+  <section id="detalle" class="detail" aria-live="polite"></section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <p><b>Cómo se construye.</b> Resultados oficiales de la Registraduría por puesto de votación, comparación con 1ª y 2ª vuelta de 2022, cartografía de comunas/localidades y perfil etario municipal del DANE. El análisis se presenta por territorio reconocible, no por persona.</p>
+    <p><b>Autor de los datos y análisis:</b> Daniel Santiago Roldán.</p>
+    <p class="src">Fuentes: Registraduría Nacional · Datos Abiertos · DANE. Datos públicos. <span id="gen"></span></p>
+  </div>
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="data.js"></script>
+<script src="geo.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
