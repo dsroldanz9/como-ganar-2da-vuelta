@@ -8,6 +8,7 @@ const PRIOR = { disputa: 0, ganada: 1, adversa: 2 };
 let selectedDept = 'todos';
 let selectedSlug = municipios[0]?.slug;
 let markerLayer;
+let geoBySlug = null;
 let puestoMap;
 let scatter;
 
@@ -131,6 +132,30 @@ function markerRadius(m) { return Math.max(4, Math.min(18, Math.sqrt(m.votos_tot
 function renderMap(rows) {
   if (markerLayer) markerLayer.remove();
   markerLayer = L.layerGroup().addTo(map);
+
+  // Choropleth por municipio (polígonos) cuando el geojson ya cargó
+  if (geoBySlug) {
+    const feats = rows.map(m => geoBySlug.get(m.slug)).filter(Boolean);
+    const layer = L.geoJSON({ type: 'FeatureCollection', features: feats }, {
+      style: f => ({ fillColor: COL[f.properties.estado] || '#cfd3dc', fillOpacity: .82, color: '#ffffff', weight: .6 }),
+      onEachFeature: (f, l) => {
+        const p = f.properties;
+        l.bindTooltip(`<b>${p.municipio}</b><br>${p.depto}<br>Cepeda ${pct(p.cepeda)} · ${pts(p.swing)}<br>${fmt(p.votos)} votos`, { sticky: true });
+        l.on('click', () => selectMun(p.slug, true));
+        l.on('mouseover', () => l.setStyle({ weight: 1.8, color: '#352963' }));
+        l.on('mouseout', () => l.setStyle({ weight: .6, color: '#ffffff' }));
+      }
+    }).addTo(markerLayer);
+    // puntos para municipios sin polígono (no quedan invisibles)
+    const sinPoly = rows.filter(m => m.lat != null && m.lon != null && !geoBySlug.has(m.slug));
+    sinPoly.forEach(m => L.circleMarker([m.lat, m.lon], { radius: markerRadius(m), color: '#fff', weight: 1.2, fillColor: COL[m.estado], fillOpacity: .85 })
+      .addTo(markerLayer).bindTooltip(`<b>${m.municipio}</b><br>${m.depto}<br>Cepeda ${pct(m.cepeda)} · ${pts(m.swing)}`).on('click', () => selectMun(m.slug, true)));
+    if (feats.length && selectedDept !== 'todos') { try { map.fitBounds(layer.getBounds(), { padding: [24, 24] }); } catch (e) {} }
+    else if (selectedDept === 'todos') map.setView([4.8, -74.2], 5);
+    return;
+  }
+
+  // Respaldo: puntos mientras carga el geojson
   const visible = rows.filter(m => m.lat != null && m.lon != null).slice(0, 950);
   visible.forEach(m => {
     const mk = L.circleMarker([m.lat, m.lon], { radius: markerRadius(m), color: '#fff', weight: 1.4, fillColor: COL[m.estado], fillOpacity: .88 }).addTo(markerLayer);
@@ -363,3 +388,10 @@ $('reset').addEventListener('click', () => {
 
 renderDeptOptions();
 update();
+
+// Cargar polígonos de municipios y repintar como choropleth
+fetch('municipios.geojson').then(r => r.json()).then(g => {
+  geoBySlug = new Map();
+  (g.features || []).forEach(f => { if (f.properties && f.properties.slug) geoBySlug.set(f.properties.slug, f); });
+  update();
+}).catch(() => { /* sin geojson: se quedan los puntos */ });
