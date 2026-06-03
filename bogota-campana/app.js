@@ -517,6 +517,22 @@
     URL.revokeObjectURL(url);
   }
 
+  function downloadExcel(event) {
+    if (event) event.preventDefault();
+    const b64 = window.PROTECTED_FILES?.BOGOTA_EXCEL_B64 || window.BOGOTA_EXCEL_B64;
+    if (!b64) return;
+    const bytes = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
+    const blob = new Blob([bytes], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "bogota_matriz_upz_mensajes.xlsx";
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
   function renderAll(fitMap) {
     renderLineCards();
     drawMap(fitMap);
@@ -566,6 +582,9 @@
       renderAll(true);
     });
     els.download.addEventListener("click", downloadCsv);
+    document.querySelectorAll("[data-excel-download]").forEach((link) => {
+      link.addEventListener("click", downloadExcel);
+    });
   }
 
   fillSelects();

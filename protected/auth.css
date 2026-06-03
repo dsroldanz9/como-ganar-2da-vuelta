@@ -1,0 +1,113 @@
+:root {
+  --auth-brand: #544595;
+  --auth-accent: #f3930d;
+  --auth-ink: #25233a;
+  --auth-muted: #68667c;
+  --auth-line: #e3deef;
+}
+
+.auth-lock {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: grid;
+  place-items: center;
+  padding: 22px;
+  background:
+    linear-gradient(135deg, rgba(84, 69, 149, .96), rgba(135, 64, 136, .93));
+  color: var(--auth-ink);
+}
+
+.auth-card {
+  width: min(460px, 100%);
+  border: 1px solid rgba(255, 255, 255, .28);
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 30px 90px rgba(21, 16, 52, .35);
+  overflow: hidden;
+}
+
+.auth-head {
+  padding: 22px 22px 16px;
+  border-top: 6px solid var(--auth-accent);
+}
+
+.auth-kicker {
+  margin: 0 0 6px;
+  color: var(--auth-brand);
+  font-size: .78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.auth-head h1 {
+  margin: 0;
+  color: var(--auth-brand);
+  font-size: 1.45rem;
+  line-height: 1.12;
+}
+
+.auth-head p {
+  margin: 9px 0 0;
+  color: var(--auth-muted);
+  line-height: 1.42;
+}
+
+.auth-form {
+  display: grid;
+  gap: 12px;
+  padding: 0 22px 22px;
+}
+
+.auth-form label span {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--auth-brand);
+  font-size: .76rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.auth-form input {
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid var(--auth-line);
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: var(--auth-ink);
+  font: inherit;
+  font-weight: 800;
+}
+
+.auth-form button {
+  min-height: 46px;
+  border: 0;
+  border-radius: 8px;
+  color: #fff;
+  background: var(--auth-brand);
+  font: inherit;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.auth-error {
+  min-height: 20px;
+  margin: 0;
+  color: #c7312b;
+  font-size: .9rem;
+  font-weight: 800;
+}
+
+.auth-note {
+  padding: 13px 22px;
+  border-top: 1px solid var(--auth-line);
+  color: var(--auth-muted);
+  background: #f8f6fc;
+  font-size: .86rem;
+  line-height: 1.35;
+}
+
+.auth-loading .auth-form button {
+  opacity: .72;
+  cursor: progress;
+}
