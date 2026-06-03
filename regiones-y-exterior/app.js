@@ -11,6 +11,8 @@ let markerLayer;
 let geoBySlug = null;
 let puestoMap;
 let scatter;
+let mapMode = 'swing';
+let mapLegend = null;
 
 const $ = id => document.getElementById(id);
 const fmt = n => n == null || Number.isNaN(+n) ? '—' : (+n).toLocaleString('es-CO');
@@ -20,6 +22,21 @@ const pts = n => n == null || Number.isNaN(+n) ? '—' : `${n >= 0 ? '+' : ''}${
 const norm = s => String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 const swClass = n => n <= -6 ? 'loss-strong' : n < -1 ? 'loss' : n <= 1 ? 'stable' : 'gain';
 const swColor = n => n <= -6 ? '#c7312b' : n < -1 ? '#F3930D' : n <= 1 ? '#b9c0cc' : '#544595';
+
+// Color del municipio según el modo del mapa
+function fillFor(p, mode, maxVotes) {
+  if (mode === 'apoyo') return p.cepeda < 35 ? '#c7312b' : p.cepeda < 45 ? '#F3930D' : p.cepeda < 52 ? '#b9c0cc' : '#544595';
+  if (mode === 'votos') {
+    const x = Math.max(0, Math.min(1, (p.votos || 0) / (maxVotes || 1)));
+    return x > 0.66 ? '#352963' : x > 0.4 ? '#544595' : x > 0.18 ? '#8d7cc2' : '#d8d1ea';
+  }
+  return swColor(p.swing);
+}
+function legendHtml(mode) {
+  if (mode === 'apoyo') return '<b>Apoyo a Cepeda (1ª vuelta)</b><span><i style="background:#c7312b"></i>&lt;35%</span><span><i style="background:#F3930D"></i>35–45%</span><span><i style="background:#b9c0cc"></i>45–52%</span><span><i style="background:#544595"></i>&gt;52%</span>';
+  if (mode === 'votos') return '<b>Volumen de votos por Cepeda</b><span><i style="background:#d8d1ea"></i>bajo</span><span><i style="background:#8d7cc2"></i>medio</span><span><i style="background:#544595"></i>alto</span><span><i style="background:#352963"></i>muy alto</span>';
+  return '<b>Cambio frente a 2022</b><span><i style="background:#c7312b"></i>perdimos fuerte</span><span><i style="background:#F3930D"></i>perdimos</span><span><i style="background:#b9c0cc"></i>estable</span><span><i style="background:#544595"></i>ganamos terreno</span>';
+}
 
 function rightVotes(row) {
   return Math.round((row.derecha || 0) * (row.votos_total || 0) / 100);
@@ -136,8 +153,9 @@ function renderMap(rows) {
   // Choropleth por municipio (polígonos) cuando el geojson ya cargó
   if (geoBySlug) {
     const feats = rows.map(m => geoBySlug.get(m.slug)).filter(Boolean);
+    const maxVotes = Math.max(1, ...feats.map(f => f.properties.votos || 0));
     const layer = L.geoJSON({ type: 'FeatureCollection', features: feats }, {
-      style: f => ({ fillColor: COL[f.properties.estado] || '#cfd3dc', fillOpacity: .82, color: '#ffffff', weight: .6 }),
+      style: f => ({ fillColor: fillFor(f.properties, mapMode, maxVotes), fillOpacity: .82, color: '#ffffff', weight: .6 }),
       onEachFeature: (f, l) => {
         const p = f.properties;
         l.bindTooltip(`<b>${p.municipio}</b><br>${p.depto}<br>Cepeda ${pct(p.cepeda)} · ${pts(p.swing)}<br>${fmt(p.votos)} votos`, { sticky: true });
@@ -146,6 +164,10 @@ function renderMap(rows) {
         l.on('mouseout', () => l.setStyle({ weight: .6, color: '#ffffff' }));
       }
     }).addTo(markerLayer);
+    if (mapLegend) mapLegend.remove();
+    mapLegend = L.control({ position: 'bottomright' });
+    mapLegend.onAdd = () => { const d = L.DomUtil.create('div', 'maplg'); d.innerHTML = legendHtml(mapMode); return d; };
+    mapLegend.addTo(map);
     // puntos para municipios sin polígono (no quedan invisibles)
     const sinPoly = rows.filter(m => m.lat != null && m.lon != null && !geoBySlug.has(m.slug));
     sinPoly.forEach(m => L.circleMarker([m.lat, m.lon], { radius: markerRadius(m), color: '#fff', weight: 1.2, fillColor: COL[m.estado], fillOpacity: .85 })
@@ -377,6 +399,11 @@ $('dept').addEventListener('input', update);
 $('q').addEventListener('input', update);
 $('estado').addEventListener('input', update);
 $('sort').addEventListener('input', update);
+document.querySelectorAll('#mapModes button').forEach(b => b.addEventListener('click', () => {
+  mapMode = b.dataset.mode;
+  document.querySelectorAll('#mapModes button').forEach(x => x.classList.toggle('active', x === b));
+  renderMap(currentRows());
+}));
 $('reset').addEventListener('click', () => {
   $('dept').value = 'todos';
   $('q').value = '';
