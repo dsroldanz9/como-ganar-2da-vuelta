@@ -45,6 +45,7 @@ a { color: inherit; }
 }
 .brand-t { font-weight: 900; font-size: 1.02rem; line-height: 1.15; }
 .brand-s { font-size: .78rem; opacity: .86; line-height: 1.2; }
+.top-actions { display: flex; gap: 8px; align-items: center; }
 .pill, .ghost {
   border: 1px solid rgba(255,255,255,.38);
   border-radius: 8px;
@@ -556,6 +557,8 @@ a { color: inherit; }
   .logo-img { max-width: 170px; height: 44px; }
   .brand-s { display: none; }
   .pill { display: none; }
+  .top-actions { width: 100%; justify-content: stretch; }
+  .top-actions .pill { display: block; flex: 1; text-align: center; }
   .hero { padding: 26px 0 30px; }
   .hero h1 { font-size: 2rem; }
   .hero-metrics, .kpis, .kpis3, .strategy-grid, .text-grid { grid-template-columns: 1fr; }
