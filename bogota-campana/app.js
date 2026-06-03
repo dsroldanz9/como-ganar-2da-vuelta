@@ -23,30 +23,77 @@
         "Una madre le habla a un hijo apático: 'si no votas por ti, vota por mí, por mi pensión, por mi salud, por mi tranquilidad'.",
         "Carrusel con fotos familiares: 'No todos votamos igual, pero sí nos cuidamos'."
       ],
+      classVariants: {
+        popular: "Hablar de cuidado concreto: pensión, trabajo, salud, servicios y que la familia no retroceda.",
+        media: "Apelar a estabilidad, derechos liberales, futuro profesional, cuidado de mujeres, minorías y familia.",
+        alta: "Usar tono sobrio: democracia, páramos, derechos humanos, reputación internacional y responsabilidad histórica.",
+        unknown: "Bajar al puesto/sitio para identificar estrato y elegir vocería familiar o técnica."
+      },
+      ageVariants: {
+        joven: "A jóvenes: 'tu voto protege mi futuro, mi universidad, mi libertad y mi derecho a vivir sin miedo'.",
+        media: "A edades medias: 'tu voto cuida a tus hijos, tu trabajo, tu barrio y la estabilidad de quienes quieres'.",
+        mayor: "A mayores: 'tu voto protege pensión, salud, tranquilidad familiar y una democracia sin violencia'."
+      },
+      formats: {
+        joven: "Reels testimoniales de 20-30s, memes suaves de familia, duetos/TikTok, stickers de WhatsApp, historias con pregunta: ¿por quién votas cuando votas?",
+        media: "Video testimonial familiar, carrusel para Facebook/Instagram, WhatsApp de grupos familiares, carta corta de hija/hijo a papá-mamá, reunión de edificio o conjunto.",
+        mayor: "Audio de WhatsApp, volante simple, pieza para Facebook, conversación puerta a puerta, llamada familiar y encuentro pequeño de vecinos."
+      },
+      events: {
+        popular: "Olla comunitaria, puerta a puerta con liderazgos barriales, punto pedagógico en mercado/parque y jornada de llamadas familiares.",
+        media: "Café de vecinos, reunión de conjunto, foro breve con técnicos/profesionales, activación en universidades y coworkings.",
+        alta: "Conversatorio de derechos y democracia, encuentro de profesionales, carta pública de figuras respetadas y pauta sobria geolocalizada.",
+        unknown: "Mapear primero el puesto: identificar edificios, comercio, universidades, colegios o barrio antes de escoger evento."
+      },
       content: "Videos testimoniales íntimos, carruseles con frases familiares, fotos cotidianas, piezas sobrias para WhatsApp familiar y pauta de confianza en UPZ competidas."
     },
     L2: {
       title: "No estamos dispuestos a renunciar a...",
-      short: "Fortalecer derechos",
+      short: "Movilizar multiplicadores",
       color: "#544595",
       soft: "#f2eef9",
-      objective: "Fortalecer el voto por Iván, Petro y el cambio; convertir simpatía en movilización activa en barrios populares, jóvenes y clases medias que ya votaron por la izquierda.",
+      objective: "Convertir simpatizantes en multiplicadores activos: que no solo voten, sino que inviten, expliquen programa, muevan familia, tomen tinto con un amigo, acompañen al puesto y ayuden a subir participación.",
       audience: "sectores populares, clases medias progresistas, jóvenes, militancia territorial, familias del sur y territorios afines donde toca subir participación.",
-      frame: "No regresar al pasado: defender salario vital, universidad pública, vivienda digna, tierra, derechos de mujeres, derechos LGBTI, vida y futuro sin represión ni guerra.",
+      frame: "No regresar al pasado exige organización: defender salario vital, universidad pública, vivienda digna, tierra, derechos, vida y futuro saliendo a buscar más votos.",
       messages: [
         "No estamos dispuestos a renunciar a un salario digno.",
         "No estamos dispuestos a renunciar a la universidad pública gratuita.",
         "No estamos dispuestas a renunciar al cuidado para nosotras y a los derechos de las mujeres.",
         "No estamos dispuestos a renunciar a la vivienda digna, a la tierra y a un Estado presente.",
         "No estamos dispuestos a volver al miedo, a la represión, al militarismo ni a mandar nuestros hijos a la guerra.",
-        "No estamos dispuestas a renunciar al futuro."
+        "No estamos dispuestas a renunciar al futuro.",
+        "Si ya estás convencido, convence a tres más: familia, vecino, amiga, compañero de trabajo.",
+        "Tómate un tinto con alguien que duda y explícale por qué esta vez hay que salir a votar."
       ],
       scripts: [
-        "Voz en off sobre barrios, aulas, trabajo y campo: 'no estamos dispuestos a renunciar a...'.",
-        "Jóvenes llamando a sumar a papá, mamá, primos, novia, amigos y vecinos: 'no basta con estar de acuerdo, toca salir a votar'.",
-        "Pieza de memoria: estallido social, represión y promesa de no volver atrás, cerrando con esperanza y organización."
+        "Voz en off sobre barrios, aulas, trabajo y campo: 'no estamos dispuestos a renunciar a... por eso hoy salimos a convencer y a votar'.",
+        "Jóvenes llamando a sumar a papá, mamá, primos, pareja, amigos y vecinos: 'no basta con estar de acuerdo, toca llevar a alguien más'.",
+        "Pieza de tinto: dos personas conversan con calma; una explica salario, universidad, pensión y derechos, y cierran acordando votar juntas.",
+        "Pieza de familia completa: 'este domingo no va nadie solo: votamos, llamamos, acompañamos y cuidamos el puesto'."
       ],
-      content: "Videos de barrio, reels de derechos concretos, audios para WhatsApp, brigadas culturales, llamados de familia y piezas para reforzar participación por puesto."
+      classVariants: {
+        popular: "Pasar de apoyo a acción: armar lista de familia/vecinos, explicar programa en el barrio, acompañar al puesto y cuidar participación.",
+        media: "Activar redes de confianza: tinto con amigo, grupos de WhatsApp, colegas, universidad, trabajo y familia que aún duda.",
+        alta: "Pedir apoyo logístico y vocerías: donar tiempo, circular argumentos, abrir puertas, prestar carros y mover redes profesionales.",
+        unknown: "Bajar al puesto/sitio para reconocer qué red moviliza mejor: familia, comercio, universidad, conjunto o comité barrial."
+      },
+      ageVariants: {
+        joven: "A jóvenes: no basta indignarse en redes; hagan reels, inviten parche, llamen familia y lleven a alguien a votar.",
+        media: "A edades medias: organicen familia, trabajo y vecinos; tinto con quien duda, llamada a quien se abstiene y salida colectiva a votar.",
+        mayor: "A mayores: voz a voz de confianza, llamada a hijos/nietos, audio de WhatsApp y acompañamiento al puesto."
+      },
+      formats: {
+        joven: "Reels reto 'yo llevo a tres', historias con plantilla de compromiso, memes de no volver atrás, TikTok de tinto con amigo y WhatsApp militante.",
+        media: "Checklist familiar de votación, carrusel programa+acción, audio para grupos de trabajo/familia, invitación a tinto y pieza 'no vayas solo'.",
+        mayor: "Audio de WhatsApp, volante simple con hora/puesto, llamada familiar, Facebook comunitario y puerta a puerta de confianza."
+      },
+      events: {
+        popular: "Comité por puesto, olla/tinto comunitario, jornada de llamadas, volanteo en transporte, recorrido por comercio y cadena barrial de WhatsApp.",
+        media: "Tinto con indecisos, reunión de conjunto, encuentro de familias trabajadoras, activación en parques y llamada organizada a abstencionistas.",
+        alta: "Círculo de apoyo logístico, cena/café de donantes de tiempo, red de profesionales difundiendo argumentos y transporte electoral.",
+        unknown: "Recorrido diagnóstico corto: identificar líderes, comercios, conjuntos o universidades para activar la red de movilización correcta."
+      },
+      content: "Contenido de movilización: piezas de programa con tarea concreta, audios para WhatsApp, reto de llevar tres personas, tinto con indecisos, checklist familiar y llamados por puesto."
     },
     L3: {
       title: "Superioridad ética y contraste democrático",
@@ -68,6 +115,28 @@
         "Pieza de contraste: '¿Quién representa mejor a la clase media trabajadora: quien defiende derechos o quien desprecia al diferente?'.",
         "Video corto de ética pública: 'no se trata solo de ganar, se trata de quién puede gobernar sin deberle el país a poderes oscuros'."
       ],
+      classVariants: {
+        popular: "Contrastar élite mafiosa vs. pueblo trabajador: miedo, desigualdad, desprecio a pobres y defensa de privilegios.",
+        media: "Contrastar meritocracia limpia vs. enriquecimiento oscuro: ética pública, trabajo honesto y gobierno sin deudas mafiosas.",
+        alta: "Contrastar reputación, institucionalidad y gobernabilidad: un país serio no se entrega al escándalo ni al odio.",
+        unknown: "Usar contraste general, pero afinar por estrato del puesto antes de pautar."
+      },
+      ageVariants: {
+        joven: "A jóvenes: no al miedo, no al autoritarismo, no a una política que odia al diferente.",
+        media: "A edades medias: ética, seguridad democrática sin mafia, estabilidad y respeto a la clase trabajadora.",
+        mayor: "A mayores: tranquilidad, decencia pública, no violencia y no entregar el país a poderes oscuros."
+      },
+      formats: {
+        joven: "Memes de contraste, clips de archivo subtitulados, carruseles de 'miedo vs futuro', videos reacción y piezas cortas con fuente visible.",
+        media: "Carrusel comparativo, video de trayectoria, hilo/placa de titulares verificados, audio de WhatsApp con tono sereno y pieza de ética pública.",
+        mayor: "Volante sobrio, audio explicativo, Facebook, conversación directa y pieza de tranquilidad: no violencia, decencia y gobierno serio."
+      },
+      events: {
+        popular: "Conversatorio barrial de 'ricos mafiosos vs pueblo trabajador', volanteo en comercio, debate abierto y perifoneo con mensaje de dignidad.",
+        media: "Foro de ética pública, reunión con profesionales/técnicos, pieza para grupos de oficina y conversación en conjuntos residenciales.",
+        alta: "Encuentro de institucionalidad, carta de figuras respetadas, conversatorio de reputación país y pauta sobria de riesgo democrático.",
+        unknown: "Antes de contrastar duro, identificar si el puesto es popular, medio o alto para ajustar tono y vocería."
+      },
       content: "Videos de contraste con fuentes, carruseles de trayectoria, memes de superioridad ética, piezas cortas de riesgo democrático y pauta en UPZ con caída o derecha fuerte."
     }
   };
@@ -75,7 +144,7 @@
   const state = {
     locKey: "",
     line: "",
-    layer: "localidades",
+    layer: "upz",
     query: "",
     active: null
   };
@@ -98,6 +167,7 @@
     priority: document.getElementById("priorityLists"),
     matrix: document.getElementById("matrixBody"),
     editorial: document.getElementById("editorialMatrix"),
+    micro: document.getElementById("microSegments"),
     download: document.getElementById("downloadBtn"),
     mapSubtitle: document.getElementById("mapSubtitle")
   };
@@ -152,6 +222,44 @@
     return lineInfo[row?.linea] || lineInfo.L1;
   }
 
+  function classSegment(row) {
+    const estrato = Number(row?.estrato);
+    if (!Number.isFinite(estrato)) {
+      return {
+        id: "unknown",
+        label: row?.type === "UPZ" ? "Clase por afinar en puestos" : "Estrato s/d",
+        detail: "La UPZ orienta territorio; el mensaje de clase se afina bajando al puesto/sitio."
+      };
+    }
+    if (estrato <= 2) return { id: "popular", label: `Clase popular · estrato ${estrato}`, detail: "Derechos materiales, salario, vivienda, servicios, educación y vida cotidiana." };
+    if (estrato <= 4) return { id: "media", label: `Clase media · estrato ${estrato}`, detail: "Estabilidad, movilidad social, derechos liberales, ética pública y cuidado familiar." };
+    return { id: "alta", label: `Clase alta · estrato ${estrato}`, detail: "Democracia, reputación, páramos, derechos humanos e institucionalidad." };
+  }
+
+  function ageSegmentForKey(key) {
+    const p = key ? locByKey.get(key) : areaForProfile();
+    if (!p) return { id: "media", label: "Edades medias", detail: "Perfil etario mixto; combinar cuidado familiar, trabajo y futuro." };
+    if (Number(p.joven) >= 23.5) return { id: "joven", label: "Jóvenes 18-28", detail: `${fmtPct(p.joven)} jóvenes: redes, universidad, empleo, cultura y futuro.` };
+    if (Number(p.mayor) >= 16.5) return { id: "mayor", label: "Mayores 65+", detail: `${fmtPct(p.mayor)} mayores: pensión, salud, tranquilidad y cuidado.` };
+    return { id: "media", label: "Edades medias", detail: "Perfil mixto: trabajo, familia, cuidado y estabilidad territorial." };
+  }
+
+  function segmentMessage(row) {
+    const line = wantedLine(row);
+    const seg = segmentMessage(row);
+    const cls = classSegment(row);
+    const age = ageSegmentForKey(row?.key);
+    return {
+      classLabel: cls.label,
+      ageLabel: age.label,
+      classText: line.classVariants[cls.id] || line.classVariants.unknown,
+      ageText: line.ageVariants[age.id] || line.ageVariants.media,
+      formatText: line.formats[age.id] || line.formats.media,
+      eventText: line.events[cls.id] || line.events.unknown,
+      detail: `${cls.detail} ${age.detail}`
+    };
+  }
+
   function neededVotes(row) {
     const validos = Number(row.validos) || 0;
     const votos = Number(row.votos) || 0;
@@ -177,7 +285,7 @@
   }
 
   function renderLineCards() {
-    const counts = data.localidades.reduce((acc, d) => {
+    const counts = data.upz.reduce((acc, d) => {
       acc[d.linea] = (acc[d.linea] || 0) + 1;
       return acc;
     }, {});
@@ -187,7 +295,7 @@
         <p><b>${esc(line.short)}</b> · ${esc(line.audience)}.</p>
         <p>${esc(line.objective)}</p>
         <p>${esc(line.frame)}</p>
-        <b>${counts[id] || 0} localidades con esta línea</b>
+        <b>${counts[id] || 0} UPZ con esta línea</b>
       </article>
     `).join("");
     els.lineCards.querySelectorAll(".line-card").forEach((card) => {
@@ -218,8 +326,57 @@
           <b>Guiones y piezas</b>
           <ul>${line.scripts.map((m) => `<li>${esc(m)}</li>`).join("")}</ul>
         </div>
+        <div class="editorial-list">
+          <b>Formatos por edad</b>
+          <ul>${Object.entries(line.formats).map(([k, m]) => `<li><strong>${esc(k)}:</strong> ${esc(m)}</li>`).join("")}</ul>
+        </div>
       </article>
     `).join("");
+  }
+
+  function renderMicroSegments() {
+    const rows = matrixRows().slice(0, 24);
+    const groups = new Map();
+    rows.forEach((row) => {
+      const line = wantedLine(row);
+      const seg = segmentMessage(row);
+      const id = `${row.linea}|${seg.classLabel}|${seg.ageLabel}`;
+      if (!groups.has(id)) {
+        groups.set(id, {
+          line,
+          seg,
+          rows: [],
+          votos: 0,
+          validos: 0
+        });
+      }
+      const g = groups.get(id);
+      g.rows.push(row);
+      g.votos += Number(row.votos) || 0;
+      g.validos += Number(row.validos) || 0;
+    });
+    const cards = Array.from(groups.values()).slice(0, 9);
+    if (!cards.length) {
+      els.micro.innerHTML = `<p class="muted">Sin microsegmentos para el filtro activo.</p>`;
+      return;
+    }
+    els.micro.innerHTML = cards.map((g) => {
+      const pct = g.validos ? g.votos / g.validos * 100 : null;
+      const territories = g.rows.slice(0, 3).map((r) => r.name).join(" · ");
+      return `
+        <article class="micro-card">
+          <div class="micro-head">
+            <span class="tag ${g.rows[0].linea}">${esc(g.line.short)}</span>
+            <b>${fmtPct(pct)} · ${fmtNum(g.votos)} votos</b>
+          </div>
+          <h3>${esc(g.seg.classLabel)} / ${esc(g.seg.ageLabel)}</h3>
+          <p><strong>Mensaje.</strong> ${esc(g.seg.classText)} ${esc(g.seg.ageText)}</p>
+          <p><strong>Pieza.</strong> ${esc(g.seg.formatText)}</p>
+          <p><strong>Evento/acción.</strong> ${esc(g.seg.eventText)}</p>
+          <p class="muted"><strong>Territorios muestra:</strong> ${esc(territories)}</p>
+        </article>
+      `;
+    }).join("");
   }
 
   let map;
@@ -403,11 +560,14 @@
     els.reading.innerHTML = `
       <h3>${esc(scope)}</h3>
       <p><strong>Lectura territorial.</strong> Cepeda está en ${fmtPct(row.cepeda)}, con ${fmtNum(row.votos)} votos y ${fmtPts(row.swing)} frente a 2022. ${strategic}</p>
-      <p><strong>Lectura etaria y social.</strong> El perfil del área marca ${ageText}. En estratos bajos pesa la defensa de derechos y salario; en estratos medios-altos pesa más confianza, ética pública y contraste democrático.</p>
+      <p><strong>Granularidad.</strong> La localidad es solo contexto. La decisión fina debe hacerse por UPZ, puesto/sitio, estrato y edad: una misma localidad puede necesitar varias líneas al mismo tiempo.</p>
+      <p><strong>Lectura etaria y social.</strong> El perfil del área marca ${ageText}. Segmento sugerido: ${esc(seg.classLabel)} / ${esc(seg.ageLabel)}. En estratos bajos pesa la defensa de derechos y salario; en estratos medios-altos pesa más confianza, ética pública y contraste democrático.</p>
       <p><strong>Objetivo comunicativo.</strong> ${esc(line.objective)}</p>
       <p><strong>Target prioritario.</strong> ${esc(line.audience)}</p>
       <p><strong>Mensaje.</strong> ${esc(line.title)}. ${esc(line.frame)}</p>
       <p><strong>Mensajes clave.</strong> ${esc(line.messages.slice(0, 3).join(" · "))}</p>
+      <p><strong>Variante por clase y edad.</strong> ${esc(seg.classText)} ${esc(seg.ageText)}</p>
+      <p><strong>Pieza/evento recomendado.</strong> ${esc(seg.formatText)} ${esc(seg.eventText)}</p>
       <p><strong>Contenido sugerido.</strong> ${esc(line.content)}</p>
       <p><strong>Meta inmediata.</strong> ${need > 0 ? `Ganar al menos ${fmtNum(need)} votos netos para llegar a 50% + 1 en este filtro.` : `Cuidar el margen de ${fmtNum(Math.abs(need))} votos sobre 50% + 1 y usarlo como base de movilización.`}</p>
       <div class="chip-row">
@@ -515,7 +675,7 @@
   }
 
   function matrixRows() {
-    const upzRows = data.upz.filter(rowMatches).map((r) => ({ ...r, type: "UPZ", perfil: `${r.puestos} puestos`, name: r.upz }));
+    const upzRows = data.upz.filter(rowMatches).map((r) => ({ ...r, type: "UPZ", perfil: `${r.puestos} puestos · estrato por puestos`, name: r.upz, estrato: null }));
     const puestoRows = data.puestos.filter(rowMatches).map((r) => ({ ...r, type: "Puesto", perfil: `Estrato ${r.estrato ?? "s/d"} · ${r.sitio || r.direccion || ""}`, name: r.puesto }));
     return upzRows.concat(puestoRows)
       .sort((a, b) => a.linea.localeCompare(b.linea) || a.swing - b.swing || b.validos - a.validos)
@@ -525,19 +685,21 @@
   function renderMatrix() {
     const rows = matrixRows();
     if (!rows.length) {
-      els.matrix.innerHTML = `<tr><td colspan="5">Sin resultados para el filtro activo.</td></tr>`;
+      els.matrix.innerHTML = `<tr><td colspan="6">Sin resultados para el filtro activo.</td></tr>`;
       return;
     }
     els.matrix.innerHTML = rows.map((r) => {
       const line = wantedLine(r);
+      const seg = segmentMessage(r);
       const swingClass = r.swing < 0 ? "negative" : "positive";
       return `
         <tr>
           <td><strong>${esc(r.name)}</strong><br><span class="muted">${esc(r.type)} · ${esc(r.localidad)}</span></td>
           <td>${fmtPct(r.cepeda)} Cepeda<br><span class="${swingClass}">${fmtPts(r.swing)}</span><br><span class="muted">${fmtNum(r.votos)} votos</span></td>
           <td>${esc(r.perfil || "s/d")}<br><span class="muted">${fmtNum(r.validos)} votos válidos</span></td>
+          <td><strong>${esc(seg.classLabel)}</strong><br>${esc(seg.ageLabel)}<br><span class="muted">${esc(seg.detail)}</span></td>
           <td><strong>${esc(line.title)}</strong><br><span class="tag ${r.linea}">${esc(line.short)}</span></td>
-          <td>${esc(rowAction(r))}<br><span class="muted">${esc(line.messages[0])} ${esc(line.content)}</span></td>
+          <td>${esc(rowAction(r))}<br><span class="muted">${esc(seg.classText)} ${esc(seg.ageText)}</span><br><span class="muted"><strong>Pieza:</strong> ${esc(seg.formatText)}</span><br><span class="muted"><strong>Evento:</strong> ${esc(seg.eventText)}</span></td>
         </tr>
       `;
     }).join("");
@@ -570,10 +732,11 @@
 
   function downloadCsv() {
     const rows = matrixRows();
-    const headers = ["tipo", "territorio", "localidad", "cepeda_pct", "swing_pts", "votos", "validos", "linea", "mensaje", "target", "mensajes_clave", "guiones", "accion"];
+    const headers = ["tipo", "territorio", "localidad", "cepeda_pct", "swing_pts", "votos", "validos", "estrato", "segmento_clase", "segmento_edad", "linea", "mensaje", "target", "mensaje_clase", "mensaje_edad", "pieza_recomendada", "evento_accion", "mensajes_clave", "guiones", "accion"];
     const lines = [headers.join(",")].concat(rows.map((r) => {
       const line = wantedLine(r);
-      const vals = [r.type, r.name, r.localidad, r.cepeda, r.swing, r.votos, r.validos, r.linea, line.title, line.audience, line.messages.join(" | "), line.scripts.join(" | "), rowAction(r)];
+      const seg = segmentMessage(r);
+      const vals = [r.type, r.name, r.localidad, r.cepeda, r.swing, r.votos, r.validos, r.estrato ?? "", seg.classLabel, seg.ageLabel, r.linea, line.title, line.audience, seg.classText, seg.ageText, seg.formatText, seg.eventText, line.messages.join(" | "), line.scripts.join(" | "), rowAction(r)];
       return vals.map((v) => `"${String(v ?? "").replace(/"/g, '""')}"`).join(",");
     }));
     const blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8" });
@@ -604,6 +767,7 @@
   function renderAll(fitMap) {
     renderLineCards();
     renderEditorialMatrix();
+    renderMicroSegments();
     drawMap(fitMap);
     renderSummary();
     renderReading();
@@ -641,12 +805,12 @@
     els.reset.addEventListener("click", () => {
       state.locKey = "";
       state.line = "";
-      state.layer = "localidades";
+      state.layer = "upz";
       state.query = "";
       state.active = null;
       els.loc.value = "";
       els.line.value = "";
-      els.layer.value = "localidades";
+      els.layer.value = "upz";
       els.search.value = "";
       renderAll(true);
     });

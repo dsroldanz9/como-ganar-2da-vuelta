@@ -67,8 +67,8 @@
     <label>
       <span>Capa</span>
       <select id="layerSelect">
+        <option value="upz" selected>UPZ</option>
         <option value="localidades">Localidades</option>
-        <option value="upz">UPZ</option>
         <option value="puestos">Puestos</option>
       </select>
     </label>
@@ -104,6 +104,16 @@
       </div>
     </div>
     <div id="editorialMatrix" class="editorial-grid"></div>
+  </section>
+
+  <section class="panel micro-panel">
+    <div class="panel-head tight">
+      <div>
+        <h2>Microsegmentos por clase, edad y territorio</h2>
+        <p>La línea no se asigna por localidad completa: se ajusta por UPZ, puesto/sitio, estrato y perfil etario del área.</p>
+      </div>
+    </div>
+    <div id="microSegments" class="micro-grid"></div>
   </section>
 
   <section class="map-grid">
@@ -168,6 +178,7 @@
             <th>Territorio</th>
             <th>Resultado</th>
             <th>Perfil</th>
+            <th>Segmento</th>
             <th>Mensaje</th>
             <th>Contenido</th>
           </tr>

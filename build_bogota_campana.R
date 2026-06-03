@@ -76,9 +76,9 @@ message_for <- function(izq, der, swing, joven, estratos) {
     return(list(
       linea = "L2",
       titulo = "No estamos dispuestos a renunciar a...",
-      tono = "Defensa de derechos y movilizacion popular",
-      publico = "sectores populares y clases medias que ya votaron por la izquierda",
-      accion = "Recordar salario, educación, vida, tierra y derechos. Convertir apoyo en campaña activa: familia, vecindario y puesto de votación."
+      tono = "Movilización activa y defensa de derechos",
+      publico = "sectores populares, clases medias progresistas, jóvenes, militancia territorial y familias del sur",
+      accion = "Convertir simpatizantes en multiplicadores: invitar, explicar programa, mover familia, tomar tinto con indecisos, acompañar al puesto y cuidar participación."
     ))
   }
   list(
@@ -193,7 +193,7 @@ payload <- list(
   resumen = list(localidades = nrow(loc_out), upz = nrow(upz_out), puestos = nrow(puestos_out)),
   lineas = list(
     list(id = "L1", titulo = "Tu voto es por mí", foco = "Centro persuadible, afectos familiares y clase media establecida", pieza = "Video testimonial familiar + carrusel de confianza + WhatsApp de cuidado"),
-    list(id = "L2", titulo = "No estamos dispuestos a renunciar a...", foco = "Sectores populares, jóvenes y voto afín por fortalecer", pieza = "Voz en off con barrios, aulas, campo, salario, universidad, vivienda, derechos y futuro"),
+    list(id = "L2", titulo = "No estamos dispuestos a renunciar a...", foco = "Simpatizantes que deben volverse multiplicadores activos", pieza = "Reto de llevar tres, tinto con indecisos, WhatsApp familiar, comité por puesto y salida colectiva a votar"),
     list(id = "L3", titulo = "Superioridad ética y contraste democrático", foco = "Clase media aspiracional, derecha blanda y territorios donde creció derecha", pieza = "Contraste con archivo y titulares verificados, trayectoria limpia y llamado ético a votar")
   ),
   localidades = loc_out,
@@ -203,24 +203,42 @@ payload <- list(
 )
 
 lineas_excel <- tibble::tribble(
-  ~linea, ~mensaje, ~objetivo, ~publico, ~mensajes_clave, ~guiones, ~pieza_sugerida,
+  ~linea, ~mensaje, ~objetivo, ~publico, ~mensajes_clave, ~guiones, ~formatos_jovenes, ~formatos_edades_medias, ~formatos_mayores, ~eventos_populares, ~eventos_clase_media, ~eventos_clase_alta, ~pieza_sugerida,
   "L1", "Tu voto es por mí",
   "Persuadir centro, abstención blanda y clases medias desde vínculos concretos de afecto: hija, hijo, mamá, papá, amistad, pareja, colega o familiar.",
   "Clase media establecida, sectores altos liberales, técnicos, burócratas, profesionales y votantes de Fajardo, Claudia u Oviedo en zonas de disputa.",
   "Tu voto es por mí | Tu voto es por los viejitos para que no se queden sin pensión | Tu voto es por nosotras las mujeres | Tu voto es por los derechos humanos | Tu voto es por la vida, los páramos, la gente trabajadora y quienes tienen menos",
   "Joven de clase media a su papá: papá, esta vez tu voto es por mí | Madre a hijo apático: si no votas por ti, vota por mí | Carrusel familiar: no todos votamos igual, pero sí nos cuidamos",
+  "Reels testimoniales, memes familiares suaves, historias con pregunta, stickers de WhatsApp.",
+  "Video testimonial familiar, carrusel Facebook/Instagram, carta corta hija/hijo a papá-mamá, reunión de edificio.",
+  "Audio de WhatsApp, volante simple, Facebook, llamada familiar, puerta a puerta.",
+  "Olla comunitaria, puerta a puerta, punto pedagógico en mercado/parque, llamadas familiares.",
+  "Café de vecinos, reunión de conjunto, foro con técnicos/profesionales, universidades/coworkings.",
+  "Conversatorio de democracia y derechos, carta pública de figuras respetadas, pauta sobria.",
   "Video testimonial familiar, carrusel de confianza, fotos cotidianas, WhatsApp familiar y pauta sobria en UPZ competidas.",
   "L2", "No estamos dispuestos a renunciar a...",
-  "Fortalecer voto por Iván, Petro y el cambio; convertir simpatía en participación activa y organización de barrio.",
+  "Convertir simpatizantes en multiplicadores activos: que no solo voten, sino que inviten, expliquen programa, muevan familia, tomen tinto con un amigo, acompañen al puesto y ayuden a subir participación.",
   "Sectores populares, clases medias progresistas, jóvenes, militancia territorial, familias del sur y territorios afines donde toca subir participación.",
-  "No renunciar al salario digno | Universidad pública gratuita | Vivienda digna y tierra | Derechos de mujeres y personas LGBTI | No volver al miedo, a la represión, al militarismo ni a mandar hijos a la guerra | No renunciar al futuro",
-  "Voz en off sobre barrios, aulas, trabajo y campo | Jóvenes llamando a sumar familia, primos, pareja y vecinos | Pieza de memoria: estallido social, represión y no volver atrás",
-  "Videos de barrio, reels de derechos concretos, audios para WhatsApp, brigadas culturales y piezas para reforzar participación por puesto.",
+  "No renunciar al salario digno | Universidad pública gratuita | Vivienda digna y tierra | Derechos de mujeres y personas LGBTI | No volver al miedo ni a la represión | Si ya estás convencido, convence a tres más | Tómate un tinto con alguien que duda | Este domingo no va nadie solo: votamos y llevamos a alguien más",
+  "Voz en off: no estamos dispuestos a renunciar a... por eso salimos a convencer y votar | Jóvenes llamando a sumar familia, pareja, amigos y vecinos | Pieza de tinto con indeciso | Familia completa: votamos, llamamos, acompañamos y cuidamos el puesto",
+  "Reels reto 'yo llevo a tres', historias con plantilla de compromiso, memes de no volver atrás, TikTok de tinto con amigo y WhatsApp militante.",
+  "Checklist familiar de votación, carrusel programa+acción, audio para grupos de trabajo/familia, invitación a tinto y pieza 'no vayas solo'.",
+  "Audio de WhatsApp, volante simple con hora/puesto, llamada familiar, Facebook comunitario y puerta a puerta de confianza.",
+  "Comité por puesto, olla/tinto comunitario, jornada de llamadas, volanteo en transporte, recorrido por comercio y cadena barrial de WhatsApp.",
+  "Tinto con indecisos, reunión de conjunto, encuentro de familias trabajadoras, activación en parques y llamada organizada a abstencionistas.",
+  "Círculo de apoyo logístico, café de donantes de tiempo, red de profesionales difundiendo argumentos y transporte electoral.",
+  "Contenido de movilización: piezas de programa con tarea concreta, audios para WhatsApp, reto de llevar tres personas, tinto con indecisos, checklist familiar y llamados por puesto.",
   "L3", "Superioridad ética y contraste democrático",
   "Contrastar trayectorias, valores y riesgos políticos para recuperar voto en sectores aspiracionales, populares no convencidos y zonas donde creció la derecha.",
   "Clases medias aspiracionales, sectores populares con rabia contra élites corruptas, derecha blanda, técnicos y territorios de caída o derecha fuerte.",
   "Merecemos más que el miedo | El futuro es la vida | No entregar el país a una élite mafiosa | Revolución ética contra poderes oscuros | Iván: derechos, paz, denuncia de corrupción y control al propio gobierno",
   "Montaje con archivo y titulares verificados | Contraste: derechos vs desprecio al diferente | Video de ética pública: quién puede gobernar sin deberle el país a poderes oscuros",
+  "Memes de contraste, clips de archivo subtitulados, carruseles miedo vs futuro, videos reacción con fuente visible.",
+  "Carrusel comparativo, video de trayectoria, placas de titulares verificados, audio sereno de ética pública.",
+  "Volante sobrio, audio explicativo, Facebook, conversación directa y pieza de tranquilidad.",
+  "Conversatorio barrial ricos mafiosos vs pueblo trabajador, comercio, debate abierto, perifoneo de dignidad.",
+  "Foro de ética pública, reunión con profesionales/técnicos, grupos de oficina, conjuntos residenciales.",
+  "Encuentro de institucionalidad, carta de figuras respetadas, reputación país y riesgo democrático.",
   "Videos de contraste con fuentes, carruseles de trayectoria, memes de superioridad ética, piezas cortas de riesgo democrático y pauta en UPZ de caída."
 )
 
@@ -246,7 +264,31 @@ upz_excel <- upz_out |>
       prioridad_operativa == "Recuperar" ~ "Territorio con caída: requiere presencia, contraste de riesgo y una razón concreta para volver a votar.",
       prioridad_operativa == "Persuadir" ~ "Territorio adverso o de derecha fuerte: no saturar, usar vocerías confiables y mensajes de futuro/ética.",
       TRUE ~ "Territorio competido: combinar calle, pauta digital y seguimiento por puestos."
-    )
+    ),
+    segmento_edad = case_when(
+      joven >= 23.5 ~ "Jóvenes 18-28",
+      mayor >= 16.5 ~ "Mayores 65+",
+      TRUE ~ "Edades medias / mixto"
+    ),
+    mensaje_por_edad = case_when(
+      segmento_edad == "Jóvenes 18-28" & linea == "L1" ~ "Tu voto protege mi futuro, mi universidad, mi libertad y mi derecho a vivir sin miedo.",
+      segmento_edad == "Jóvenes 18-28" & linea == "L2" ~ "No basta indignarse en redes: hacer reels, invitar parche, llamar familia y llevar a alguien a votar.",
+      segmento_edad == "Jóvenes 18-28" & linea == "L3" ~ "No al miedo, no al autoritarismo, no a una política que odia al diferente.",
+      segmento_edad == "Mayores 65+" & linea == "L1" ~ "Tu voto protege pensión, salud, tranquilidad familiar y una democracia sin violencia.",
+      segmento_edad == "Mayores 65+" & linea == "L2" ~ "Voz a voz de confianza, llamada a hijos/nietos, audio de WhatsApp y acompañamiento al puesto.",
+      segmento_edad == "Mayores 65+" & linea == "L3" ~ "Tranquilidad, decencia pública, no violencia y no entregar el país a poderes oscuros.",
+      linea == "L1" ~ "Tu voto cuida a tus hijos, tu trabajo, tu barrio y la estabilidad de quienes quieres.",
+      linea == "L2" ~ "Organizar familia, trabajo y vecinos: tinto con quien duda, llamada a quien se abstiene y salida colectiva a votar.",
+      TRUE ~ "Ética, seguridad democrática sin mafia, estabilidad y respeto a la clase trabajadora."
+    ),
+    segmento_clase = "Afinar por estrato del puesto",
+    mensaje_por_clase = "La UPZ orienta territorio; para lucha de clases bajar al puesto/sitio y ajustar: estratos 1-2 derechos materiales, 3-4 estabilidad/movilidad social, 5-6 democracia/institucionalidad.",
+    formatos_por_edad = case_when(
+      segmento_edad == "Jóvenes 18-28" ~ formatos_jovenes,
+      segmento_edad == "Mayores 65+" ~ formatos_mayores,
+      TRUE ~ formatos_edades_medias
+    ),
+    eventos_por_clase = "Escoger con estrato de puesto: popular=comunidad/comercio/perifoneo; media=conjunto/café/foro técnico; alta=conversatorio institucional/pauta sobria."
   ) |>
   arrange(desc(prioridad_score)) |>
   transmute(
@@ -261,8 +303,10 @@ upz_excel <- upz_out |>
     jovenes_18_28_pct = joven,
     mayores_65_pct = mayor,
     mujeres_pct = mujeres,
+    segmento_edad,
+    segmento_clase,
     prioridad_operativa,
-    linea, mensaje, objetivo, publico, mensajes_clave, guiones, pieza_sugerida, lectura,
+    linea, mensaje, objetivo, publico, mensajes_clave, guiones, mensaje_por_edad, mensaje_por_clase, formatos_por_edad, eventos_por_clase, formatos_jovenes, formatos_edades_medias, formatos_mayores, eventos_populares, eventos_clase_media, eventos_clase_alta, pieza_sugerida, lectura,
     prioridad_score = round(prioridad_score, 1)
   )
 
