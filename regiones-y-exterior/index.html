@@ -18,7 +18,7 @@
     <div>
       <p class="eyebrow">Versión país · regiones, municipios y exterior</p>
       <h1>Regiones y exterior para mover la segunda vuelta.</h1>
-      <p>Escoge una región, departamento o exterior; revisa municipios decisivos y entra al detalle con puestos de votación, cambio frente a 2022 y perfil etario DANE.</p>
+      <p>Este es un aporte para focalizar mejor esfuerzos e información: una herramienta al servicio de toda la campaña para saber dónde moverse, qué priorizar y cómo cuidar la esperanza de ganar la segunda vuelta. Que vivan los datos libres, el software libre y la apuesta por construir un mejor país. Vamos a ganar.</p>
     </div>
   </div>
 </header>
@@ -54,7 +54,12 @@
   <section id="detail" class="detail"></section>
 
   <section class="charts">
-    <article class="panel age-panel"><h2>Edad y voto</h2><p>Cada punto es un municipio del filtro activo. Pasa el cursor para ver datos o haz clic para abrir el municipio.</p><canvas id="scatter"></canvas></article>
+    <article class="panel age-panel">
+      <h2>Edad y voto</h2>
+      <p>Cada punto es un municipio del filtro activo. Pasa el cursor para ver datos o haz clic para abrir el municipio.</p>
+      <div class="chart-frame"><canvas id="scatter"></canvas></div>
+      <div id="chartRead" class="chart-read"></div>
+    </article>
     <article class="panel"><h2>Top estratégicos</h2><p>Recuperar caídas y cuidar volumen.</p><div id="rankings"></div></article>
   </section>
 </main>

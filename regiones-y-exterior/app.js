@@ -71,7 +71,13 @@ function renderDeptOptions() {
     $('dept').innerHTML = '<option value="todos">Todos</option>' + DATA.departamentos
       .map(d => `<option value="${d.depto_slug}">${d.depto}</option>`).join('');
   }
-  $('deptStrip').innerHTML = DATA.departamentos.slice(0, 12).map(d => `
+  const hasFilter = selectedDept !== 'todos' || $('estado').value !== 'todos' || norm($('q').value);
+  $('deptStrip').classList.toggle('is-hidden', !!hasFilter);
+  if (hasFilter) {
+    $('deptStrip').innerHTML = '';
+    return;
+  }
+  $('deptStrip').innerHTML = DATA.departamentos.map(d => `
     <button class="dept-card ${d.depto_slug === selectedDept ? 'active' : ''}" data-dept="${d.depto_slug}" type="button">
       <h3>${d.depto}</h3>
       <p><b>${pct(d.cepeda)}</b> · ${fmt(d.municipios)} municipios · ${fmt(d.votos_total)} votos</p>
@@ -243,6 +249,48 @@ function renderCharts(rows) {
       }
     }
   });
+  renderChartReading(rows, sample);
+}
+
+function mean(rows, field) {
+  const vals = rows.map(r => r[field]).filter(v => v != null && !Number.isNaN(+v));
+  return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
+}
+
+function corr(rows) {
+  const vals = rows.filter(r => r.joven != null && r.cepeda != null);
+  if (vals.length < 3) return null;
+  const mx = mean(vals, 'joven');
+  const my = mean(vals, 'cepeda');
+  const num = vals.reduce((s, r) => s + (r.joven - mx) * (r.cepeda - my), 0);
+  const dx = Math.sqrt(vals.reduce((s, r) => s + Math.pow(r.joven - mx, 2), 0));
+  const dy = Math.sqrt(vals.reduce((s, r) => s + Math.pow(r.cepeda - my, 2), 0));
+  return dx && dy ? num / (dx * dy) : null;
+}
+
+function renderChartReading(rows, sample) {
+  if (!rows.length) {
+    $('chartRead').innerHTML = '<h3>Lectura del gráfico</h3><p>No hay municipios en este filtro.</p>';
+    return;
+  }
+  if (rows.length === 1) {
+    const d = detail[rows[0].slug];
+    $('chartRead').innerHTML = `<h3>Lectura del gráfico</h3><p>Con un solo municipio el punto no muestra relación territorial, sino perfil local: ${d.municipio} tiene ${pct(d.joven)} de población 18-28 y Cepeda está en ${pct(d.cepeda)}. Para decidir acción, mira puestos de volumen y puestos con caída en Top estratégicos.</p>`;
+    return;
+  }
+  const withAge = rows.filter(r => r.joven != null);
+  const c = corr(withAge);
+  const avgJ = mean(withAge, 'joven');
+  const avgC = mean(withAge, 'cepeda');
+  const youngStrong = withAge.filter(r => r.joven >= avgJ && r.cepeda >= avgC).sort((a, b) => b.votos_total - a.votos_total).slice(0, 3);
+  const recoverYoung = withAge.filter(r => r.joven >= avgJ && r.swing < -1).sort((a, b) => a.swing - b.swing).slice(0, 3);
+  const rel = c == null ? 'no alcanza muestra suficiente para estimar tendencia' :
+    c > .25 ? 'hay una asociación positiva: los municipios más jóvenes tienden a dar más apoyo' :
+    c < -.25 ? 'hay una asociación negativa: los municipios más jóvenes no están empujando más apoyo' :
+    'no hay una relación clara: edad y voto no se mueven juntos de forma fuerte';
+  $('chartRead').innerHTML = `<h3>Lectura del gráfico</h3>
+    <p>Se cruza % de población 18-28 del DANE 2026 (eje X) con % Cepeda 2026 (eje Y). El tamaño del punto es volumen de votos válidos y el color indica si ganamos, disputamos o estamos difíciles. En este filtro ${rel}.</p>
+    <p>Promedios del filtro: ${pct(avgJ)} jóvenes 18-28 y ${pct(avgC)} Cepeda. Territorios jóvenes y fuertes: ${youngStrong.map(m => m.municipio).join(', ') || 'sin casos claros'}. Jóvenes con caída para recuperar: ${recoverYoung.map(m => `${m.municipio} (${pts(m.swing)})`).join(', ') || 'sin casos claros'}.</p>`;
 }
 
 function rankLine(label, value, cls = '') {
@@ -279,6 +327,7 @@ function renderRankings(rows) {
 function selectMun(slug, scroll) {
   renderDetail(slug);
   renderList(currentRows());
+  renderMunicipioRanks(detail[slug]);
   if (scroll) $('detail').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
