@@ -146,12 +146,15 @@
     line: "",
     layer: "upz",
     query: "",
-    active: null
+    active: null,
+    showBarrios: true,
+    showAglomeraciones: false
   };
 
   const locByKey = new Map(data.localidades.map((d) => [d.key, d]));
   const upzById = new Map(data.upz.map((d) => [`${d.key}|${d.upz_key}`, d]));
   const puestoByCode = new Map(data.puestos.map((d) => [String(d.cod_puesto), d]));
+  const puestoFeatureByCode = new Map((geo.puestos?.features || []).map((f) => [String(f.properties.cod_puesto), f]));
 
   const els = {
     loc: document.getElementById("locSelect"),
@@ -169,7 +172,11 @@
     editorial: document.getElementById("editorialMatrix"),
     micro: document.getElementById("microSegments"),
     download: document.getElementById("downloadBtn"),
-    mapSubtitle: document.getElementById("mapSubtitle")
+    mapSubtitle: document.getElementById("mapSubtitle"),
+    toggleBarrios: document.getElementById("toggleBarrios"),
+    toggleAglomeraciones: document.getElementById("toggleAglomeraciones"),
+    clearMap: document.getElementById("clearMapBtn"),
+    fitMap: document.getElementById("fitMapBtn")
   };
 
   const fmtPct = (v) => Number.isFinite(v) ? `${v.toFixed(1).replace(".", ",")}%` : "s/d";
@@ -380,6 +387,8 @@
 
   let map;
   let mapLayer;
+  let barrioLayer;
+  let agloLayer;
   let baseBounds;
 
   function initMap() {
@@ -389,6 +398,8 @@
       maxZoom: 19
     }).addTo(map);
     mapLayer = L.layerGroup().addTo(map);
+    barrioLayer = L.layerGroup().addTo(map);
+    agloLayer = L.layerGroup().addTo(map);
   }
 
   function rowColor(row) {
@@ -416,15 +427,141 @@
     `;
   }
 
+  function featureLatLng(feature) {
+    const coords = feature?.geometry?.coordinates;
+    if (!coords || coords.length < 2) return null;
+    return L.latLng(coords[1], coords[0]);
+  }
+
+  function filteredPuestos() {
+    return data.puestos.filter(rowMatches);
+  }
+
+  function buildSiteGroups(rows) {
+    const groups = new Map();
+    rows.forEach((row) => {
+      const feature = puestoFeatureByCode.get(String(row.cod_puesto));
+      const latlng = featureLatLng(feature);
+      if (!latlng) return;
+      const site = row.sitio || row.puesto || row.direccion || "Sitio sin nombre";
+      const key = `${row.key}|${norm(site)}`;
+      if (!groups.has(key)) {
+        groups.set(key, {
+          site,
+          key: row.key,
+          localidad: row.localidad,
+          rows: [],
+          votos: 0,
+          validos: 0,
+          lat: 0,
+          lng: 0,
+          weight: 0
+        });
+      }
+      const g = groups.get(key);
+      const weight = Number(row.validos) || 1;
+      g.rows.push(row);
+      g.votos += Number(row.votos) || 0;
+      g.validos += Number(row.validos) || 0;
+      g.lat += latlng.lat * weight;
+      g.lng += latlng.lng * weight;
+      g.weight += weight;
+    });
+    return Array.from(groups.values()).map((g) => {
+      const main = g.rows.slice().sort((a, b) => (Number(b.validos) || 0) - (Number(a.validos) || 0))[0];
+      return {
+        ...g,
+        row: main,
+        latlng: L.latLng(g.lat / g.weight, g.lng / g.weight),
+        cepeda: g.validos ? g.votos / g.validos * 100 : null
+      };
+    });
+  }
+
+  function drawOptionalLayers() {
+    barrioLayer.clearLayers();
+    agloLayer.clearLayers();
+    const rows = filteredPuestos();
+
+    if (state.showBarrios) {
+      buildSiteGroups(rows)
+        .sort((a, b) => (b.validos || 0) - (a.validos || 0))
+        .slice(0, 90)
+        .forEach((g) => {
+          const row = g.row;
+          const marker = L.circleMarker(g.latlng, {
+            radius: clamp(Math.sqrt(Number(g.validos) || 0) / 18, 4, 10),
+            color: "#25233a",
+            weight: 1,
+            fillColor: rowColor(row),
+            fillOpacity: .92
+          });
+          marker.bindTooltip(`
+            <div class="map-tip">
+              <strong>${esc(g.site)}</strong>
+              <span>${esc(g.localidad)} · ${g.rows.length} puesto(s)</span>
+              <span>${fmtPct(g.cepeda)} Cepeda · ${fmtNum(g.votos)} votos</span>
+              <span>Sitio/barrio de orientación</span>
+            </div>
+          `, { sticky: true });
+          marker.on("click", () => {
+            state.locKey = row.key;
+            state.active = { type: "puesto", row };
+            state.query = g.site;
+            els.loc.value = row.key;
+            els.search.value = g.site;
+            renderAll(false);
+          });
+          marker.addTo(barrioLayer);
+        });
+    }
+
+    if (state.showAglomeraciones) {
+      const keywords = /universidad|colegio|instituto|sena|parque|plaza|portal|terminal|centro comercial|coliseo|estadio|alcald|hospital|biblioteca|sal[oó]n|casa de la cultura/i;
+      rows
+        .filter((row) => (Number(row.validos) || 0) >= 4500 || keywords.test(`${row.sitio || ""} ${row.puesto || ""} ${row.direccion || ""}`))
+        .sort((a, b) => (Number(b.validos) || 0) - (Number(a.validos) || 0))
+        .slice(0, 80)
+        .forEach((row) => {
+          const latlng = featureLatLng(puestoFeatureByCode.get(String(row.cod_puesto)));
+          if (!latlng) return;
+          const seg = segmentMessage(row);
+          const marker = L.circleMarker(latlng, {
+            radius: clamp(Math.sqrt(Number(row.validos) || 0) / 10, 7, 18),
+            color: "#111827",
+            weight: 2,
+            fillColor: row.swing <= -7 ? "#c7312b" : "#f3930d",
+            fillOpacity: .58
+          });
+          marker.bindTooltip(`
+            <div class="map-tip">
+              <strong>${esc(row.sitio || row.puesto)}</strong>
+              <span>Aglomeración sugerida por volumen/actividad electoral</span>
+              <span>${fmtNum(row.validos)} votos válidos · ${fmtPct(row.cepeda)} Cepeda</span>
+              <span>${esc(seg.eventText)}</span>
+            </div>
+          `, { sticky: true });
+          marker.on("click", () => {
+            state.locKey = row.key;
+            state.active = { type: "puesto", row };
+            els.loc.value = row.key;
+            renderAll(false);
+          });
+          marker.addTo(agloLayer);
+        });
+    }
+  }
+
   function drawMap(fit) {
     mapLayer.clearLayers();
     const bounds = [];
     const layer = state.layer;
+    const leyendaColor = "El color es la línea recomendada (azul L1 persuadir centro · morado L2 fortalecer derechos · naranja L3 contraste ético); el rojo marca las zonas con caída fuerte para priorizar recuperación.";
     els.mapSubtitle.textContent = layer === "puestos"
-      ? "Cada punto es un puesto; color por línea y tamaño por votos válidos."
+      ? "Cada punto es un puesto; tamaño por votos válidos. " + leyendaColor
       : layer === "upz"
-        ? "Cada polígono es una UPZ; rojo indica caídas fuertes, morado fortines y naranja contraste."
-        : "Cada polígono es una localidad; rojo indica caídas fuertes, morado fortines y naranja contraste.";
+        ? "Cada polígono es una UPZ. " + leyendaColor
+        : "Cada polígono es una localidad. " + leyendaColor;
 
     if (layer === "localidades") {
       L.geoJSON(geo.localidades, {
@@ -526,6 +663,7 @@
     } else if (fit && baseBounds) {
       map.fitBounds(baseBounds.pad(.08), { animate: false });
     }
+    drawOptionalLayers();
   }
 
   function renderSummary() {
@@ -814,9 +952,47 @@
       els.search.value = "";
       renderAll(true);
     });
+    els.toggleBarrios.addEventListener("change", () => {
+      state.showBarrios = els.toggleBarrios.checked;
+      drawOptionalLayers();
+    });
+    els.toggleAglomeraciones.addEventListener("change", () => {
+      state.showAglomeraciones = els.toggleAglomeraciones.checked;
+      drawOptionalLayers();
+    });
+    els.clearMap.addEventListener("click", () => {
+      state.query = "";
+      state.active = state.locKey ? { type: "localidad", row: locByKey.get(state.locKey) } : null;
+      els.search.value = "";
+      renderAll(true);
+    });
+    els.fitMap.addEventListener("click", () => {
+      if (baseBounds) map.fitBounds(baseBounds.pad(.08), { animate: true });
+    });
     els.download.addEventListener("click", downloadCsv);
     document.querySelectorAll("[data-excel-download]").forEach((link) => {
       link.addEventListener("click", downloadExcel);
+    });
+  }
+
+  function setupCollapsibles() {
+    [["editorialMatrix"], ["microSegments"]].forEach(([id]) => {
+      const content = document.getElementById(id);
+      if (!content) return;
+      const panel = content.closest(".panel");
+      const head = panel && panel.querySelector(".panel-head");
+      if (!head || head.querySelector(".collapse-btn")) return;
+      content.style.display = "none";               // colapsado por defecto: el mapa queda más arriba
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "collapse-btn";
+      btn.textContent = "Mostrar";
+      btn.addEventListener("click", () => {
+        const hidden = content.style.display === "none";
+        content.style.display = hidden ? "" : "none";
+        btn.textContent = hidden ? "Ocultar" : "Mostrar";
+      });
+      head.appendChild(btn);
     });
   }
 
@@ -824,4 +1000,5 @@
   initMap();
   bindEvents();
   renderAll(true);
+  setupCollapsibles();
 })();

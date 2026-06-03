@@ -409,6 +409,21 @@ input {
   margin-bottom: 12px;
 }
 .panel-head.tight { margin-bottom: 4px; }
+.collapse-btn {
+  margin-left: auto;
+  align-self: flex-start;
+  flex: none;
+  font-size: .8rem;
+  font-weight: 800;
+  padding: 6px 13px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--brand);
+  color: #fff;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.collapse-btn:hover { background: var(--brand-dark); }
 h2 {
   margin: 0;
   color: var(--brand);
@@ -442,6 +457,45 @@ h2 {
 .sw.l3 { background: var(--accent); }
 .sw.red { background: var(--danger); }
 .sw.gray { background: var(--stable); }
+.map-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: -2px 0 12px;
+}
+.map-tools label {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 36px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 7px 10px;
+  color: var(--brand);
+  background: #fff;
+  font-weight: 900;
+  font-size: .84rem;
+  cursor: pointer;
+}
+.map-tools input {
+  width: 16px;
+  min-height: 16px;
+  accent-color: var(--brand);
+}
+.map-tools button {
+  min-height: 36px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 7px 11px;
+  color: #fff;
+  background: var(--brand);
+  font: inherit;
+  font-size: .84rem;
+  font-weight: 900;
+  cursor: pointer;
+}
+.map-tools button:hover { background: var(--brand-dark); }
 #map {
   height: 640px;
   min-height: 520px;

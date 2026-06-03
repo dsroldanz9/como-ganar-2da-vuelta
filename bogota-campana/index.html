@@ -124,10 +124,17 @@
           <p id="mapSubtitle">Color por línea recomendada; tamaño por volumen de votos cuando se ven puestos.</p>
         </div>
         <div class="legend">
-          <span><i class="sw l2"></i> Fortalecer derechos</span>
-          <span><i class="sw l1"></i> Persuadir centro</span>
-          <span><i class="sw l3"></i> Contraste ético</span>
+          <span><i class="sw l1"></i> L1 · Persuadir centro</span>
+          <span><i class="sw l2"></i> L2 · Fortalecer derechos</span>
+          <span><i class="sw l3"></i> L3 · Contraste ético</span>
+          <span><i class="sw red"></i> Caída fuerte · recuperar</span>
         </div>
+      </div>
+      <div class="map-tools" aria-label="Capas y acciones del mapa">
+        <label><input id="toggleBarrios" type="checkbox" checked> Sitios/barrios</label>
+        <label><input id="toggleAglomeraciones" type="checkbox"> Aglomeraciones</label>
+        <button id="clearMapBtn" type="button">Limpiar mapa</button>
+        <button id="fitMapBtn" type="button">Centrar</button>
       </div>
       <div id="map"></div>
     </article>
