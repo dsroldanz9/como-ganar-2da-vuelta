@@ -246,7 +246,6 @@
 
   function segmentMessage(row) {
     const line = wantedLine(row);
-    const seg = segmentMessage(row);
     const cls = classSegment(row);
     const age = ageSegmentForKey(row?.key);
     return {
@@ -547,6 +546,7 @@
     const row = contextRow();
     const profile = areaForProfile();
     const line = wantedLine(row);
+    const seg = segmentMessage(row);
     const scope = state.active?.type === "puesto" ? `puesto ${row.puesto}` : state.active?.type === "upz" ? `UPZ ${row.upz}` : row.localidad;
     const need = neededVotes(row);
     const ageText = Number.isFinite(profile.joven)
