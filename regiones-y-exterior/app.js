@@ -59,7 +59,7 @@ function renderSummary(rows) {
   const deps = new Set(rows.map(m => m.depto)).size;
   $('summary').innerHTML = `
     <div class="kpi"><b>${fmt(deps)}</b><span>departamentos en filtro</span></div>
-    <div class="kpi"><b>${fmt(rows.length)}</b><span>municipios visibles</span></div>
+    <div class="kpi"><b>${fmt(rows.length)}</b><span>territorios visibles</span></div>
     <div class="kpi"><b>${pct(a.cepeda)}</b><span>Cepeda agregado</span></div>
     <div class="kpi"><b>${pct(a.derecha)}</b><span>derecha agregada</span></div>
     <div class="kpi target-kpi"><b>${target.big}</b><span>${target.label}</span><p>${target.body}</p></div>`;
@@ -80,7 +80,7 @@ function renderDeptOptions() {
   $('deptStrip').innerHTML = DATA.departamentos.map(d => `
     <button class="dept-card ${d.depto_slug === selectedDept ? 'active' : ''}" data-dept="${d.depto_slug}" type="button">
       <h3>${d.depto}</h3>
-      <p><b>${pct(d.cepeda)}</b> · ${fmt(d.municipios)} municipios · ${fmt(d.votos_total)} votos</p>
+      <p><b>${pct(d.cepeda)}</b> · ${fmt(d.municipios)} ${d.depto === 'Exterior' ? 'consulados' : 'municipios'} · ${fmt(d.votos_total)} votos</p>
     </button>`).join('');
   document.querySelectorAll('.dept-card').forEach(b => b.addEventListener('click', () => {
     selectedDept = b.dataset.dept;
@@ -143,7 +143,10 @@ function renderMap(rows) {
 
 function renderList(rows) {
   const list = sorted(rows).slice(0, 180);
-  $('count').textContent = `${fmt(rows.length)} municipios`;
+  const ext = rows.filter(m => m.depto === 'Exterior').length;
+  const mun = rows.length - ext;
+  $('count').textContent = (mun && ext) ? `${fmt(mun)} municipios + ${fmt(ext)} del exterior`
+    : ext ? `${fmt(ext)} puestos del exterior` : `${fmt(mun)} municipios`;
   $('note').textContent = list.length < rows.length ? `mostrando ${list.length}` : 'todos visibles';
   $('list').innerHTML = list.map(m => `
     <button class="mun-item ${m.estado} ${m.slug === selectedSlug ? 'active' : ''}" data-slug="${m.slug}" type="button">
