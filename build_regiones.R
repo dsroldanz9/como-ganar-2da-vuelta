@@ -1,7 +1,7 @@
 # =====================================================================
 # build_regiones.R - Version pais por departamentos/regiones
-# Genera webapp/cundinamarca/data.js con municipios, puestos y perfil etario
-# para navegar el pais por departamento sobre la ruta del piloto.
+# Genera webapp/regiones-y-exterior/data.js con municipios, puestos y perfil etario
+# para navegar el pais por departamento y exterior.
 # Ejecutar desde la carpeta madre del proyecto.
 # =====================================================================
 suppressPackageStartupMessages({
@@ -38,9 +38,11 @@ label_name <- function(x) case_when(
 )
 label_depto <- function(x) case_when(
   key(x) == "BOGOTA D C" ~ "Bogota D.C.",
+  key(x) == "CONSULADOS" ~ "Exterior",
   key(x) == "NORTE DE SAN" ~ "Norte de Santander",
   TRUE ~ label_name(x)
 )
+slug_depto <- function(x) ifelse(key(x) == "CONSULADOS", "exterior", slugify(x))
 pct_txt <- function(x) paste0(format(round(100 * x, 1), decimal.mark = ","), "%")
 pts_txt <- function(x) paste0(format(round(100 * x, 1), decimal.mark = ","), " pts")
 smean <- function(x) {
@@ -56,7 +58,6 @@ m22 <- read_delim("datos/crudos/MMV_NACIONAL_PRESIDENTE_2022_1v.csv", delim = ";
 names(m22) <- toupper(names(m22))
 
 pu22 <- m22 |>
-  filter(DEP != "88") |>
   mutate(cod = paste0(DEP, MUN, ZONA, PUESTO),
          votos = as.numeric(VOTOS),
          cn = norm(CANNOMBRE),
@@ -73,7 +74,6 @@ pu22 <- m22 |>
 
 cat("Leyendo 2026 por puesto...\n")
 p26 <- read_csv(PRECONTEO, col_types = cols(.default = "c"), show_col_types = FALSE) |>
-  filter(cod_departamento != "88") |>
   mutate(across(c(ivan, abelardo, gustavo, votos_nulos, votos_no_marcados, total_votos_urna), as.numeric),
          cod = paste0(cod_departamento, cod_municipio, zona, puesto)) |>
   group_by(cod) |>
@@ -183,7 +183,7 @@ build_one <- function(df) {
     municipio = label_name(df$MUNNOMBRE[1]),
     dep = df$DEP[1],
     depto = label_depto(df$DEPNOMBRE[1]),
-    depto_slug = slugify(df$DEPNOMBRE[1]),
+    depto_slug = slug_depto(df$DEPNOMBRE[1]),
     estado = estado,
     cepeda = round(100 * cep, 1),
     derecha = round(100 * der, 1),
@@ -240,7 +240,7 @@ payload <- list(
   detalle = det
 )
 
-dir.create("webapp/cundinamarca", recursive = TRUE, showWarnings = FALSE)
+dir.create("webapp/regiones-y-exterior", recursive = TRUE, showWarnings = FALSE)
 writeLines(paste0("window.REGIONES_DATA=", toJSON(payload, auto_unbox = TRUE, na = "null"), ";"),
-  "webapp/cundinamarca/data.js")
-cat("Escrito webapp/cundinamarca/data.js con", nrow(idx), "municipios en", nrow(deptos), "departamentos\n")
+  "webapp/regiones-y-exterior/data.js")
+cat("Escrito webapp/regiones-y-exterior/data.js con", nrow(idx), "municipios en", nrow(deptos), "regiones/departamentos\n")
