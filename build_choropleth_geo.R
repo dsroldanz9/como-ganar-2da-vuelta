@@ -1,39 +1,39 @@
-# Une los polígonos de municipios (TopoJSON) con los datos del tablero nacional
-# y exporta regiones-y-exterior/municipios.geojson (para el choropleth).
+# Une polígonos de municipios (geoBoundaries ADM2, WGS84) con los datos del
+# tablero nacional por CRUCE ESPACIAL (cada municipio tiene lat/lon -> punto dentro
+# del polígono). Exporta regiones-y-exterior/municipios.geojson para el choropleth.
 suppressPackageStartupMessages({library(sf); library(tidyverse)})
 sf::sf_use_s2(FALSE)
-norm <- function(x) toupper(stringi::stri_trans_general(as.character(x), "Latin-ASCII")) |> str_squish()
-deptkey <- function(x){ k <- norm(x)
-  k <- gsub("VALLE DEL CAUCA", "VALLE", k)
-  k <- ifelse(grepl("BOGOTA", k), "BOGOTA", k)
-  k <- ifelse(grepl("SAN ANDRES", k), "SAN ANDRES", k)
-  str_squish(k) }
-namekey <- function(x) gsub("[^A-Z0-9 ]", " ", norm(x)) |> str_squish()
 
-# polígonos
-geo <- st_read("datos/geo/co_municipios.topojson", quiet=TRUE) |> st_make_valid()
-st_crs(geo) <- 4326
-geo <- geo |> mutate(dk = deptkey(dpt), nk = namekey(name))
+# polígonos oficiales (WGS84 lon/lat)
+poly <- st_read("datos/geo/co_adm2.geojson", quiet=TRUE) |> st_make_valid() |>
+  mutate(pid = row_number()) |> select(pid, shapeName)
+cat("Polígonos:", nrow(poly), " | bbox:", paste(round(st_bbox(poly),2), collapse=" "), "\n")
 
-# datos del tablero
+# datos del tablero (con lat/lon por municipio)
 s <- paste(readLines("webapp/regiones-y-exterior/data.js"), collapse="")
 j <- jsonlite::fromJSON(substr(s, regexpr("[{]", s)[1], tail(gregexpr("[}]", s)[[1]],1)), simplifyVector=TRUE)
 dat <- j$municipios |> as_tibble() |>
-  filter(depto != "Exterior") |>
-  transmute(slug, municipio, depto, estado, cepeda, swing, votos=votos_total,
-            dk = deptkey(depto), nk = namekey(municipio))
+  filter(depto != "Exterior", !is.na(lat), !is.na(lon)) |>
+  transmute(slug, municipio, depto, estado, cepeda, swing, votos=votos_total, lat, lon)
+pts <- st_as_sf(dat, coords=c("lon","lat"), crs=4326)
 
-# join polígono <- dato (por dept+nombre)
-m <- geo |> left_join(dat, by = c("dk","nk"))
-cat("Polígonos:", nrow(geo), " | con dato:", sum(!is.na(m$slug)),
-    sprintf("(%.0f%%)\n", 100*mean(!is.na(m$slug))))
-cat("Datos sin polígono:", sum(!(dat$slug %in% m$slug)), "de", nrow(dat), "\n")
+# cada punto -> polígono que lo contiene (si no, el más cercano)
+within <- st_join(pts, poly, join=st_within)
+faltan <- is.na(within$pid)
+if (any(faltan)) {
+  nn <- st_nearest_feature(pts[faltan,], poly)
+  within$pid[faltan] <- poly$pid[nn]
+}
+cat("Municipios con polígono:", sum(!is.na(within$pid)), "de", nrow(dat), "\n")
 
-out <- m |> filter(!is.na(slug)) |>
-  transmute(slug, municipio, depto, estado, cepeda, swing, votos) |>
-  st_simplify(dTolerance = 0.008, preserveTopology = TRUE)
+# adjuntar geometría del polígono a cada municipio (1 polígono por municipio)
+asign <- within |> st_drop_geometry() |> select(pid, slug, municipio, depto, estado, cepeda, swing, votos) |>
+  filter(!is.na(pid)) |> distinct(slug, .keep_all=TRUE)
+out <- poly |> inner_join(asign, by="pid") |>
+  select(slug, municipio, depto, estado, cepeda, swing, votos) |>
+  st_simplify(dTolerance = 0.004, preserveTopology = TRUE)
 
 dsn <- "webapp/regiones-y-exterior/municipios.geojson"
-suppressWarnings(st_write(out, dsn, quiet=TRUE, delete_dsn=TRUE,
-  layer_options = "COORDINATE_PRECISION=4"))
+suppressWarnings(st_write(out, dsn, quiet=TRUE, delete_dsn=TRUE, layer_options="COORDINATE_PRECISION=4"))
 cat("Escrito", dsn, "(", round(file.size(dsn)/1024), "KB ) con", nrow(out), "municipios\n")
+cat("bbox salida:", paste(round(st_bbox(out),2), collapse=" "), " (Colombia ~ -79 -4 -67 13)\n")
