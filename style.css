@@ -89,6 +89,22 @@ a { color: inherit; }
   font-weight: 900;
 }
 .hero p { margin: 0; max-width: 760px; line-height: 1.55; opacity: .94; }
+.hero-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+.hero-links a {
+  border: 1px solid rgba(255,255,255,.36);
+  border-radius: 8px;
+  padding: 9px 12px;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 900;
+  font-size: .84rem;
+  background: rgba(255,255,255,.1);
+}
 .hero-metrics {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
