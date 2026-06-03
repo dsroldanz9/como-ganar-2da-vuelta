@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Bogotá · Matriz territorial de campaña</title>
+<meta name="description" content="Mapa y matriz de mensajes para orientar la campaña de segunda vuelta en Bogotá por localidad, UPZ, estrato, edad y puestos de votación." />
+<meta name="author" content="Daniel Santiago Roldán" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700;6..12,800;6..12,900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <a class="brand" href="../">
+      <img src="../img/brand_lockup.webp" alt="Iván Cepeda y Aída Quilcué">
+      <span>
+        <strong>Bogotá en campaña</strong>
+        <small>Datos, territorio y mensajes para segunda vuelta</small>
+      </span>
+    </a>
+    <nav class="nav-actions" aria-label="Tableros">
+      <a href="../">13 ciudades</a>
+      <a href="../regiones-y-exterior/">Regiones y exterior</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-in">
+    <div>
+      <p class="eyebrow">Bogotá · estrategia territorial</p>
+      <h1>Mapa de mensajes para mover la esperanza con datos y calle.</h1>
+      <p class="hero-copy">Cruza localidad, UPZ, estrato, edad y puestos de votación para decidir dónde recuperar, dónde fortalecer y qué línea creativa llevar a cada territorio.</p>
+    </div>
+    <div class="hero-card">
+      <span>Autor de los datos</span>
+      <strong>Daniel Santiago Roldán</strong>
+      <p>Herramienta libre al servicio de la campaña, la esperanza y el trabajo territorial.</p>
+      <div class="hero-actions">
+        <a href="bogota_matriz_upz_mensajes.xlsx" download>Excel UPZ</a>
+        <a href="#matriz">Ver matriz</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<main class="wrap app-shell">
+  <section class="controls" aria-label="Filtros">
+    <label>
+      <span>Localidad</span>
+      <select id="locSelect"></select>
+    </label>
+    <label>
+      <span>Línea</span>
+      <select id="lineSelect">
+        <option value="">Todas</option>
+        <option value="L1">Tu voto también es por ti</option>
+        <option value="L2">No estamos dispuestos a renunciar a...</option>
+        <option value="L3">No podemos ser gobernados por el testaferro de testaferros</option>
+      </select>
+    </label>
+    <label>
+      <span>Capa</span>
+      <select id="layerSelect">
+        <option value="localidades">Localidades</option>
+        <option value="upz">UPZ</option>
+        <option value="puestos">Puestos</option>
+      </select>
+    </label>
+    <label>
+      <span>Buscar</span>
+      <input id="searchInput" type="search" placeholder="UPZ, puesto, dirección..." />
+    </label>
+    <button id="resetBtn" type="button">Limpiar</button>
+  </section>
+
+  <section class="brief" aria-label="Objetivo y método">
+    <article>
+      <h2>Objetivo</h2>
+      <p>Focalizar mejor esfuerzos e información en Bogotá: dónde moverse, qué priorizar, qué mensaje llevar y cómo convertir datos públicos en acción territorial.</p>
+    </article>
+    <article>
+      <h2>Cómo se lee</h2>
+      <p>La matriz cruza localidad, UPZ, puesto, estrato agregado, perfil etario, votos, cambio frente a 2022 y meta 50% + 1. No perfila personas: trabaja con agregados territoriales.</p>
+    </article>
+    <article>
+      <h2>Para qué sirve</h2>
+      <p>Organizar recorridos, testigos, WhatsApp territorial, pauta geográfica y contenido para redes con tres líneas: persuadir centro, fortalecer derechos y contrastar éticamente.</p>
+    </article>
+  </section>
+
+  <section class="message-grid" id="lineCards"></section>
+
+  <section class="map-grid">
+    <article class="panel map-panel">
+      <div class="panel-head">
+        <div>
+          <h2>Mapa territorial</h2>
+          <p id="mapSubtitle">Color por línea recomendada; tamaño por volumen de votos cuando se ven puestos.</p>
+        </div>
+        <div class="legend">
+          <span><i class="sw l2"></i> Fortalecer derechos</span>
+          <span><i class="sw l1"></i> Persuadir centro</span>
+          <span><i class="sw l3"></i> Contraste ético</span>
+        </div>
+      </div>
+      <div id="map"></div>
+    </article>
+
+    <aside class="panel insight-panel">
+      <div id="summaryCards" class="summary-cards"></div>
+      <div id="reading" class="reading"></div>
+    </aside>
+  </section>
+
+  <section class="analysis-grid">
+    <article class="panel">
+      <div class="panel-head tight">
+        <div>
+          <h2>Estrato y edad</h2>
+          <p id="profileSubtitle">Lectura del filtro activo.</p>
+        </div>
+      </div>
+      <div id="profileBars" class="bars"></div>
+    </article>
+
+    <article class="panel">
+      <div class="panel-head tight">
+        <div>
+          <h2>Prioridades</h2>
+          <p>Recuperar caídas, cuidar volumen y ubicar piezas.</p>
+        </div>
+      </div>
+      <div id="priorityLists" class="priority-lists"></div>
+    </article>
+  </section>
+
+  <section class="panel matrix-panel" id="matriz">
+    <div class="panel-head">
+      <div>
+        <h2>Matriz de mensajes y contenido</h2>
+        <p>Segmentación por territorio con datos electorales, perfil social y línea creativa.</p>
+      </div>
+      <div class="download-actions">
+        <a href="bogota_matriz_upz_mensajes.xlsx" download>Excel UPZ completo</a>
+        <button id="downloadBtn" type="button">CSV filtrado</button>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Territorio</th>
+            <th>Resultado</th>
+            <th>Perfil</th>
+            <th>Mensaje</th>
+            <th>Contenido</th>
+          </tr>
+        </thead>
+        <tbody id="matrixBody"></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    Datos y desarrollo: Daniel Santiago Roldán. Software libre, datos libres y organización territorial para ganar la segunda vuelta.
+  </div>
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="data.js"></script>
+<script src="geo.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
