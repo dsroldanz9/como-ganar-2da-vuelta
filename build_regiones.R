@@ -1,7 +1,7 @@
 # =====================================================================
 # build_regiones.R - Version pais por departamentos/regiones
-# Genera webapp/regiones/data.js con municipios, puestos y perfil etario
-# para navegar el pais por departamento sin tocar las versiones previas.
+# Genera webapp/cundinamarca/data.js con municipios, puestos y perfil etario
+# para navegar el pais por departamento sobre la ruta del piloto.
 # Ejecutar desde la carpeta madre del proyecto.
 # =====================================================================
 suppressPackageStartupMessages({
@@ -240,7 +240,7 @@ payload <- list(
   detalle = det
 )
 
-dir.create("webapp/regiones", recursive = TRUE, showWarnings = FALSE)
+dir.create("webapp/cundinamarca", recursive = TRUE, showWarnings = FALSE)
 writeLines(paste0("window.REGIONES_DATA=", toJSON(payload, auto_unbox = TRUE, na = "null"), ";"),
-  "webapp/regiones/data.js")
-cat("Escrito webapp/regiones/data.js con", nrow(idx), "municipios en", nrow(deptos), "departamentos\n")
+  "webapp/cundinamarca/data.js")
+cat("Escrito webapp/cundinamarca/data.js con", nrow(idx), "municipios en", nrow(deptos), "departamentos\n")

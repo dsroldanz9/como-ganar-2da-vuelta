@@ -3,66 +3,71 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Cundinamarca municipio a municipio · Segunda vuelta 2026</title>
+<title>País por regiones · Segunda vuelta 2026</title>
+<meta name="description" content="Tablero nacional por departamentos y municipios para orientar la estrategia territorial de segunda vuelta." />
+<meta name="author" content="Daniel Santiago Roldán" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700;6..12,800;6..12,900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-<div class="logobar">
-  <img src="../img/logo_banner.jpg" alt="Iván Cepeda · Aída Quilcué · Pacto Histórico">
-  <nav class="quicknav" aria-label="Navegación">
-    <a href="../">13 ciudades</a>
-    <a href="../municipios/">Municipios país</a>
-  </nav>
-</div>
-
-<section class="hero">
-  <div class="wrap">
-    <span class="pill">Piloto departamental · ¡Vamos por más!</span>
-    <h1>Cundinamarca, municipio a municipio</h1>
-    <p>Resultado, cambio frente a 2022, mapa por puesto de votación y perfil etario de cada
-    municipio, para orientar la estrategia de la segunda vuelta. Busca un municipio o elígelo en el mapa.</p>
+<header class="top">
+  <div class="wrap top-in">
+    <img src="../img/logo_banner.jpg" alt="Iván Cepeda · Aída Quilcué · Pacto Histórico">
+    <div>
+      <p class="eyebrow">Versión país · departamentos y municipios</p>
+      <h1>Regiones, municipios y puestos para mover la segunda vuelta.</h1>
+      <p>Escoge un departamento, revisa municipios decisivos y entra al detalle con puestos de votación, cambio frente a 2022 y perfil etario DANE.</p>
+    </div>
   </div>
-</section>
+</header>
 
 <main class="wrap">
-  <section class="panorama">
-    <div class="pan-map">
-      <h2 class="panel-h">Mapa de Cundinamarca</h2>
-      <div id="map"></div>
-      <div class="legend">
-        <span><i class="dot g"></i> Ganamos</span><span><i class="dot d"></i> En disputa</span><span><i class="dot a"></i> Difícil</span>
+  <section class="summary" id="summary"></section>
+
+  <section class="controls">
+    <label><span>Departamento</span><select id="dept"></select></label>
+    <label><span>Buscar municipio</span><input id="q" type="search" placeholder="Soacha, Cali, Pasto..." autocomplete="off"></label>
+    <label><span>Estado</span><select id="estado"><option value="todos">Todos</option><option value="disputa">En disputa</option><option value="ganada">Ganados</option><option value="adversa">Difíciles</option></select></label>
+    <label><span>Orden</span><select id="sort"><option value="estrategia">Prioridad estratégica</option><option value="votos">Más votos</option><option value="caida">Más caída</option><option value="jovenes">Más joven</option></select></label>
+  </section>
+
+  <section class="dept-strip" id="deptStrip"></section>
+
+  <section class="workbench">
+    <div class="panel map-panel">
+      <div class="panel-head">
+        <div><h2 id="mapTitle">Mapa</h2><p>Color: resultado. Tamaño: votos válidos.</p></div>
+        <button id="reset" type="button">Limpiar</button>
       </div>
+      <div id="map"></div>
     </div>
-    <div class="pan-list">
-      <h2 class="panel-h">Municipios <span id="count"></span></h2>
-      <input id="q" class="search" type="search" placeholder="Buscar municipio…" autocomplete="off">
+    <div class="panel list-panel">
+      <div class="panel-head">
+        <div><h2 id="count">Municipios</h2><p id="note"></p></div>
+      </div>
       <div id="list" class="mun-list"></div>
     </div>
   </section>
 
-  <section class="chart-box">
-    <h3>Edad y voto en Cundinamarca</h3>
-    <p class="hint">Cada punto es un municipio. Eje X: % de población joven (18–28, DANE). Eje Y: voto a Cepeda.
-    Relación territorial (no individual): donde hay más jóvenes, suele haber más voto afín.</p>
-    <canvas id="etario" height="150"></canvas>
-  </section>
-
   <section id="detail" class="detail"></section>
+
+  <section class="charts">
+    <article class="panel"><h2>Edad y voto</h2><p>Cada punto es un municipio del filtro activo.</p><canvas id="scatter"></canvas></article>
+    <article class="panel"><h2>Top estratégicos</h2><p>Recuperar caídas y cuidar volumen.</p><div id="rankings"></div></article>
+  </section>
 </main>
 
 <footer class="foot">
   <div class="wrap">
-    <p><b>Cómo se construye.</b> Resultados oficiales de la Registraduría por puesto (1ª vuelta 2022 y 2026),
-    coordenadas de puestos (Datos Abiertos) y perfil etario municipal del DANE 2026. Análisis por territorio, no por persona.</p>
-    <p class="src">Piloto · <span id="gen"></span></p>
+    <p><b>Autor de los datos y análisis:</b> Daniel Santiago Roldán.</p>
+    <p>Fuentes: Registraduría Nacional, DANE y georreferenciación de puestos disponible en el proyecto. <span id="gen"></span></p>
   </div>
 </footer>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.9/dist/chart.umd.min.js"></script>
 <script src="data.js"></script>
 <script src="app.js"></script>
 </body>
