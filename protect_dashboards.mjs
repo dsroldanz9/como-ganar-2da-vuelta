@@ -8,11 +8,8 @@ const protectedDir = path.join(root, "protected");
 fs.mkdirSync(protectedDir, { recursive: true });
 
 const iterations = 310000;
-const users = [
-  { user: "daniel" },
-  { user: "equipo-territorial" },
-  { user: "bogota" }
-].map((u) => ({ ...u, password: crypto.randomBytes(14).toString("base64url") }));
+const privateAccessPath = path.join(root, "ACCESOS_TABLEROS_PRIVADO.txt");
+const users = loadUsers(privateAccessPath);
 
 const dashboards = [
   {
@@ -71,7 +68,7 @@ const accessText = [
   "",
   ...users.flatMap((u) => [`Usuario: ${u.user}`, `Clave: ${u.password}`, ""])
 ].join("\r\n");
-fs.writeFileSync(path.join(root, "ACCESOS_TABLEROS_PRIVADO.txt"), accessText);
+fs.writeFileSync(privateAccessPath, accessText);
 
 console.log(`Bundles cifrados escritos en ${protectedDir}`);
 console.log("Accesos privados escritos en ACCESOS_TABLEROS_PRIVADO.txt");
@@ -97,4 +94,17 @@ function readWindowAssignment(file, globalName) {
   vm.runInNewContext(code, context, { filename: file });
   if (!context.window[globalName]) throw new Error(`No se encontró window.${globalName} en ${file}`);
   return context.window[globalName];
+}
+
+function loadUsers(file) {
+  if (fs.existsSync(file)) {
+    const text = fs.readFileSync(file, "utf8");
+    const matches = [...text.matchAll(/Usuario:\s*(.+?)\r?\nClave:\s*(.+?)(?:\r?\n|$)/g)];
+    if (matches.length) return matches.map((m) => ({ user: m[1].trim(), password: m[2].trim() }));
+  }
+  return [
+    { user: "daniel" },
+    { user: "equipo-territorial" },
+    { user: "bogota" }
+  ].map((u) => ({ ...u, password: crypto.randomBytes(14).toString("base64url") }));
 }

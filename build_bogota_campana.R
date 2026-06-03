@@ -66,10 +66,10 @@ message_for <- function(izq, der, swing, joven, estratos) {
   if (!is.na(est) && est >= 3.2 && (swing < -0.045 || der > izq)) {
     return(list(
       linea = "L3",
-      titulo = "No podemos ser gobernados por el testaferro de testaferros",
-      tono = "Contraste etico y seguridad democratica",
-      publico = "clases medias, aspiracionales y votantes de derecha blanda",
-      accion = "Mostrar riesgos, escándalos, incoherencias y costos de entregar el país a una derecha mafiosa. Cerrar con llamado a votar."
+      titulo = "Superioridad ética y contraste democrático",
+      tono = "Contraste ético y seguridad democrática",
+      publico = "clases medias aspiracionales, sectores populares no convencidos y territorios donde creció la derecha",
+      accion = "Contrastar trayectorias y riesgos políticos con hechos verificables, titulares y archivo con fuente. Cerrar con merecemos más que el miedo."
     ))
   }
   if (izq >= 0.48) {
@@ -83,10 +83,10 @@ message_for <- function(izq, der, swing, joven, estratos) {
   }
   list(
     linea = "L1",
-    titulo = "Tu voto también es por ti",
+    titulo = "Tu voto es por mí",
     tono = "Esperanza responsable para centro persuadible",
-    publico = "centro, clase media establecida y voto que teme el ruido politico",
-    accion = "Hablar de tranquilidad, futuro, respeto, cuidado y responsabilidad democrática. Bajar el miedo y abrir permiso para votar por Cepeda."
+    publico = "clase media establecida, sectores altos liberales, técnicos, burócratas y votantes de Fajardo, Claudia u Oviedo",
+    accion = "Pedir el voto desde el afecto: hija, hijo, mamá, papá, pareja, amistad o colega que sería afectado por el retroceso democrático."
   )
 }
 
@@ -192,9 +192,9 @@ payload <- list(
   generado = as.character(Sys.Date()),
   resumen = list(localidades = nrow(loc_out), upz = nrow(upz_out), puestos = nrow(puestos_out)),
   lineas = list(
-    list(id = "L1", titulo = "Tu voto también es por ti", foco = "Centro persuadible y clase media establecida", pieza = "Video sobrio + carrusel de confianza + copy de futuro"),
-    list(id = "L2", titulo = "No estamos dispuestos a renunciar a...", foco = "Sectores populares y voto afín por fortalecer", pieza = "Voz en off con naturaleza, aulas, barrios, campo, salario, universidad y derechos"),
-    list(id = "L3", titulo = "No podemos ser gobernados por el testaferro de testaferros", foco = "Clase media aspiracional y territorios donde creció derecha", pieza = "Video de contraste con archivo, titulares, denuncias y llamado ético a votar")
+    list(id = "L1", titulo = "Tu voto es por mí", foco = "Centro persuadible, afectos familiares y clase media establecida", pieza = "Video testimonial familiar + carrusel de confianza + WhatsApp de cuidado"),
+    list(id = "L2", titulo = "No estamos dispuestos a renunciar a...", foco = "Sectores populares, jóvenes y voto afín por fortalecer", pieza = "Voz en off con barrios, aulas, campo, salario, universidad, vivienda, derechos y futuro"),
+    list(id = "L3", titulo = "Superioridad ética y contraste democrático", foco = "Clase media aspiracional, derecha blanda y territorios donde creció derecha", pieza = "Contraste con archivo y titulares verificados, trayectoria limpia y llamado ético a votar")
   ),
   localidades = loc_out,
   upz = upz_out,
@@ -203,19 +203,25 @@ payload <- list(
 )
 
 lineas_excel <- tibble::tribble(
-  ~linea, ~mensaje, ~objetivo, ~publico, ~pieza_sugerida,
-  "L1", "Tu voto también es por ti",
-  "Persuadir a centro y clases medias que pueden votar por Cepeda si se baja el miedo y se habla de futuro.",
-  "Centro, clase media establecida y voto que teme el ruido político.",
-  "Video sobrio, carrusel de confianza, vocerías ciudadanas y piezas de futuro.",
+  ~linea, ~mensaje, ~objetivo, ~publico, ~mensajes_clave, ~guiones, ~pieza_sugerida,
+  "L1", "Tu voto es por mí",
+  "Persuadir centro, abstención blanda y clases medias desde vínculos concretos de afecto: hija, hijo, mamá, papá, amistad, pareja, colega o familiar.",
+  "Clase media establecida, sectores altos liberales, técnicos, burócratas, profesionales y votantes de Fajardo, Claudia u Oviedo en zonas de disputa.",
+  "Tu voto es por mí | Tu voto es por los viejitos para que no se queden sin pensión | Tu voto es por nosotras las mujeres | Tu voto es por los derechos humanos | Tu voto es por la vida, los páramos, la gente trabajadora y quienes tienen menos",
+  "Joven de clase media a su papá: papá, esta vez tu voto es por mí | Madre a hijo apático: si no votas por ti, vota por mí | Carrusel familiar: no todos votamos igual, pero sí nos cuidamos",
+  "Video testimonial familiar, carrusel de confianza, fotos cotidianas, WhatsApp familiar y pauta sobria en UPZ competidas.",
   "L2", "No estamos dispuestos a renunciar a...",
-  "Fortalecer el voto popular y afín, convirtiendo simpatía en participación electoral y trabajo de barrio.",
-  "Sectores populares y clases medias que ya votaron por la izquierda.",
-  "Voz en off con barrios, aulas, naturaleza, campo, salario vital, universidad, tierra y derechos.",
-  "L3", "No podemos ser gobernados por el testaferro de testaferros",
-  "Recuperar voto donde avanzó la derecha con contraste ético, denuncia y cierre democrático.",
-  "Clases medias aspiracionales, derecha blanda y territorios donde creció la derecha.",
-  "Video de archivo, titulares, contraste de trayectorias y piezas cortas para redes y pauta geográfica."
+  "Fortalecer voto por Iván, Petro y el cambio; convertir simpatía en participación activa y organización de barrio.",
+  "Sectores populares, clases medias progresistas, jóvenes, militancia territorial, familias del sur y territorios afines donde toca subir participación.",
+  "No renunciar al salario digno | Universidad pública gratuita | Vivienda digna y tierra | Derechos de mujeres y personas LGBTI | No volver al miedo, a la represión, al militarismo ni a mandar hijos a la guerra | No renunciar al futuro",
+  "Voz en off sobre barrios, aulas, trabajo y campo | Jóvenes llamando a sumar familia, primos, pareja y vecinos | Pieza de memoria: estallido social, represión y no volver atrás",
+  "Videos de barrio, reels de derechos concretos, audios para WhatsApp, brigadas culturales y piezas para reforzar participación por puesto.",
+  "L3", "Superioridad ética y contraste democrático",
+  "Contrastar trayectorias, valores y riesgos políticos para recuperar voto en sectores aspiracionales, populares no convencidos y zonas donde creció la derecha.",
+  "Clases medias aspiracionales, sectores populares con rabia contra élites corruptas, derecha blanda, técnicos y territorios de caída o derecha fuerte.",
+  "Merecemos más que el miedo | El futuro es la vida | No entregar el país a una élite mafiosa | Revolución ética contra poderes oscuros | Iván: derechos, paz, denuncia de corrupción y control al propio gobierno",
+  "Montaje con archivo y titulares verificados | Contraste: derechos vs desprecio al diferente | Video de ética pública: quién puede gobernar sin deberle el país a poderes oscuros",
+  "Videos de contraste con fuentes, carruseles de trayectoria, memes de superioridad ética, piezas cortas de riesgo democrático y pauta en UPZ de caída."
 )
 
 upz_excel <- upz_out |>
@@ -256,7 +262,7 @@ upz_excel <- upz_out |>
     mayores_65_pct = mayor,
     mujeres_pct = mujeres,
     prioridad_operativa,
-    linea, mensaje, objetivo, publico, pieza_sugerida, lectura,
+    linea, mensaje, objetivo, publico, mensajes_clave, guiones, pieza_sugerida, lectura,
     prioridad_score = round(prioridad_score, 1)
   )
 
@@ -264,9 +270,9 @@ objetivo_excel <- tibble::tribble(
   ~bloque, ~texto,
   "Objetivo general", "Aportar una herramienta para focalizar mejor esfuerzos e información en Bogotá: dónde moverse, qué priorizar, qué mensaje llevar y cómo convertir datos públicos en acción territorial.",
   "Qué cruza", "Resultados electorales por localidad, UPZ y puesto; cambio frente a 2022; estrato agregado por puesto; perfil etario por localidad; volumen de votos y meta 50% + 1.",
-  "Cómo leer L1", "Tu voto también es por ti: línea para centro persuadible y clases medias que necesitan tranquilidad, futuro, respeto y confianza.",
-  "Cómo leer L2", "No estamos dispuestos a renunciar a...: línea para fortalecer voto popular y afín alrededor de salario, educación, vida, tierra, derechos y Estado presente.",
-  "Cómo leer L3", "No podemos ser gobernados por el testaferro de testaferros: línea de contraste ético para territorios con derecha fuerte o caída reciente del voto progresista.",
+  "Cómo leer L1", "Tu voto es por mí: línea de afecto para centro, clases medias y abstención blanda; convierte el voto en cuidado hacia una persona concreta.",
+  "Cómo leer L2", "No estamos dispuestos a renunciar a...: línea para fortalecer voto popular y afín alrededor de salario, universidad, vivienda, tierra, derechos, memoria y futuro.",
+  "Cómo leer L3", "Superioridad ética y contraste democrático: línea de contraste para territorios con derecha fuerte o caída reciente; usar archivo y titulares verificables, no afirmaciones sin fuente.",
   "Uso recomendado", "Usar la matriz por UPZ para piezas de redes, pauta geográfica, recorridos, testigos, WhatsApp territorial y conversaciones de barrio. No perfila personas: trabaja con agregados territoriales.",
   "Autor", "Daniel Santiago Roldán."
 )

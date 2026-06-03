@@ -4,31 +4,71 @@
 
   const lineInfo = {
     L1: {
-      title: "Tu voto también es por ti",
-      short: "Persuadir centro",
+      title: "Tu voto es por mí",
+      short: "Persuadir desde el afecto",
       color: "#2474a6",
       soft: "#edf7fc",
-      audience: "centro, clase media establecida y voto que teme el ruido político",
-      frame: "Tranquilidad, futuro, cuidado, respeto y responsabilidad democrática.",
-      content: "Video sobrio, carrusel de confianza, vocerías ciudadanas y piezas de futuro sin ruido."
+      objective: "Mover voto de centro y abstención blanda apelando a vínculos concretos: hija, hijo, mamá, papá, pareja, amistad, colega o familiar que sería afectado por el retroceso democrático.",
+      audience: "clase media establecida, sectores altos liberales, técnicos, burócratas, profesionales y votantes de Fajardo, Claudia u Oviedo en zonas de disputa.",
+      frame: "El voto no se pide por un partido: se pide por alguien querido. Votar por Cepeda puede ser un voto por la vida, los derechos, la pensión, los páramos y la gente trabajadora que uno ama.",
+      messages: [
+        "Tu voto es por mí: por mi vida, mis derechos y mi futuro.",
+        "Tu voto es por los viejitos, para que no se queden sin pensión ni bono pensional.",
+        "Tu voto es por nosotras las mujeres y por una vida libre de violencias.",
+        "Tu voto es por quienes defienden derechos humanos y por quienes tienen menos.",
+        "Tu voto es por los páramos, por la vida y por las personas trabajadoras."
+      ],
+      scripts: [
+        "Una joven de clase media le habla a su papá que vota derecha o no vota: 'papá, esta vez tu voto es por mí'.",
+        "Una madre le habla a un hijo apático: 'si no votas por ti, vota por mí, por mi pensión, por mi salud, por mi tranquilidad'.",
+        "Carrusel con fotos familiares: 'No todos votamos igual, pero sí nos cuidamos'."
+      ],
+      content: "Videos testimoniales íntimos, carruseles con frases familiares, fotos cotidianas, piezas sobrias para WhatsApp familiar y pauta de confianza en UPZ competidas."
     },
     L2: {
       title: "No estamos dispuestos a renunciar a...",
       short: "Fortalecer derechos",
       color: "#544595",
       soft: "#f2eef9",
-      audience: "sectores populares y clases medias que votaron por la izquierda",
-      frame: "Salario vital, educación, vida, tierra, derechos y Estado presente.",
-      content: "Voz en off con barrios, aulas, naturaleza, campo, trabajo y llamado a mover familia y vecinos."
+      objective: "Fortalecer el voto por Iván, Petro y el cambio; convertir simpatía en movilización activa en barrios populares, jóvenes y clases medias que ya votaron por la izquierda.",
+      audience: "sectores populares, clases medias progresistas, jóvenes, militancia territorial, familias del sur y territorios afines donde toca subir participación.",
+      frame: "No regresar al pasado: defender salario vital, universidad pública, vivienda digna, tierra, derechos de mujeres, derechos LGBTI, vida y futuro sin represión ni guerra.",
+      messages: [
+        "No estamos dispuestos a renunciar a un salario digno.",
+        "No estamos dispuestos a renunciar a la universidad pública gratuita.",
+        "No estamos dispuestas a renunciar al cuidado para nosotras y a los derechos de las mujeres.",
+        "No estamos dispuestos a renunciar a la vivienda digna, a la tierra y a un Estado presente.",
+        "No estamos dispuestos a volver al miedo, a la represión, al militarismo ni a mandar nuestros hijos a la guerra.",
+        "No estamos dispuestas a renunciar al futuro."
+      ],
+      scripts: [
+        "Voz en off sobre barrios, aulas, trabajo y campo: 'no estamos dispuestos a renunciar a...'.",
+        "Jóvenes llamando a sumar a papá, mamá, primos, novia, amigos y vecinos: 'no basta con estar de acuerdo, toca salir a votar'.",
+        "Pieza de memoria: estallido social, represión y promesa de no volver atrás, cerrando con esperanza y organización."
+      ],
+      content: "Videos de barrio, reels de derechos concretos, audios para WhatsApp, brigadas culturales, llamados de familia y piezas para reforzar participación por puesto."
     },
     L3: {
-      title: "No podemos ser gobernados por el testaferro de testaferros",
+      title: "Superioridad ética y contraste democrático",
       short: "Contraste ético",
       color: "#f3930d",
       soft: "#fff4e2",
-      audience: "clases medias aspiracionales, derecha blanda y territorios donde creció la derecha",
-      frame: "Contraste ético, denuncia, riesgos de corrupción y cierre con voto por la democracia.",
-      content: "Video de archivo, titulares, contraste de trayectorias, piezas cortas para redes y pauta geográfica."
+      objective: "Contrastar trayectorias, valores y riesgos políticos para recuperar voto en sectores aspiracionales, populares no convencidos y zonas donde creció la derecha.",
+      audience: "clases medias aspiracionales, sectores populares con rabia contra élites corruptas, derecha blanda, técnicos y territorios de caída o derecha fuerte.",
+      frame: "La campaña debe oponer vida pública limpia, derechos y defensa democrática frente a un proyecto de miedo, desigualdad, represión y privilegio. Usar únicamente hechos verificables, titulares y archivo con fuente.",
+      messages: [
+        "Merecemos más que el miedo.",
+        "El futuro es la vida, no la cárcel para todo el mundo.",
+        "No podemos dejar el país en manos de una élite mafiosa y vanidosa.",
+        "La revolución ética es no entregar el país a quienes han vivido de defender poderes oscuros.",
+        "Iván ha dedicado su vida pública a los derechos, la paz, la denuncia de la corrupción y el control incluso al propio gobierno."
+      ],
+      scripts: [
+        "Montaje con archivo y titulares verificados: trayectoria de Iván vs. cuestionamientos públicos del adversario.",
+        "Pieza de contraste: '¿Quién representa mejor a la clase media trabajadora: quien defiende derechos o quien desprecia al diferente?'.",
+        "Video corto de ética pública: 'no se trata solo de ganar, se trata de quién puede gobernar sin deberle el país a poderes oscuros'."
+      ],
+      content: "Videos de contraste con fuentes, carruseles de trayectoria, memes de superioridad ética, piezas cortas de riesgo democrático y pauta en UPZ con caída o derecha fuerte."
     }
   };
 
@@ -57,6 +97,7 @@
     profileSubtitle: document.getElementById("profileSubtitle"),
     priority: document.getElementById("priorityLists"),
     matrix: document.getElementById("matrixBody"),
+    editorial: document.getElementById("editorialMatrix"),
     download: document.getElementById("downloadBtn"),
     mapSubtitle: document.getElementById("mapSubtitle")
   };
@@ -144,6 +185,7 @@
       <article class="line-card ${state.line === id ? "active" : ""}" data-line="${id}">
         <h3>${esc(line.title)}</h3>
         <p><b>${esc(line.short)}</b> · ${esc(line.audience)}.</p>
+        <p>${esc(line.objective)}</p>
         <p>${esc(line.frame)}</p>
         <b>${counts[id] || 0} localidades con esta línea</b>
       </article>
@@ -156,6 +198,28 @@
         renderAll(true);
       });
     });
+  }
+
+  function renderEditorialMatrix() {
+    els.editorial.innerHTML = Object.entries(lineInfo).map(([id, line]) => `
+      <article class="editorial-card" data-line="${id}">
+        <div class="editorial-top">
+          <span>${esc(id)}</span>
+          <h3>${esc(line.title)}</h3>
+        </div>
+        <p><strong>Objetivo.</strong> ${esc(line.objective)}</p>
+        <p><strong>Target.</strong> ${esc(line.audience)}</p>
+        <p><strong>Marco.</strong> ${esc(line.frame)}</p>
+        <div class="editorial-list">
+          <b>Mensajes clave</b>
+          <ul>${line.messages.map((m) => `<li>${esc(m)}</li>`).join("")}</ul>
+        </div>
+        <div class="editorial-list">
+          <b>Guiones y piezas</b>
+          <ul>${line.scripts.map((m) => `<li>${esc(m)}</li>`).join("")}</ul>
+        </div>
+      </article>
+    `).join("");
   }
 
   let map;
@@ -340,7 +404,10 @@
       <h3>${esc(scope)}</h3>
       <p><strong>Lectura territorial.</strong> Cepeda está en ${fmtPct(row.cepeda)}, con ${fmtNum(row.votos)} votos y ${fmtPts(row.swing)} frente a 2022. ${strategic}</p>
       <p><strong>Lectura etaria y social.</strong> El perfil del área marca ${ageText}. En estratos bajos pesa la defensa de derechos y salario; en estratos medios-altos pesa más confianza, ética pública y contraste democrático.</p>
+      <p><strong>Objetivo comunicativo.</strong> ${esc(line.objective)}</p>
+      <p><strong>Target prioritario.</strong> ${esc(line.audience)}</p>
       <p><strong>Mensaje.</strong> ${esc(line.title)}. ${esc(line.frame)}</p>
+      <p><strong>Mensajes clave.</strong> ${esc(line.messages.slice(0, 3).join(" · "))}</p>
       <p><strong>Contenido sugerido.</strong> ${esc(line.content)}</p>
       <p><strong>Meta inmediata.</strong> ${need > 0 ? `Ganar al menos ${fmtNum(need)} votos netos para llegar a 50% + 1 en este filtro.` : `Cuidar el margen de ${fmtNum(Math.abs(need))} votos sobre 50% + 1 y usarlo como base de movilización.`}</p>
       <div class="chip-row">
@@ -440,10 +507,11 @@
   }
 
   function rowAction(row) {
-    if (row.cepeda >= 52) return "Fortalecer, cuidar testigos y volver apoyo en participación.";
-    if (row.swing <= -7) return "Recuperar voto caído con mensaje directo y pauta territorial.";
-    if (row.cepeda < 40) return "Persuadir sin saturar: contraste, confianza y vocerías cercanas.";
-    return "Territorio competido: combinar calle, redes y llamados a votar.";
+    const line = wantedLine(row);
+    if (row.cepeda >= 52) return `${line.short}: cuidar testigos, subir participación y pedir a cada simpatizante que mueva familia, vecindario y WhatsApp.`;
+    if (row.swing <= -7) return `${line.short}: recuperar voto caído con presencia territorial, pieza emocional y pauta geográfica por puesto.`;
+    if (row.cepeda < 40) return `${line.short}: persuadir sin saturar; usar vocerías confiables, contraste verificable y mensaje de futuro.`;
+    return `${line.short}: territorio competido; combinar calle, redes, contenido local y llamados concretos a votar.`;
   }
 
   function matrixRows() {
@@ -469,7 +537,7 @@
           <td>${fmtPct(r.cepeda)} Cepeda<br><span class="${swingClass}">${fmtPts(r.swing)}</span><br><span class="muted">${fmtNum(r.votos)} votos</span></td>
           <td>${esc(r.perfil || "s/d")}<br><span class="muted">${fmtNum(r.validos)} votos válidos</span></td>
           <td><strong>${esc(line.title)}</strong><br><span class="tag ${r.linea}">${esc(line.short)}</span></td>
-          <td>${esc(rowAction(r))}<br><span class="muted">${esc(line.content)}</span></td>
+          <td>${esc(rowAction(r))}<br><span class="muted">${esc(line.messages[0])} ${esc(line.content)}</span></td>
         </tr>
       `;
     }).join("");
@@ -502,10 +570,10 @@
 
   function downloadCsv() {
     const rows = matrixRows();
-    const headers = ["tipo", "territorio", "localidad", "cepeda_pct", "swing_pts", "votos", "validos", "linea", "mensaje", "accion"];
+    const headers = ["tipo", "territorio", "localidad", "cepeda_pct", "swing_pts", "votos", "validos", "linea", "mensaje", "target", "mensajes_clave", "guiones", "accion"];
     const lines = [headers.join(",")].concat(rows.map((r) => {
       const line = wantedLine(r);
-      const vals = [r.type, r.name, r.localidad, r.cepeda, r.swing, r.votos, r.validos, r.linea, line.title, rowAction(r)];
+      const vals = [r.type, r.name, r.localidad, r.cepeda, r.swing, r.votos, r.validos, r.linea, line.title, line.audience, line.messages.join(" | "), line.scripts.join(" | "), rowAction(r)];
       return vals.map((v) => `"${String(v ?? "").replace(/"/g, '""')}"`).join(",");
     }));
     const blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8" });
@@ -535,6 +603,7 @@
 
   function renderAll(fitMap) {
     renderLineCards();
+    renderEditorialMatrix();
     drawMap(fitMap);
     renderSummary();
     renderReading();
