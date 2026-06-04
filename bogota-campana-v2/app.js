@@ -23,10 +23,10 @@
     } else { r.cluster = 0; r.segmento = "Sin clasificar"; r._v2 = null; }
   });
   function clusterScore(r) {
-    const m = r && r._v2; if (!m) return null;
-    if (m.cluster === 1) { const w = pesos.c1; const W = (w.part + w.fall + w.censo) || 1; return (w.part * m.part_n + w.fall * m.fall_n + w.censo * m.censo_n) / W; }
-    if (m.cluster === 2 || m.cluster === 3) { const w = m.cluster === 2 ? pesos.c2 : pesos.c3; const W = (w.fall + w.comp + w.censo + w.centro) || 1; return (w.fall * m.fall_n + w.comp * m.comp_n + w.censo * m.censo_n + w.centro * m.centro_n) / W; }
-    return null;
+    // Índice de prioridad 0-100 precalculado: z-score (estandarización) intra-segmento,
+    // promedio simple de las variables orientadas (pesos iguales). Coherente con el k-means.
+    const m = r && r._v2;
+    return (m && m.score != null) ? m.score : null;
   }
   const dec = (v) => (v == null || Number.isNaN(Number(v))) ? "s/d" : String(v).replace(".", ",");
 
@@ -1054,7 +1054,7 @@
         <li class="seg-item" role="button" tabindex="0" data-key="${esc(`${r.key}|${r.upz_key}`)}">
           <span class="seg-rank">${i + 1}</span>
           <span class="seg-name">${esc(r.upz)}<small>${esc(r.localidad)} · ${esc(lineInfo[r.linea]?.short || r.linea)}</small></span>
-          <span class="seg-score"><b>${Math.round(r.score * 100)}</b><small>${fmtNum(r._v2.censo)} censo · ${fmtPts(r._v2.dif_cp)}</small></span>
+          <span class="seg-score"><b>${Math.round(r.score)}</b><small>${fmtNum(r._v2.censo)} censo · ${fmtPts(r._v2.dif_cp)}</small></span>
         </li>`).join("");
       return `<article class="seg-list" style="--seg:${c.color}">
         <header><span class="seg-dot" style="background:${c.color}"></span>
@@ -1082,7 +1082,7 @@
     [1, 2, 3].forEach((cl) => {
       const c = clusterById.get(cl);
       segUpzRows(cl).forEach((r, i) => {
-        const v = [c.nombre, i + 1, r.upz, r.localidad, r.linea, r.score.toFixed(3), r._v2.censo, r._v2.dif_cp, r._v2.dif_cd, r._v2.part26, r._v2.centro];
+        const v = [c.nombre, i + 1, r.upz, r.localidad, r.linea, r.score, r._v2.censo, r._v2.dif_cp, r._v2.dif_cd, r._v2.part26, r._v2.centro];
         lines.push(v.map((x) => `"${String(x ?? "").replace(/"/g, '""')}"`).join(","));
       });
     });
