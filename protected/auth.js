@@ -5,6 +5,7 @@
     bundleId: current.dataset.bundleId,
     usersUrl: current.dataset.users,
     bundleUrl: current.dataset.bundle,
+    bundleExtraUrl: current.dataset.bundleExtra,
     appUrl: current.dataset.app
   };
 
@@ -97,13 +98,22 @@
     const plain = await aesDecrypt(master, bundlePayload);
     const bundle = JSON.parse(dec.decode(plain));
 
-    Object.entries(bundle.globals || {}).forEach(([name, value]) => {
-      window[name] = value;
-    });
-    window.PROTECTED_FILES = Object.assign({}, window.PROTECTED_FILES || {}, bundle.files || {});
-    Object.entries(bundle.files || {}).forEach(([name, value]) => {
-      window[name] = value;
-    });
+    const applyBundle = (b) => {
+      Object.entries(b.globals || {}).forEach(([name, value]) => {
+        window[name] = value;
+      });
+      window.PROTECTED_FILES = Object.assign({}, window.PROTECTED_FILES || {}, b.files || {});
+      Object.entries(b.files || {}).forEach(([name, value]) => {
+        window[name] = value;
+      });
+    };
+    applyBundle(bundle);
+
+    if (cfg.bundleExtraUrl) {
+      const extraPayload = await fetch(cfg.bundleExtraUrl, { cache: "no-store" }).then((r) => r.json());
+      const extraPlain = await aesDecrypt(master, extraPayload);
+      applyBundle(JSON.parse(dec.decode(extraPlain)));
+    }
 
     const appScript = document.createElement("script");
     appScript.src = cfg.appUrl;

@@ -3,3 +3,25 @@ Línea gráfica presidente Iván Cepeda 2026 -1-2_page-*.jpg
 *.Rproj.user/
 .DS_Store
 Thumbs.db
+
+# Trabajo interno / pruebas (NO publicar)
+lab/
+_serve.R
+*.topojson
+co_adm2.geojson
+*_test.*
+
+# Documentos solo-PDF y datos en claro (NO publicar como web)
+bogota-campana-v2/metodologia.html
+bogota-campana-v2/metodologia.app.js
+bogota-campana-v2/estrategia-lineas.html
+bogota-campana-v2/estrategia-lineas.app.js
+bogota-campana-v2/doc.css
+bogota-campana-v2/bogota-v2.public.js
+protected/bogota.bundle.json.bak
+
+# Insumos y archivos de trabajo sensibles (NO publicar)
+Data_UPZ_ponderacion.csv
+_export_base_municipios.R
+priorizacion_estrategica_bogota_modelos.docx
+tablero_13_ciudades_completo.xlsx

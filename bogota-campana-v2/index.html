@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Bogotá v2 · Segmentación por clúster</title>
+<meta name="description" content="Versión 2: segmentación territorial por clúster (k-means) de las UPZ de Bogotá, con ponderación por segmento y líneas de mensaje para la campaña de segunda vuelta." />
+<meta name="author" content="Daniel Santiago Roldán" />
+<meta name="robots" content="noindex, noarchive, noimageindex" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700;6..12,800;6..12,900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="../protected/auth.css" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <a class="brand" href="../">
+      <img src="../img/brand_lockup.webp" alt="Iván Cepeda y Aída Quilcué">
+      <span>
+        <strong>Bogotá en campaña · v2</strong>
+        <small>Segmentación por clúster (k-means) y mensajes por territorio</small>
+      </span>
+    </a>
+    <nav class="nav-actions" aria-label="Tableros">
+      <a href="../bogota-campana/">Bogotá v1</a>
+      <a href="../">13 ciudades</a>
+      <a href="../regiones-y-exterior/">Regiones y exterior</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-in">
+    <div>
+      <p class="eyebrow">Bogotá · segmentación territorial</p>
+      <h1>Segmentación territorial: agrupar las UPZ por comportamiento y priorizar por segmento.</h1>
+      <p class="hero-copy">Clúster k-means (4 segmentos, 4 variables) que agrupa las UPZ por su comportamiento electoral. Las líneas narrativas (L1·L2·L3) se aplican sobre cada segmento para sacar listas priorizadas por territorio.</p>
+    </div>
+    <div class="hero-card">
+      <span>Datos y desarrollo</span>
+      <strong>Daniel Santiago Roldán</strong>
+      <span class="hero-author2">Autor de la segmentación</span>
+      <strong>Sebastián Londoño Méndez</strong>
+      <p>Instituto de Pensamiento Progresista. Herramienta libre al servicio de la campaña, la esperanza y el trabajo territorial.</p>
+      <div class="hero-actions">
+        <a href="#" data-excel-download>Excel UPZ</a>
+        <a href="#matriz">Ver matriz</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<main class="wrap app-shell">
+  <section class="intro" aria-label="Objetivo">
+    <h2>Objetivo</h2>
+    <p>Focalizar el trabajo territorial en Bogotá: dónde recuperar, dónde fortalecer y qué mensaje llevar. Empieza por el mapa y baja al detalle por segmento. Cuatro segmentos de clúster, cada uno con su línea; no perfila personas: usa agregados territoriales por localidad, UPZ y puesto.</p>
+  </section>
+
+  <section class="panel clusters-panel">
+    <div class="panel-head tight">
+      <div>
+        <h2>Segmentos territoriales (clúster)</h2>
+        <p>Cuatro segmentos. Los tres primeros se priorizan y ponderan; el cuarto no se prioriza por costo de oportunidad.</p>
+      </div>
+    </div>
+    <div id="clusterCards" class="cluster-grid"></div>
+  </section>
+
+  <section class="controls" aria-label="Filtros">
+    <label>
+      <span>Localidad</span>
+      <select id="locSelect"></select>
+    </label>
+    <label>
+      <span>Línea</span>
+      <select id="lineSelect">
+        <option value="">Todas</option>
+        <option value="L1">Tu voto es por mí</option>
+        <option value="L2">No estamos dispuestos a renunciar a...</option>
+        <option value="L3">Superioridad ética y contraste democrático</option>
+      </select>
+    </label>
+    <label>
+      <span>Capa</span>
+      <select id="layerSelect">
+        <option value="upz" selected>UPZ</option>
+        <option value="localidades">Localidades</option>
+        <option value="puestos">Puestos</option>
+      </select>
+    </label>
+    <label>
+      <span>Buscar</span>
+      <input id="searchInput" type="search" placeholder="UPZ, puesto, dirección..." />
+    </label>
+    <button id="resetBtn" type="button">Limpiar</button>
+  </section>
+
+  <section class="map-grid">
+    <article class="panel map-panel">
+      <div class="panel-head">
+        <div>
+          <h2>Mapa territorial</h2>
+          <p id="mapSubtitle">Todo Bogotá. Cambia la capa (localidad/UPZ/puesto) y el color (segmento o línea).</p>
+        </div>
+        <div class="legend" id="mapLegend"></div>
+      </div>
+      <div class="map-tools" aria-label="Capas y acciones del mapa">
+        <label>Color
+          <select id="mapColorSelect">
+            <option value="segmento" selected>Segmento</option>
+            <option value="linea">Línea</option>
+          </select>
+        </label>
+        <label><input id="toggleBarrios" type="checkbox" checked> Sitios/barrios</label>
+        <label><input id="toggleAglomeraciones" type="checkbox"> Aglomeraciones</label>
+        <button id="clearMapBtn" type="button">Limpiar mapa</button>
+        <button id="fitMapBtn" type="button">Centrar</button>
+      </div>
+      <div id="map"></div>
+    </article>
+
+    <aside class="panel insight-panel">
+      <div id="summaryCards" class="summary-cards"></div>
+      <div id="segDist" class="seg-dist"></div>
+      <div id="reading" class="reading"></div>
+    </aside>
+  </section>
+
+  <section class="analysis-grid">
+    <article class="panel">
+      <div class="panel-head tight">
+        <div>
+          <h2>Estrato y edad</h2>
+          <p id="profileSubtitle">Lectura del filtro activo.</p>
+        </div>
+      </div>
+      <div id="profileBars" class="bars"></div>
+    </article>
+
+    <article class="panel">
+      <div class="panel-head tight">
+        <div>
+          <h2>Prioridades</h2>
+          <p>Recuperar caídas, cuidar volumen y ubicar piezas.</p>
+        </div>
+      </div>
+      <div id="priorityLists" class="priority-lists"></div>
+    </article>
+  </section>
+
+  <section class="panel segments-panel">
+    <div class="panel-head">
+      <div>
+        <h2>Listas priorizadas por segmento</h2>
+        <p>UPZ ordenadas por la ponderación de cada segmento, según los criterios de la metodología.</p>
+      </div>
+      <div class="download-actions">
+        <button id="downloadSegBtn" type="button">Exportar CSV por segmento</button>
+      </div>
+    </div>
+    <div id="segmentLists" class="segment-lists-grid"></div>
+  </section>
+
+  <section class="message-grid" id="lineCards"></section>
+
+  <section class="panel metodologia-panel">
+    <div class="panel-head tight">
+      <div>
+        <h2>Metodología · segmentación por clúster (k-means)</h2>
+        <p>Cómo se construyó la segmentación: variables, modelo y fuentes. Despliega para ver el detalle.</p>
+      </div>
+    </div>
+    <div id="methodology" class="metodologia-grid"></div>
+  </section>
+
+  <section class="panel micro-panel">
+    <div class="panel-head tight">
+      <div>
+        <h2>Microsegmentos por clase, edad y territorio</h2>
+        <p>La línea no se asigna por localidad completa: se ajusta por UPZ, puesto/sitio, estrato y perfil etario del área.</p>
+      </div>
+    </div>
+    <div id="microSegments" class="micro-grid"></div>
+  </section>
+
+  <section class="panel matrix-panel" id="matriz">
+    <div class="panel-head">
+      <div>
+        <h2>Matriz de mensajes y contenido</h2>
+        <p>Segmentación por territorio con datos electorales, perfil social y línea creativa.</p>
+      </div>
+      <div class="download-actions">
+        <button id="toggleMatrixBtn" type="button">Desplegar</button>
+        <button id="downloadBtn" type="button">Exportar matriz de mensajes y contenido</button>
+      </div>
+    </div>
+    <div class="table-wrap" id="matrixWrap" style="display:none">
+      <table>
+        <thead>
+          <tr>
+            <th>Territorio</th>
+            <th>Resultado</th>
+            <th>Perfil</th>
+            <th>Segmento</th>
+            <th>Mensaje</th>
+            <th>Contenido</th>
+          </tr>
+        </thead>
+        <tbody id="matrixBody"></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    Datos y desarrollo: Daniel Santiago Roldán. Software libre, datos libres y organización territorial para ganar la segunda vuelta.
+  </div>
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script
+  src="../protected/auth.js"
+  data-title="Bogotá v2 · segmentación por clúster"
+  data-bundle-id="bogota"
+  data-users="../protected/users.json"
+  data-bundle="../protected/bogota.bundle.json"
+  data-bundle-extra="../protected/bogota-v2.overlay.json"
+  data-app="app.js"></script>
+</body>
+</html>
