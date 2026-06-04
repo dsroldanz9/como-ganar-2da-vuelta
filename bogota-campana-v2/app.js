@@ -13,8 +13,8 @@
   }));
   const normKey = (s) => String(s || "").normalize("NFD").toUpperCase().replace(/[^A-Z0-9]+/g, " ").trim();
   const v2ByName = new Map((v2.upz || []).map((u) => [normKey(u.upz_key), u]));
-  // Mapeo línea ↔ segmento: L1 persuade Alta competencia, L2 fortalece la base, L3 contrasta donde avanza la derecha
-  const LINE_BY_CLUSTER = { 1: "L2", 2: "L1", 3: "L3" };
+  // Mapeo línea ↔ segmento: L1 fortalece la base afín, L2 persuade alta competencia, L3 contrasta donde avanza la derecha
+  const LINE_BY_CLUSTER = { 1: "L1", 2: "L2", 3: "L3" };
   (data.upz || []).forEach((r) => {
     const m = v2ByName.get(normKey(r.upz_key));
     if (m) {
@@ -169,6 +169,9 @@
       historia: "Iván Cepeda encarna esta línea: bogotano, hijo del senador Manuel Cepeda asesinado en 1994, hizo del dolor una causa. Defensor de derechos humanos y voz de las víctimas, sereno y firme; enfrentó amenazas y el exilio, y volvió a defender la memoria y la dignidad de los que menos tienen. Su vida —trágica y digna— es nuestro mejor contraste frente al miedo: no es propaganda, es una trayectoria. «Merecemos más que el miedo»."
     }
   };
+
+  // Relabel: la base afín ("No estamos dispuestos a renunciar a…", hoy L2) pasa a ser L1; alta competencia pasa a L2. L3 (contraste) sin cambio.
+  { const _s = lineInfo.L1; lineInfo.L1 = lineInfo.L2; lineInfo.L2 = _s; }
 
   const state = {
     locKey: "",
@@ -459,9 +462,7 @@
   function renderMapLegend() {
     if (!els.mapLegend) return;
     els.mapLegend.innerHTML = mapColorMode === "linea"
-      ? `<span><i class="sw" style="background:${lineInfo.L1.color}"></i> L1 · Tu voto es por mí</span>
-         <span><i class="sw" style="background:${lineInfo.L2.color}"></i> L2 · No renunciar</span>
-         <span><i class="sw" style="background:${lineInfo.L3.color}"></i> L3 · Superioridad ética</span>`
+      ? ["L1", "L2", "L3"].map((k) => `<span><i class="sw" style="background:${lineInfo[k].color}"></i> ${k} · ${esc(lineInfo[k].short)}</span>`).join("")
       : `<span><i class="sw" style="background:#7b2ff7"></i> Base afín · abstencionistas</span>
          <span><i class="sw" style="background:#c8d400"></i> Alta competencia</span>
          <span><i class="sw" style="background:#2746e6"></i> Derecha en avance</span>
