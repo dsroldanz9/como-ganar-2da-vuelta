@@ -64,7 +64,7 @@
 
   <section class="controls" aria-label="Filtros">
     <label><span>Ciudad</span><select id="citySelect"></select></label>
-    <label><span>Color</span><select id="colorSelect"><option value="categoria" selected>Categoría</option><option value="linea">Línea</option></select></label>
+    <label><span>Color</span><select id="colorSelect"><option value="segmento" selected>Segmento</option><option value="linea">Línea</option></select></label>
     <button id="fitBtn" type="button">Centrar</button>
   </section>
 
@@ -72,7 +72,7 @@
     <article class="panel map-panel">
       <div class="panel-head"><div>
         <h2 id="mapTitle">Mapa de comunas</h2>
-        <p id="mapSubtitle">Cada punto es una comuna; color por categoría relativa; tamaño por votos.</p>
+        <p id="mapSubtitle">Cada comuna coloreada por su segmento (relativo a la ciudad). Cambia a color por línea.</p>
       </div><div class="legend" id="mapLegend"></div></div>
       <div id="map"></div>
     </article>
@@ -101,6 +101,7 @@
 <footer class="footer"><div class="wrap">Datos y desarrollo: Daniel Santiago Roldán · Segmentación: Sebastián Londoño Méndez. Análisis relativo a cada ciudad.</div></footer>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="../geo.js"></script>
 <script
   src="../protected/auth.js"
   data-title="13 ciudades · segmentación territorial"
