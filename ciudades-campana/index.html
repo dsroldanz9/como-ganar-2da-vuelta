@@ -78,11 +78,29 @@
         <p id="mapSubtitle">Cada comuna coloreada por su segmento (relativo a la ciudad). Activa <b>Puestos de votación</b> para ver, sobre el mapa, cada puesto georreferenciado (barrio a barrio) coloreado por el segmento de su comuna — para recorridos y testigos.</p>
       </div><div class="legend" id="mapLegend"></div></div>
       <div id="map"></div>
+      <div id="puestoLegend" class="puesto-legend" style="display:none"></div>
     </article>
     <aside class="panel insight-panel">
       <div id="cityHead"></div>
       <div id="summaryCards" class="summary-cards"></div>
     </aside>
+  </section>
+
+  <section class="map-grid">
+    <article class="panel">
+      <div class="panel-head tight"><div>
+        <h2>Voto y perfil de la ciudad</h2>
+        <p>Distribución por bloque (1ª vuelta 2026) y perfil etario/género del municipio.</p>
+      </div></div>
+      <div id="votoPanel" class="voto-grid"></div>
+    </article>
+    <article class="panel">
+      <div class="panel-head tight"><div>
+        <h2>Prioridades</h2>
+        <p>Dónde recuperar caídas y dónde está nuestro volumen, comuna a comuna.</p>
+      </div></div>
+      <div id="prioPanel" class="prio-grid"></div>
+    </article>
   </section>
 
   <section class="panel">

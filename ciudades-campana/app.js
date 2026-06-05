@@ -7,6 +7,8 @@
   const CL_COLOR = { 1: "#7b2ff7", 2: "#c8d400", 3: "#2746e6", 4: "#8a94a6" };
   const SEG_SHORT = { 1: "Base afín", 2: "Alta competencia", 3: "Derecha en avance", 4: "No priorizado" };
   const TIER_COLOR = { "Fortín": "#7b2ff7", "En disputa": "#c8d400", "Escenario difícil": "#2746e6" };
+  const PERF = {}; (data.perfiles || []).forEach((p) => { PERF[p.key] = p; });
+  const perfColor = (c) => (c && PERF[c.perf]) ? PERF[c.perf].color : "#9aa3b2";
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (m) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m]));
   const fmtPct = (v) => Number.isFinite(+v) ? `${(+v).toFixed(1).replace(".", ",")}%` : "—";
   const fmtNum = (v) => Number.isFinite(+v) ? Math.round(+v).toLocaleString("es-CO") : "—";
@@ -35,8 +37,11 @@
     cityHead: document.getElementById("cityHead"), summary: document.getElementById("summaryCards"),
     listTitle: document.getElementById("listTitle"), comunaLists: document.getElementById("comunaLists"),
     lineCards: document.getElementById("lineCards"), methodology: document.getElementById("methodology"),
+    puestoLegend: document.getElementById("puestoLegend"),
+    votoPanel: document.getElementById("votoPanel"), prioPanel: document.getElementById("prioPanel"),
   };
-  const state = { city: data.ciudades[0]?.slug, colorMode: "segmento", showPuestos: false };
+  const defaultCity = data.ciudades.some((c) => c.slug === "cali") ? "cali" : data.ciudades[0]?.slug;
+  const state = { city: defaultCity, colorMode: "segmento", showPuestos: false };
   let map, layer, puestoLayer, bounds;
 
   const colorOf = (c) => state.colorMode === "linea" ? ((data.lineas[c.linea] || {}).color || "#8a94a6") : (CL_COLOR[c.cluster] || "#8a94a6");
@@ -65,16 +70,27 @@
   }
   function drawPuestos() {
     puestoLayer.clearLayers();
+    renderPuestoLegend();
     if (!state.showPuestos) { if (map.hasLayer(puestoLayer)) map.removeLayer(puestoLayer); return; }
     const ps = puestos[state.city] || [];
     ps.forEach((p) => {
       const c = comunaByKey.get(state.city + "|" + p.ck);
-      const col = c ? colorOf(c) : "#9aa3b2";
-      L.circleMarker([p.lat, p.lon], { radius: 3.2, color: "#ffffff", weight: .8, fillColor: col, fillOpacity: .95 })
-        .bindTooltip(`<div class="map-tip"><strong>${esc(p.n)}</strong><span>${c ? esc(c.comuna) + " · " + esc(c.segmento) : "puesto de votación"}</span></div>`, { sticky: true })
+      const col = perfColor(c);  // verde/amarillo/rojo segun donde ganamos/disputa/atras
+      const pf = c && PERF[c.perf];
+      L.circleMarker([p.lat, p.lon], { radius: 3.4, color: "#ffffff", weight: .7, fillColor: col, fillOpacity: .95 })
+        .bindTooltip(`<div class="map-tip"><strong>${esc(p.n)}</strong>` +
+          (c ? `<span>${esc(c.comuna)} · <b style="color:${col}">${esc(pf ? pf.label : "")}</b></span><span>${fmtPct(c.cepeda)} Cepeda · ${fmtPts(c.caida)} vs 2022</span>`
+             : `<span>puesto de votación · sin dato de comuna</span>`) + `</div>`, { sticky: true })
         .addTo(puestoLayer);
     });
     if (!map.hasLayer(puestoLayer)) puestoLayer.addTo(map);
+  }
+  function renderPuestoLegend() {
+    if (!els.puestoLegend) return;
+    if (!state.showPuestos) { els.puestoLegend.innerHTML = ""; els.puestoLegend.style.display = "none"; return; }
+    els.puestoLegend.style.display = "";
+    els.puestoLegend.innerHTML = `<span class="pl-title">Puestos de votación — ¿cómo vamos?</span>` +
+      (data.perfiles || []).map((p) => `<span class="pl-item"><i class="pl-dot" style="background:${p.color}"></i><b>${esc(p.label)}</b> — ${esc(p.desc)}</span>`).join("");
   }
   function drawMap() {
     layer.clearLayers();
@@ -127,6 +143,35 @@
       </article>`;
     }).join("");
     document.querySelectorAll(".city-chip").forEach((b) => b.classList.toggle("active", b.dataset.slug === state.city));
+    renderVoto(city); renderPrioridades(city);
+  }
+  const bar = (label, val, color, sub) => `<div class="vbar"><span class="vbar-l">${esc(label)}</span><div class="vbar-track"><i style="width:${Math.max(2, Math.min(100, +val || 0))}%;background:${color}"></i></div><span class="vbar-v">${fmtPct(val)}${sub ? ` <small>${esc(sub)}</small>` : ""}</span></div>`;
+  function renderVoto(city) {
+    if (!els.votoPanel) return;
+    els.votoPanel.innerHTML = `
+      <div class="voto-block">
+        <h4>Cómo votó la ciudad <small>(% de votos válidos, 1ª vuelta 2026)</small></h4>
+        ${bar("Izquierda · Cepeda", city.cepeda, "#7b2ff7")}
+        ${bar("Centro · Fajardo + C. López", city.centro, "#8a94a6")}
+        ${bar("Derecha · Abelardo + Paloma", city.der, "#f3930d")}
+      </div>
+      <div class="voto-block">
+        <h4>Perfil de la ciudad <small>(DANE, agregados — no dicen cómo votó cada persona)</small></h4>
+        ${bar("18 a 28 años", city.joven, "#2474a6")}
+        ${bar("65 o más", city.mayor, "#e6a700")}
+        ${bar("Mujeres", city.mujeres, "#b5179e")}
+        <p class="muted vsmall">${fmtNum(city.votos)} votos a Cepeda · ${city.n_comunas} comunas. El estrato y la participación por comuna no están disponibles para estas ciudades (sí en el tablero de Bogotá).</p>
+      </div>`;
+  }
+  function renderPrioridades(city) {
+    if (!els.prioPanel) return;
+    const list = (comunasByCity.get(state.city) || []).slice();
+    const recuperar = list.filter((c) => c.caida < 0).sort((a, b) => a.caida - b.caida).slice(0, 6);
+    const movilizar = list.slice().sort((a, b) => b.votos - a.votos).slice(0, 6);
+    const col = (title, sub, rows, metric) => `<div class="prio-col"><h4>${esc(title)}</h4><p class="muted vsmall">${esc(sub)}</p>${rows.map((c) => `<div class="prio-item"><span><b>${esc(c.comuna)}</b><small>${esc((PERF[c.perf] || {}).label || "")}</small></span><span class="prio-m">${metric(c)}</span></div>`).join("") || '<p class="muted vsmall">—</p>'}</div>`;
+    els.prioPanel.innerHTML =
+      col("Recuperar (dónde caímos)", "Comunas con mayor caída vs 2022.", recuperar, (c) => `<b>${fmtPts(c.caida)}</b><small>${fmtNum(c.votos)} votos</small>`) +
+      col("Movilizar (volumen propio)", "Comunas que más votos nos aportan.", movilizar, (c) => `<b>${fmtNum(c.votos)}</b><small>${fmtPct(c.cepeda)} Cepeda</small>`);
   }
   function selectCity(slug) { state.city = slug; els.citySelect.value = slug; drawMap(); drawPuestos(); renderCity(); }
   function renderLineCards() {
