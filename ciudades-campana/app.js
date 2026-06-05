@@ -46,7 +46,7 @@
     granuSelect: document.getElementById("granuSelect"), granuLabel: document.getElementById("granuLabel"),
   };
   const defaultCity = data.ciudades.some((c) => c.slug === "cali") ? "cali" : data.ciudades[0]?.slug;
-  const state = { city: defaultCity, colorMode: "segmento", showPuestos: true, granu: "comuna" };
+  const state = { city: defaultCity, colorMode: "segmento", showPuestos: true, granu: "comuna", selComuna: null };
   let map, layer, puestoLayer, bounds;
 
   const colorOf = (c) => state.colorMode === "linea" ? ((data.lineas[c.linea] || {}).color || "#8a94a6") : (CL_COLOR[c.cluster] || "#8a94a6");
@@ -134,7 +134,8 @@
         },
         onEachFeature: (f, lyr) => {
           const c = comunaByKey.get(state.city + "|" + keyJS(f.properties.comuna));
-          if (c) lyr.bindTooltip(`<div class="map-tip"><strong>${esc(c.comuna)}</strong><span>${esc(c.segmento)} · ${esc((data.lineas[c.linea] || {}).corto || c.linea)}</span><span>${fmtPct(c.cepeda)} Cepeda · ${fmtPts(c.caida)} vs 2022</span><span>prioridad ${c.score}/100</span></div>`, { sticky: true });
+          if (c) { lyr.bindTooltip(`<div class="map-tip"><strong>${esc(c.comuna)}</strong><span>${esc(c.segmento)} · ${esc((data.lineas[c.linea] || {}).corto || c.linea)}</span><span>${fmtPct(c.cepeda)} Cepeda · ${fmtPts(c.caida)} vs 2022</span><span>prioridad ${c.score}/100 · clic para su perfil</span></div>`, { sticky: true });
+            lyr.on("click", () => { state.selComuna = c.gkey; renderVoto(); document.getElementById("votoPanel").scrollIntoView({ behavior: "smooth", block: "nearest" }); }); }
           else lyr.bindTooltip(`<div class="map-tip"><strong>${esc(f.properties.comuna)}</strong><span>sin dato</span></div>`, { sticky: true });
         }
       }).addTo(layer);
@@ -177,25 +178,33 @@
       </article>`;
     }).join("");
     document.querySelectorAll(".city-chip").forEach((b) => b.classList.toggle("active", b.dataset.slug === state.city));
-    renderVoto(city); renderPrioridades(city);
+    renderVoto(); renderPrioridades(city);
   }
   const bar = (label, val, color, sub) => `<div class="vbar"><span class="vbar-l">${esc(label)}</span><div class="vbar-track"><i style="width:${Math.max(2, Math.min(100, +val || 0))}%;background:${color}"></i></div><span class="vbar-v">${fmtPct(val)}${sub ? ` <small>${esc(sub)}</small>` : ""}</span></div>`;
-  function renderVoto(city) {
+  function renderVoto() {
     if (!els.votoPanel) return;
-    els.votoPanel.innerHTML = `
+    const city = cityBySlug.get(state.city); if (!city) return;
+    const c = state.selComuna ? comunaByKey.get(state.city + "|" + state.selComuna) : null;
+    const t = c || city, isC = !!c, hasAge = Number.isFinite(+t.joven);
+    const head = isC
+      ? `<div class="prof-head"><span class="prof-tag">Comuna</span> <b>${esc(c.comuna)}</b> · ${esc(city.ciudad)} <button id="profReset" class="prof-reset">← ver ciudad</button></div>`
+      : `<div class="prof-head"><span class="prof-tag">Ciudad</span> <b>${esc(city.ciudad)}</b> <small>· clic en una comuna del mapa para su perfil</small></div>`;
+    const ageLab = isC ? (hasAge ? "censo DANE 2018 · por comuna" : "sin dato censal") : "DANE · municipal";
+    els.votoPanel.innerHTML = head + `
       <div class="voto-block">
-        <h4>Cómo votó la ciudad <small>(% de votos válidos, 1ª vuelta 2026)</small></h4>
-        ${bar("Izquierda · Cepeda", city.cepeda, "#7b2ff7")}
-        ${bar("Centro · Fajardo + C. López", city.centro, "#8a94a6")}
-        ${bar("Derecha · Abelardo + Paloma", city.der, "#f3930d")}
+        <h4>Cómo votó <small>(% de votos válidos, 1ª vuelta 2026)</small></h4>
+        ${bar("Izquierda · Cepeda", t.cepeda, "#7b2ff7")}
+        ${bar("Centro · Fajardo + C. López", t.centro, "#8a94a6")}
+        ${bar("Derecha · Abelardo + Paloma", t.der, "#f3930d")}
       </div>
       <div class="voto-block">
-        <h4>Perfil de la ciudad <small>(DANE, agregados — no dicen cómo votó cada persona)</small></h4>
-        ${bar("18 a 28 años", city.joven, "#2474a6")}
-        ${bar("65 o más", city.mayor, "#e6a700")}
-        ${bar("Mujeres", city.mujeres, "#b5179e")}
-        <p class="muted vsmall">${fmtNum(city.votos)} votos a Cepeda · ${city.n_comunas} comunas. El estrato y la participación por comuna no están disponibles para estas ciudades (sí en el tablero de Bogotá).</p>
+        <h4>Perfil etario <small>(${ageLab})</small></h4>
+        ${hasAge ? bar("18 a 28 años", t.joven, "#2474a6") + bar("65 o más", t.mayor, "#e6a700") + bar("Mujeres", t.mujeres, "#b5179e")
+                 : '<p class="muted vsmall">Sin perfil etario por comuna para esta ciudad (disponible en Cali, Medellín, Barranquilla y Cartagena).</p>'}
+        <p class="muted vsmall">${isC ? esc(c.segmento) + " · prioridad " + c.score + "/100 · " + fmtNum(c.votos) + " votos a Cepeda"
+                                       : fmtNum(city.votos) + " votos a Cepeda · " + city.n_comunas + " comunas. Estrato y participación solo en Bogotá."}</p>
       </div>`;
+    const rb = document.getElementById("profReset"); if (rb) rb.addEventListener("click", () => { state.selComuna = null; renderVoto(); });
   }
   function renderPrioridades(city) {
     if (!els.prioPanel) return;
@@ -212,7 +221,7 @@
     if (hasBarrio(state.city)) { els.granuLabel.style.display = ""; state.granu = "barrio"; if (els.granuSelect) els.granuSelect.value = "barrio"; }
     else { els.granuLabel.style.display = "none"; state.granu = "comuna"; if (els.granuSelect) els.granuSelect.value = "comuna"; }
   }
-  function selectCity(slug) { state.city = slug; els.citySelect.value = slug; updateGranuControl(); drawMap(); drawPuestos(); renderCity(); }
+  function selectCity(slug) { state.city = slug; state.selComuna = null; els.citySelect.value = slug; updateGranuControl(); drawMap(); drawPuestos(); renderCity(); }
   function renderLineCards() {
     els.lineCards.innerHTML = ["L1", "L2", "L3"].map((k) => { const l = data.lineas[k];
       return `<article class="line-card" style="border-top:5px solid ${l.color}"><h3>${esc(l.titulo)}</h3><p><b>${esc(l.corto)}</b></p><p>${esc(l.objetivo)}</p><ul class="mini">${l.mensajes.map((m) => `<li>${esc(m)}</li>`).join("")}</ul></article>`; }).join("");
