@@ -792,6 +792,9 @@ td strong { color: var(--ink); }
 }
 
 .hero-author2 { display: block; margin-top: 10px; }
+.hero-team { margin: 6px 0 8px; }
+.hero-team p { margin: 0 0 5px; font-size: .82rem; line-height: 1.35; }
+.hero-note { font-size: .8rem; opacity: .82; margin: 0 0 12px; }
 
 .footer .credits { margin-bottom: 14px; }
 .footer .credits h3 { margin: 0 0 8px; font-size: 1rem; color: var(--brand); }
