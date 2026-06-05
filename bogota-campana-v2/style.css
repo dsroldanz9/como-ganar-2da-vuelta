@@ -793,6 +793,11 @@ td strong { color: var(--ink); }
 
 .hero-author2 { display: block; margin-top: 10px; }
 
+.prio-vote { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 9px; margin-bottom: 8px; }
+.prio-vote span { font-size: .8rem; font-weight: 700; border-left: 4px solid var(--c, #544595); background: var(--purple-soft, #f2eef9); border-radius: 8px; padding: 6px 11px; }
+.prio-vote b { color: var(--c, #544595); margin-left: 4px; }
+.micro-why { background: var(--purple-soft, #f2eef9); border-radius: 8px; padding: 8px 11px; font-size: .86rem; line-height: 1.4; margin-bottom: 8px; }
+
 .intro { margin: 2px 0; }
 .intro h2 { margin: 0 0 6px; color: var(--brand); font-size: 1.25rem; }
 .intro p { margin: 0; max-width: 92ch; color: var(--ink); line-height: 1.5; }

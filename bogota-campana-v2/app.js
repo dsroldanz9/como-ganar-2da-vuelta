@@ -386,6 +386,13 @@
     `).join("");
   }
 
+  function microWhy(linea) {
+    if (linea === "L1") return "Es base afín: ya nos votan, el reto es que salgan a votar. Por eso movilizar multiplicadores y activar la abstención.";
+    if (linea === "L2") return "Está en disputa: hay clase media, estudiantes, jóvenes y voto de centro por convencer. Por eso persuadir desde el afecto.";
+    if (linea === "L3") return "Aquí avanzó la derecha: hay que recuperar con contraste ético y la trayectoria de Iván.";
+    return "Ajusta el mensaje al perfil del área antes de bajar a la calle.";
+  }
+
   function renderMicroSegments() {
     const rows = matrixRows().slice(0, 24);
     const groups = new Map();
@@ -422,6 +429,7 @@
             <b>${fmtPct(pct)} · ${fmtNum(g.votos)} votos</b>
           </div>
           <h3>${esc(g.seg.classLabel)} / ${esc(g.seg.ageLabel)}</h3>
+          <p class="micro-why"><strong>A quién.</strong> ${esc(g.seg.classLabel)} de ${esc(g.seg.ageLabel)} (${fmtNum(g.votos)} votos, Cepeda ${fmtPct(pct)}). <strong>Por qué.</strong> ${esc(microWhy(g.rows[0].linea))}</p>
           <p><strong>Mensaje.</strong> ${esc(g.seg.classText)} ${esc(g.seg.ageText)}</p>
           <p><strong>Pieza.</strong> ${esc(g.seg.formatText)}</p>
           <p><strong>Evento/acción.</strong> ${esc(g.seg.eventText)}</p>
@@ -795,8 +803,37 @@
       .sort((a, b) => Number(a.estrato) - Number(b.estrato));
   }
 
+  function voteAgg() {
+    const rows = (data.upz || []).filter((r) => !state.locKey || r.key === state.locKey);
+    let vCep = 0, val = 0, censo = 0, valC = 0, derW = 0, cenW = 0, w = 0;
+    rows.forEach((r) => {
+      const v = Number(r.validos) || 0;
+      vCep += Number(r.votos) || 0; val += v;
+      if (r._v2) {
+        if (Number(r._v2.censo)) { censo += Number(r._v2.censo); valC += v; }
+        if (Number.isFinite(Number(r._v2.dif_cd))) { derW += (Number(r.cepeda) - Number(r._v2.dif_cd)) * v; cenW += (Number(r._v2.centro) || 0) * v; w += v; }
+      }
+    });
+    const izq = val ? vCep / val * 100 : 0, der = w ? derW / w : 0, cen = w ? cenW / w : 0;
+    return { izq, der, cen, otros: Math.max(0, 100 - izq - der - cen), part: censo ? valC / censo * 100 : 0, abst: censo ? (1 - valC / censo) * 100 : 0 };
+  }
+
   function renderProfile() {
     const profile = areaForProfile();
+    const v = voteAgg();
+    const bar = (label, val, color) => `<div class="bar-row"><span>${label}</span><div class="bar-track"><div class="bar-fill" style="width:${clamp(val, 2, 100)}%;background:${color}"></div></div><b>${fmtPct(val)}</b></div>`;
+    const blocHtml = `
+      <div class="bar-group">
+        <h3>Cómo votó el territorio <small style="color:var(--muted);font-weight:600">(% de votos válidos)</small></h3>
+        ${bar("Izquierda · Cepeda", v.izq, "#544595")}
+        ${bar("Centro · Fajardo + C. López", v.cen, "#8a94a6")}
+        ${bar("Derecha · Abelardo + Paloma", v.der, "#f3930d")}
+      </div>
+      <div class="bar-group">
+        <h3>Participación y abstención <small style="color:var(--muted);font-weight:600">(% del censo)</small></h3>
+        ${bar("Participación", v.part, "#2474a6")}
+        ${bar("Abstención", v.abst, "#c7312b")}
+      </div>`;
     const estratos = aggregateEstratos(data.estratos.filter((r) => !state.locKey || r.key === state.locKey));
     const ageRows = [
       { label: "18 a 28", value: profile.joven, cls: "l2" },
@@ -826,8 +863,8 @@
           </div>
         `).join("")}
       </div>` : `<p class="profile-note">El cruce etario no está completo para este filtro.</p>`;
-    const note = `<p class="profile-note">La matriz cruza resultados electorales con estrato por puesto y perfil etario por localidad. No perfila personas: usa agregados territoriales para orientar contenido, pauta y trabajo de campo.</p>`;
-    els.profile.innerHTML = estratoHtml + ageHtml + note;
+    const note = `<p class="profile-note"><b>Cómo se calculan estos datos.</b> El voto por bloque sale del preconteo por puesto, como % de los votos válidos de cada UPZ: <b>izquierda</b> = Cepeda; <b>derecha</b> = Abelardo + Paloma; <b>centro</b> = Fajardo + Claudia López. La <b>participación</b> = votos válidos ÷ censo electoral, y la <b>abstención</b> = 100% − participación. La cifra del filtro es el promedio ponderado por votos de sus UPZ. El estrato y el perfil etario son agregados por puesto/localidad: orientan contenido y trabajo de campo, <b>no dicen cómo votó cada persona</b>.</p>`;
+    els.profile.innerHTML = blocHtml + estratoHtml + ageHtml + note;
   }
 
   function renderPriority() {
@@ -843,7 +880,14 @@
       })
       .slice(0, 6);
     const lineRows = puestosRows.slice().sort((a, b) => a.swing - b.swing || b.validos - a.validos).slice(0, 6);
-    els.priority.innerHTML = [
+    const v = voteAgg();
+    const voteChips = `<div class="prio-vote">
+      <span style="--c:#544595">Izquierda <b>${fmtPct(v.izq)}</b></span>
+      <span style="--c:#8a94a6">Centro <b>${fmtPct(v.cen)}</b></span>
+      <span style="--c:#f3930d">Derecha <b>${fmtPct(v.der)}</b></span>
+      <span style="--c:#c7312b">Abstención <b>${fmtPct(v.abst)}</b></span>
+    </div>`;
+    els.priority.innerHTML = voteChips + [
       miniList("Recuperar UPZ", recover, (r) => `${fmtPts(r.swing)} · ${fmtNum(r.votos)} votos`, "upz"),
       miniList("Movilizar UPZ", mobilize, (r) => `${fmtPct(r.cepeda)} · ${fmtNum(r.votos)} votos`, "upz"),
       miniList("Puestos decisivos", decisive, (r) => `${fmtPct(r.cepeda)} · ${fmtNum(r.validos)} válidos`, "puesto"),
