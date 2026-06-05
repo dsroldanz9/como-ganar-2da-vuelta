@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>13 ciudades · Segmentación territorial</title>
+<meta name="description" content="Segmentación por clúster (k-means) por ciudad de las 13 principales ciudades: clasificación de ciudades y categorías de comuna relativas a cada ciudad." />
+<meta name="robots" content="noindex, noarchive, noimageindex" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700;6..12,800;6..12,900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="../protected/auth.css" />
+<link rel="stylesheet" href="../bogota-campana-v2/style.css" />
+<link rel="stylesheet" href="ciudades.css" />
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <a class="brand" href="../">
+      <img src="../img/brand_lockup.webp" alt="Iván Cepeda y Aída Quilcué">
+      <span><strong>13 ciudades en campaña</strong><small>Segmentación por ciudad · secreto</small></span>
+    </a>
+    <nav class="nav-actions" aria-label="Tableros">
+      <a href="../bogota-campana-v2/">Bogotá v2</a>
+      <a href="../">13 ciudades (público)</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-in">
+    <div>
+      <p class="eyebrow">13 ciudades · segmentación territorial</p>
+      <h1>Dónde concentrarse en cada ciudad, comuna por comuna.</h1>
+      <p class="hero-copy">Mismo método del IPP (k-means, 4 variables), pero aplicado <b>dentro de cada ciudad</b>: cada comuna se compara con las otras de su misma ciudad. Dos niveles de lectura: primero la ciudad, luego sus comunas.</p>
+    </div>
+    <div class="hero-card">
+      <span>Datos y desarrollo</span><strong>Daniel Santiago Roldán</strong>
+      <span class="hero-author2">Segmentación</span><strong>Sebastián Londoño Méndez</strong>
+      <p>Herramienta secreta. Análisis relativo a cada ciudad.</p>
+    </div>
+  </div>
+</section>
+
+<main class="wrap app-shell">
+  <section class="panel twolevel-panel">
+    <div class="panel-head tight"><div>
+      <h2>Cómo leer este tablero — dos niveles</h2>
+      <p>Importante: las categorías de comuna son <b>relativas a cada ciudad</b>, no a toda Colombia.</p>
+    </div></div>
+    <div class="twolevel">
+      <article class="tl-card"><span class="tl-n">1</span><h3>La ciudad</h3><p>Cada ciudad se clasifica según qué tan favorable es en conjunto: <b>Fortín</b> (ganamos), <b>En disputa</b> o <b>Escenario difícil</b>.</p></article>
+      <article class="tl-card"><span class="tl-n">2</span><h3>La comuna</h3><p>Dentro de cada ciudad, sus comunas se agrupan en 4 niveles <b>relativos a esa ciudad</b>. Por eso "lo mejor" de Medellín no es lo mismo que un fortín de Pasto.</p></article>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head tight"><div>
+      <h2>Clasificación de las 13 ciudades</h2>
+      <p>Por % de voto Cepeda (ponderado). Haz clic en una ciudad para ver sus comunas.</p>
+    </div></div>
+    <div id="cityTiers" class="city-tiers"></div>
+  </section>
+
+  <section class="controls" aria-label="Filtros">
+    <label><span>Ciudad</span><select id="citySelect"></select></label>
+    <label><span>Color</span><select id="colorSelect"><option value="categoria" selected>Categoría</option><option value="linea">Línea</option></select></label>
+    <button id="fitBtn" type="button">Centrar</button>
+  </section>
+
+  <section class="map-grid">
+    <article class="panel map-panel">
+      <div class="panel-head"><div>
+        <h2 id="mapTitle">Mapa de comunas</h2>
+        <p id="mapSubtitle">Cada punto es una comuna; color por categoría relativa; tamaño por votos.</p>
+      </div><div class="legend" id="mapLegend"></div></div>
+      <div id="map"></div>
+    </article>
+    <aside class="panel insight-panel">
+      <div id="cityHead"></div>
+      <div id="summaryCards" class="summary-cards"></div>
+    </aside>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head tight"><div>
+      <h2 id="listTitle">Comunas priorizadas</h2>
+      <p>Ordenadas por prioridad dentro de cada categoría (relativa a la ciudad).</p>
+    </div></div>
+    <div id="comunaLists" class="segment-lists-grid"></div>
+  </section>
+
+  <section class="message-grid" id="lineCards"></section>
+
+  <section class="panel">
+    <div class="panel-head tight"><div><h2>Metodología</h2></div></div>
+    <div id="methodology" class="metodologia-grid"></div>
+  </section>
+</main>
+
+<footer class="footer"><div class="wrap">Datos y desarrollo: Daniel Santiago Roldán · Segmentación: Sebastián Londoño Méndez. Análisis relativo a cada ciudad.</div></footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script
+  src="../protected/auth.js"
+  data-title="13 ciudades · segmentación territorial"
+  data-bundle-id="ciudades"
+  data-users="../protected/users.json"
+  data-bundle="../protected/ciudades.bundle.json"
+  data-app="app.js"></script>
+</body>
+</html>
