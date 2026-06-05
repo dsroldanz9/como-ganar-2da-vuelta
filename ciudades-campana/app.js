@@ -2,7 +2,11 @@
   const data = window.CIUDADES13;
   const geo = window.APP_GEO || {};
   const puestos = window.PUESTOS13 || {};
+  const barriosGeo = window.BARRIOS_GEO || {};
   if (!data) { console.error("Sin CIUDADES13"); return; }
+  const barrioByKey = new Map();   // city|k -> {cepeda,caida,perf,...}
+  Object.entries(data.barriosData || {}).forEach(([sl, arr]) => arr.forEach((b) => barrioByKey.set(sl + "|" + b.k, b)));
+  const hasBarrio = (sl) => (data.barrioCiudades || []).includes(sl) && barriosGeo[sl];
 
   const CL_COLOR = { 1: "#7b2ff7", 2: "#c8d400", 3: "#2746e6", 4: "#8a94a6" };
   const SEG_SHORT = { 1: "Base afín", 2: "Alta competencia", 3: "Derecha en avance", 4: "No priorizado" };
@@ -39,9 +43,10 @@
     lineCards: document.getElementById("lineCards"), methodology: document.getElementById("methodology"),
     puestoLegend: document.getElementById("puestoLegend"),
     votoPanel: document.getElementById("votoPanel"), prioPanel: document.getElementById("prioPanel"),
+    granuSelect: document.getElementById("granuSelect"), granuLabel: document.getElementById("granuLabel"),
   };
   const defaultCity = data.ciudades.some((c) => c.slug === "cali") ? "cali" : data.ciudades[0]?.slug;
-  const state = { city: defaultCity, colorMode: "segmento", showPuestos: false };
+  const state = { city: defaultCity, colorMode: "segmento", showPuestos: false, granu: "comuna" };
   let map, layer, puestoLayer, bounds;
 
   const colorOf = (c) => state.colorMode === "linea" ? ((data.lineas[c.linea] || {}).color || "#8a94a6") : (CL_COLOR[c.cluster] || "#8a94a6");
@@ -107,25 +112,42 @@
   }
   function drawMap() {
     layer.clearLayers();
-    const fc = geo[state.city];
-    if (!fc) { return; }
-    const gj = L.geoJSON(fc, {
-      style: (f) => {
-        const c = comunaByKey.get(state.city + "|" + keyJS(f.properties.comuna));
-        return { color: "#ffffff", weight: 1.2, fillColor: c ? colorOf(c) : "#e3e6ec", fillOpacity: c ? .78 : .4 };
-      },
-      onEachFeature: (f, lyr) => {
-        const c = comunaByKey.get(state.city + "|" + keyJS(f.properties.comuna));
-        if (c) lyr.bindTooltip(`<div class="map-tip"><strong>${esc(c.comuna)}</strong><span>${esc(c.segmento)} · ${esc((data.lineas[c.linea] || {}).corto || c.linea)}</span><span>${fmtPct(c.cepeda)} Cepeda · ${fmtPts(c.caida)} vs 2022</span><span>prioridad ${c.score}/100</span></div>`, { sticky: true });
-        else lyr.bindTooltip(`<div class="map-tip"><strong>${esc(f.properties.comuna)}</strong><span>sin dato</span></div>`, { sticky: true });
-      }
-    }).addTo(layer);
+    const barrio = state.granu === "barrio" && hasBarrio(state.city);
+    let gj;
+    if (barrio) {                       // coroplético por BARRIO
+      gj = L.geoJSON(barriosGeo[state.city], {
+        style: (f) => {
+          const b = barrioByKey.get(state.city + "|" + f.properties.k);
+          return { color: "#ffffff", weight: .7, fillColor: b ? (PERF[b.perf] || {}).color || "#e3e6ec" : "#e3e6ec", fillOpacity: b ? (b.fuente === "puestos" ? .82 : .5) : .35 };
+        },
+        onEachFeature: (f, lyr) => {
+          const b = barrioByKey.get(state.city + "|" + f.properties.k); if (!b) return;
+          const pf = PERF[b.perf];
+          lyr.bindTooltip(`<div class="map-tip"><strong>${esc(b.barrio)}</strong><span><b style="color:${pf ? pf.color : "#888"}">${esc(pf ? pf.label : "")}</b></span><span>${fmtPct(b.cepeda)} Cepeda · ${fmtPts(b.caida)} vs 2022</span><span>${b.fuente === "puestos" ? b.npuestos + " puesto(s) en el barrio" : "estimado por su comuna"}</span></div>`, { sticky: true });
+        }
+      }).addTo(layer);
+    } else {                            // coroplético por COMUNA
+      const fc = geo[state.city]; if (!fc) { return; }
+      gj = L.geoJSON(fc, {
+        style: (f) => {
+          const c = comunaByKey.get(state.city + "|" + keyJS(f.properties.comuna));
+          return { color: "#ffffff", weight: 1.2, fillColor: c ? colorOf(c) : "#e3e6ec", fillOpacity: c ? .78 : .4 };
+        },
+        onEachFeature: (f, lyr) => {
+          const c = comunaByKey.get(state.city + "|" + keyJS(f.properties.comuna));
+          if (c) lyr.bindTooltip(`<div class="map-tip"><strong>${esc(c.comuna)}</strong><span>${esc(c.segmento)} · ${esc((data.lineas[c.linea] || {}).corto || c.linea)}</span><span>${fmtPct(c.cepeda)} Cepeda · ${fmtPts(c.caida)} vs 2022</span><span>prioridad ${c.score}/100</span></div>`, { sticky: true });
+          else lyr.bindTooltip(`<div class="map-tip"><strong>${esc(f.properties.comuna)}</strong><span>sin dato</span></div>`, { sticky: true });
+        }
+      }).addTo(layer);
+    }
     bounds = gj.getBounds();
     if (bounds.isValid()) map.fitBounds(bounds.pad(.05), { animate: false });
     renderLegend();
   }
   function renderLegend() {
-    if (state.colorMode === "linea") {
+    if (state.granu === "barrio" && hasBarrio(state.city)) {
+      els.mapLegend.innerHTML = (data.perfiles || []).map((p) => `<span><i class="sw" style="background:${p.color}"></i> ${esc(p.label)}</span>`).join("") + ` <span class="lg-note">tono claro = estimado por comuna</span>`;
+    } else if (state.colorMode === "linea") {
       els.mapLegend.innerHTML = ["L1", "L2", "L3"].map((k) => `<span><i class="sw" style="background:${data.lineas[k].color}"></i> ${k} · ${esc(data.lineas[k].corto)}</span>`).join("");
     } else {
       els.mapLegend.innerHTML = [1, 2, 3, 4].map((cl) => `<span><i class="sw" style="background:${CL_COLOR[cl]}"></i> ${esc(SEG_SHORT[cl])}</span>`).join("");
@@ -187,7 +209,12 @@
       col("Recuperar (dónde caímos)", "Comunas con mayor caída vs 2022.", recuperar, (c) => `<b>${fmtPts(c.caida)}</b><small>${fmtNum(c.votos)} votos</small>`) +
       col("Movilizar (volumen propio)", "Comunas que más votos nos aportan.", movilizar, (c) => `<b>${fmtNum(c.votos)}</b><small>${fmtPct(c.cepeda)} Cepeda</small>`);
   }
-  function selectCity(slug) { state.city = slug; els.citySelect.value = slug; drawMap(); drawPuestos(); renderCity(); }
+  function updateGranuControl() {
+    if (!els.granuLabel) return;
+    if (hasBarrio(state.city)) { els.granuLabel.style.display = ""; }
+    else { els.granuLabel.style.display = "none"; state.granu = "comuna"; if (els.granuSelect) els.granuSelect.value = "comuna"; }
+  }
+  function selectCity(slug) { state.city = slug; els.citySelect.value = slug; updateGranuControl(); drawMap(); drawPuestos(); renderCity(); }
   function renderLineCards() {
     els.lineCards.innerHTML = ["L1", "L2", "L3"].map((k) => { const l = data.lineas[k];
       return `<article class="line-card" style="border-top:5px solid ${l.color}"><h3>${esc(l.titulo)}</h3><p><b>${esc(l.corto)}</b></p><p>${esc(l.objetivo)}</p><ul class="mini">${l.mensajes.map((m) => `<li>${esc(m)}</li>`).join("")}</ul></article>`; }).join("");
@@ -202,6 +229,7 @@
   els.citySelect.addEventListener("change", () => selectCity(els.citySelect.value));
   els.colorSelect.addEventListener("change", () => { state.colorMode = els.colorSelect.value; drawMap(); drawPuestos(); });
   if (els.puestoToggle) els.puestoToggle.addEventListener("change", () => { state.showPuestos = els.puestoToggle.checked; drawPuestos(); });
+  if (els.granuSelect) els.granuSelect.addEventListener("change", () => { state.granu = els.granuSelect.value; drawMap(); });
   els.fitBtn.addEventListener("click", () => { if (bounds && bounds.isValid()) map.fitBounds(bounds.pad(.05)); });
   renderTiers(); fillCitySelect(); initMap(); renderLineCards(); renderMethodology(); selectCity(state.city);
 })();

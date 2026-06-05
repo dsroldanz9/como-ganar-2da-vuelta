@@ -67,6 +67,7 @@
   <section class="controls" aria-label="Filtros">
     <label><span>Ciudad</span><select id="citySelect"></select></label>
     <label><span>Color</span><select id="colorSelect"><option value="segmento" selected>Segmento</option><option value="linea">Línea</option></select></label>
+    <label id="granuLabel" style="display:none"><span>Detalle</span><select id="granuSelect"><option value="comuna" selected>Comuna</option><option value="barrio">Barrio ★</option></select></label>
     <label class="chk"><input type="checkbox" id="puestoToggle"><span>Puestos de votación</span></label>
     <button id="fitBtn" type="button">Centrar</button>
   </section>
@@ -124,6 +125,7 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="../geo.js"></script>
 <script src="puestos.js"></script>
+<script src="barrios.geo.js"></script>
 <script
   src="../protected/auth.js"
   data-title="13 ciudades · segmentación territorial"
