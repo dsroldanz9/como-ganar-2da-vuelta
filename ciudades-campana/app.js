@@ -46,7 +46,7 @@
     granuSelect: document.getElementById("granuSelect"), granuLabel: document.getElementById("granuLabel"),
   };
   const defaultCity = data.ciudades.some((c) => c.slug === "cali") ? "cali" : data.ciudades[0]?.slug;
-  const state = { city: defaultCity, colorMode: "segmento", showPuestos: false, granu: "comuna" };
+  const state = { city: defaultCity, colorMode: "segmento", showPuestos: true, granu: "comuna" };
   let map, layer, puestoLayer, bounds;
 
   const colorOf = (c) => state.colorMode === "linea" ? ((data.lineas[c.linea] || {}).color || "#8a94a6") : (CL_COLOR[c.cluster] || "#8a94a6");
@@ -211,7 +211,7 @@
   }
   function updateGranuControl() {
     if (!els.granuLabel) return;
-    if (hasBarrio(state.city)) { els.granuLabel.style.display = ""; }
+    if (hasBarrio(state.city)) { els.granuLabel.style.display = ""; state.granu = "barrio"; if (els.granuSelect) els.granuSelect.value = "barrio"; }
     else { els.granuLabel.style.display = "none"; state.granu = "comuna"; if (els.granuSelect) els.granuSelect.value = "comuna"; }
   }
   function selectCity(slug) { state.city = slug; els.citySelect.value = slug; updateGranuControl(); drawMap(); drawPuestos(); renderCity(); }
@@ -231,5 +231,6 @@
   if (els.puestoToggle) els.puestoToggle.addEventListener("change", () => { state.showPuestos = els.puestoToggle.checked; drawPuestos(); });
   if (els.granuSelect) els.granuSelect.addEventListener("change", () => { state.granu = els.granuSelect.value; drawMap(); });
   els.fitBtn.addEventListener("click", () => { if (bounds && bounds.isValid()) map.fitBounds(bounds.pad(.05)); });
+  if (els.puestoToggle) els.puestoToggle.checked = true;  // puestos visibles por defecto
   renderTiers(); fillCitySelect(); initMap(); renderLineCards(); renderMethodology(); selectCity(state.city);
 })();
