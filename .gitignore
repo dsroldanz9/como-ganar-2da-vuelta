@@ -21,6 +21,7 @@ bogota-campana-v2/doc.css
 bogota-campana-v2/bogota-v2.public.js
 bogota-campana-v2/localidad.html
 bogota-campana-v2/localidad.app.js
+bogota-campana-v2/locmaps/
 protected/bogota.bundle.json.bak
 
 # Insumos y archivos de trabajo sensibles (NO publicar)
