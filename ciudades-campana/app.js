@@ -114,16 +114,15 @@
     layer.clearLayers();
     const barrio = state.granu === "barrio" && hasBarrio(state.city);
     let gj;
-    if (barrio) {                       // coroplético por BARRIO
+    if (barrio) {                       // coroplético por BARRIO (segmentos IPP, k-means)
       gj = L.geoJSON(barriosGeo[state.city], {
         style: (f) => {
           const b = barrioByKey.get(state.city + "|" + f.properties.k);
-          return { color: "#ffffff", weight: .7, fillColor: b ? (PERF[b.perf] || {}).color || "#e3e6ec" : "#e3e6ec", fillOpacity: b ? (b.fuente === "puestos" ? .82 : .5) : .35 };
+          return { color: "#ffffff", weight: .7, fillColor: b ? colorOf(b) : "#e3e6ec", fillOpacity: b ? (b.fuente === "puestos" ? .82 : .52) : .35 };
         },
         onEachFeature: (f, lyr) => {
           const b = barrioByKey.get(state.city + "|" + f.properties.k); if (!b) return;
-          const pf = PERF[b.perf];
-          lyr.bindTooltip(`<div class="map-tip"><strong>${esc(b.barrio)}</strong><span><b style="color:${pf ? pf.color : "#888"}">${esc(pf ? pf.label : "")}</b></span><span>${fmtPct(b.cepeda)} Cepeda · ${fmtPts(b.caida)} vs 2022</span><span>${b.fuente === "puestos" ? b.npuestos + " puesto(s) en el barrio" : "estimado por su comuna"}</span></div>`, { sticky: true });
+          lyr.bindTooltip(`<div class="map-tip"><strong>${esc(b.barrio)}</strong><span>${esc(b.segmento)} · ${esc((data.lineas[b.linea] || {}).corto || b.linea)}</span><span>${fmtPct(b.cepeda)} Cepeda · ${fmtPts(b.caida)} vs 2022</span><span>prioridad ${b.score}/100 · ${b.fuente === "puestos" ? b.npuestos + " puesto(s)" : "estimado por comuna"}</span></div>`, { sticky: true });
         }
       }).addTo(layer);
     } else {                            // coroplético por COMUNA
@@ -142,20 +141,19 @@
     }
     bounds = gj.getBounds();
     if (bounds.isValid()) map.fitBounds(bounds.pad(.05), { animate: false });
+    if (els.mapTitle) els.mapTitle.textContent = (barrio ? "Barrios de " : "Comunas de ") + (cityBySlug.get(state.city) || {}).ciudad;
     renderLegend();
   }
   function renderLegend() {
-    if (state.granu === "barrio" && hasBarrio(state.city)) {
-      els.mapLegend.innerHTML = (data.perfiles || []).map((p) => `<span><i class="sw" style="background:${p.color}"></i> ${esc(p.label)}</span>`).join("") + ` <span class="lg-note">tono claro = estimado por comuna</span>`;
-    } else if (state.colorMode === "linea") {
-      els.mapLegend.innerHTML = ["L1", "L2", "L3"].map((k) => `<span><i class="sw" style="background:${data.lineas[k].color}"></i> ${k} · ${esc(data.lineas[k].corto)}</span>`).join("");
+    const note = (state.granu === "barrio" && hasBarrio(state.city)) ? ` <span class="lg-note">tono claro = estimado por su comuna</span>` : "";
+    if (state.colorMode === "linea") {
+      els.mapLegend.innerHTML = ["L1", "L2", "L3"].map((k) => `<span><i class="sw" style="background:${data.lineas[k].color}"></i> ${k} · ${esc(data.lineas[k].corto)}</span>`).join("") + note;
     } else {
-      els.mapLegend.innerHTML = [1, 2, 3, 4].map((cl) => `<span><i class="sw" style="background:${CL_COLOR[cl]}"></i> ${esc(SEG_SHORT[cl])}</span>`).join("");
+      els.mapLegend.innerHTML = [1, 2, 3, 4].map((cl) => `<span><i class="sw" style="background:${CL_COLOR[cl]}"></i> ${esc(SEG_SHORT[cl])}</span>`).join("") + note;
     }
   }
   function renderCity() {
     const city = cityBySlug.get(state.city); if (!city) return;
-    els.mapTitle.textContent = `Comunas de ${city.ciudad}`;
     els.listTitle.textContent = `Comunas de ${city.ciudad} — priorización por segmento`;
     els.cityHead.innerHTML = `<div class="city-head" style="--seg:${TIER_COLOR[city.tier]}">
       <span class="tier-badge" style="background:${TIER_COLOR[city.tier]}">${esc(city.tier)}</span>${isFino(city.slug) ? '<span class="fino-badge">★ nivel puesto</span>' : ''}
