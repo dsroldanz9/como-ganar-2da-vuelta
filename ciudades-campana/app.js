@@ -1,6 +1,7 @@
 (function () {
   const data = window.CIUDADES13;
   const geo = window.APP_GEO || {};
+  const puestos = window.PUESTOS13 || {};
   if (!data) { console.error("Sin CIUDADES13"); return; }
 
   const CL_COLOR = { 1: "#7b2ff7", 2: "#c8d400", 3: "#2746e6", 4: "#8a94a6" };
@@ -29,13 +30,14 @@
   const els = {
     cityTiers: document.getElementById("cityTiers"), citySelect: document.getElementById("citySelect"),
     colorSelect: document.getElementById("colorSelect"), fitBtn: document.getElementById("fitBtn"),
+    puestoToggle: document.getElementById("puestoToggle"),
     mapTitle: document.getElementById("mapTitle"), mapLegend: document.getElementById("mapLegend"),
     cityHead: document.getElementById("cityHead"), summary: document.getElementById("summaryCards"),
     listTitle: document.getElementById("listTitle"), comunaLists: document.getElementById("comunaLists"),
     lineCards: document.getElementById("lineCards"), methodology: document.getElementById("methodology"),
   };
-  const state = { city: data.ciudades[0]?.slug, colorMode: "segmento" };
-  let map, layer, bounds;
+  const state = { city: data.ciudades[0]?.slug, colorMode: "segmento", showPuestos: false };
+  let map, layer, puestoLayer, bounds;
 
   const colorOf = (c) => state.colorMode === "linea" ? ((data.lineas[c.linea] || {}).color || "#8a94a6") : (CL_COLOR[c.cluster] || "#8a94a6");
 
@@ -59,6 +61,20 @@
     map = L.map("map", { scrollWheelZoom: false, preferCanvas: false }).setView([4.6, -74.1], 11);
     L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", { attribution: "&copy; OSM, &copy; CARTO", maxZoom: 19 }).addTo(map);
     layer = L.layerGroup().addTo(map);
+    puestoLayer = L.layerGroup();
+  }
+  function drawPuestos() {
+    puestoLayer.clearLayers();
+    if (!state.showPuestos) { if (map.hasLayer(puestoLayer)) map.removeLayer(puestoLayer); return; }
+    const ps = puestos[state.city] || [];
+    ps.forEach((p) => {
+      const c = comunaByKey.get(state.city + "|" + p.ck);
+      const col = c ? colorOf(c) : "#9aa3b2";
+      L.circleMarker([p.lat, p.lon], { radius: 3.2, color: "#ffffff", weight: .8, fillColor: col, fillOpacity: .95 })
+        .bindTooltip(`<div class="map-tip"><strong>${esc(p.n)}</strong><span>${c ? esc(c.comuna) + " · " + esc(c.segmento) : "puesto de votación"}</span></div>`, { sticky: true })
+        .addTo(puestoLayer);
+    });
+    if (!map.hasLayer(puestoLayer)) puestoLayer.addTo(map);
   }
   function drawMap() {
     layer.clearLayers();
@@ -97,9 +113,11 @@
     const list = comunasByCity.get(state.city) || [];
     const byCl = {}; list.forEach((c) => { (byCl[c.cluster] = byCl[c.cluster] || []).push(c); });
     const total = list.reduce((a, c) => a + (c.votos || 0), 0);
+    const nPuestos = (puestos[state.city] || []).length;
     els.summary.innerHTML = `
       <div class="metric"><span>Comunas</span><strong>${list.length}</strong><span>en ${esc(city.ciudad)}</span></div>
-      <div class="metric"><span>Voto Cepeda ciudad</span><strong>${fmtPct(city.cepeda)}</strong><span>${fmtNum(total)} votos</span></div>`;
+      <div class="metric"><span>Voto Cepeda ciudad</span><strong>${fmtPct(city.cepeda)}</strong><span>${fmtNum(total)} votos</span></div>
+      <div class="metric"><span>Puestos de votación</span><strong>${fmtNum(nPuestos)}</strong><span>actívalos en el mapa</span></div>`;
     els.comunaLists.innerHTML = [1, 2, 3, 4].map((cl) => {
       const rows = (byCl[cl] || []).slice().sort((a, b) => b.score - a.score);
       if (!rows.length) return "";
@@ -110,7 +128,7 @@
     }).join("");
     document.querySelectorAll(".city-chip").forEach((b) => b.classList.toggle("active", b.dataset.slug === state.city));
   }
-  function selectCity(slug) { state.city = slug; els.citySelect.value = slug; drawMap(); renderCity(); }
+  function selectCity(slug) { state.city = slug; els.citySelect.value = slug; drawMap(); drawPuestos(); renderCity(); }
   function renderLineCards() {
     els.lineCards.innerHTML = ["L1", "L2", "L3"].map((k) => { const l = data.lineas[k];
       return `<article class="line-card" style="border-top:5px solid ${l.color}"><h3>${esc(l.titulo)}</h3><p><b>${esc(l.corto)}</b></p><p>${esc(l.objetivo)}</p><ul class="mini">${l.mensajes.map((m) => `<li>${esc(m)}</li>`).join("")}</ul></article>`; }).join("");
@@ -123,7 +141,8 @@
       <p class="muted">${esc(m.fuente)}</p></div>`;
   }
   els.citySelect.addEventListener("change", () => selectCity(els.citySelect.value));
-  els.colorSelect.addEventListener("change", () => { state.colorMode = els.colorSelect.value; drawMap(); });
+  els.colorSelect.addEventListener("change", () => { state.colorMode = els.colorSelect.value; drawMap(); drawPuestos(); });
+  if (els.puestoToggle) els.puestoToggle.addEventListener("change", () => { state.showPuestos = els.puestoToggle.checked; drawPuestos(); });
   els.fitBtn.addEventListener("click", () => { if (bounds && bounds.isValid()) map.fitBounds(bounds.pad(.05)); });
   renderTiers(); fillCitySelect(); initMap(); renderLineCards(); renderMethodology(); selectCity(state.city);
 })();

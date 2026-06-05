@@ -26,3 +26,8 @@
 .seg-rank { font-weight:700; font-size:.85rem; }
 
 @media (max-width:860px){ .twolevel { grid-template-columns:1fr; } }
+
+/* checkbox de puestos en los controles */
+.controls label.chk { display:flex; align-items:center; gap:7px; cursor:pointer; font-weight:700; }
+.controls label.chk input { width:16px; height:16px; accent-color:#2746e6; cursor:pointer; }
+.controls label.chk span { font-size:.9rem; }

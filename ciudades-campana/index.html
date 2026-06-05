@@ -50,14 +50,16 @@
     </div></div>
     <div class="twolevel">
       <article class="tl-card"><span class="tl-n">1</span><h3>La ciudad</h3><p>Cada ciudad se clasifica según qué tan favorable es en conjunto: <b>Fortín</b> (ganamos), <b>En disputa</b> o <b>Escenario difícil</b>.</p></article>
-      <article class="tl-card"><span class="tl-n">2</span><h3>La comuna</h3><p>Dentro de cada ciudad, sus comunas se agrupan en 4 niveles <b>relativos a esa ciudad</b>. Por eso "lo mejor" de Medellín no es lo mismo que un fortín de Pasto.</p></article>
+      <article class="tl-card"><span class="tl-n">2</span><h3>La comuna + puestos</h3><p>Dentro de cada ciudad, sus comunas se agrupan en 4 niveles <b>relativos a esa ciudad</b>. Sobre el mapa puedes activar los <b>puestos de votación</b> (puntos) para bajar a nivel de barrio en el trabajo de campo.</p></article>
     </div>
+    <p class="doc-note" style="background:#eef0fb;border:1px solid #c9d0f3;border-radius:10px;padding:11px 14px;margin-top:12px;font-size:.92rem;">
+      <b>Nota sobre granularidad.</b> La unidad con voto y cartografía para estas ciudades es la <b>comuna/localidad</b> (el barrio no es unidad electoral). Por eso la segmentación es por comuna y, encima, se superponen los <b>puestos de votación</b> georreferenciados. <b>Bogotá no está aquí:</b> tiene datos más finos (UPZ + puestos con código), así que conserva su <a href="../bogota-campana-v2/"><b>tablero dedicado a nivel UPZ →</b></a></p>
   </section>
 
   <section class="panel">
     <div class="panel-head tight"><div>
-      <h2>Clasificación de las 13 ciudades</h2>
-      <p>Por % de voto Cepeda (ponderado). Haz clic en una ciudad para ver sus comunas.</p>
+      <h2>Clasificación de las ciudades</h2>
+      <p>Por % de voto Cepeda (ponderado). Haz clic en una ciudad para ver sus comunas. (Bogotá tiene su propio tablero a nivel UPZ.)</p>
     </div></div>
     <div id="cityTiers" class="city-tiers"></div>
   </section>
@@ -65,6 +67,7 @@
   <section class="controls" aria-label="Filtros">
     <label><span>Ciudad</span><select id="citySelect"></select></label>
     <label><span>Color</span><select id="colorSelect"><option value="segmento" selected>Segmento</option><option value="linea">Línea</option></select></label>
+    <label class="chk"><input type="checkbox" id="puestoToggle"><span>Puestos de votación</span></label>
     <button id="fitBtn" type="button">Centrar</button>
   </section>
 
@@ -72,7 +75,7 @@
     <article class="panel map-panel">
       <div class="panel-head"><div>
         <h2 id="mapTitle">Mapa de comunas</h2>
-        <p id="mapSubtitle">Cada comuna coloreada por su segmento (relativo a la ciudad). Cambia a color por línea.</p>
+        <p id="mapSubtitle">Cada comuna coloreada por su segmento (relativo a la ciudad). Activa <b>Puestos de votación</b> para ver, sobre el mapa, cada puesto georreferenciado (barrio a barrio) coloreado por el segmento de su comuna — para recorridos y testigos.</p>
       </div><div class="legend" id="mapLegend"></div></div>
       <div id="map"></div>
     </article>
@@ -102,6 +105,7 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="../geo.js"></script>
+<script src="puestos.js"></script>
 <script
   src="../protected/auth.js"
   data-title="13 ciudades · segmentación territorial"
