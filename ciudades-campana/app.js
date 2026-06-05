@@ -122,7 +122,7 @@
         },
         onEachFeature: (f, lyr) => {
           const b = barrioByKey.get(state.city + "|" + f.properties.k); if (!b) return;
-          lyr.bindTooltip(`<div class="map-tip"><strong>${esc(b.barrio)}</strong><span>${esc(b.segmento)} · ${esc((data.lineas[b.linea] || {}).corto || b.linea)}</span><span>${fmtPct(b.cepeda)} Cepeda · ${fmtPts(b.caida)} vs 2022</span><span>prioridad ${b.score}/100 · ${b.fuente === "puestos" ? b.npuestos + " puesto(s)" : "estimado por comuna"}</span></div>`, { sticky: true });
+          lyr.bindTooltip(`<div class="map-tip"><strong>${esc(b.barrio)}</strong><span>${esc(b.segmento)} · ${esc((data.lineas[b.linea] || {}).corto || b.linea)}</span><span>${fmtPct(b.cepeda)} Cepeda · ${fmtPts(b.caida)} vs 2022</span><span>prioridad ${b.score}/100 · ${b.fuente === "puestos" ? b.npuestos + " puesto(s) en el barrio" : "estimado (zona sin puesto propio)"}</span></div>`, { sticky: true });
         }
       }).addTo(layer);
     } else {                            // coroplético por COMUNA
@@ -145,7 +145,7 @@
     renderLegend();
   }
   function renderLegend() {
-    const note = (state.granu === "barrio" && hasBarrio(state.city)) ? ` <span class="lg-note">tono claro = estimado por su comuna</span>` : "";
+    const note = (state.granu === "barrio" && hasBarrio(state.city)) ? ` <span class="lg-note">tono claro = barrio estimado (sin puesto propio)</span>` : "";
     if (state.colorMode === "linea") {
       els.mapLegend.innerHTML = ["L1", "L2", "L3"].map((k) => `<span><i class="sw" style="background:${data.lineas[k].color}"></i> ${k} · ${esc(data.lineas[k].corto)}</span>`).join("") + note;
     } else {
