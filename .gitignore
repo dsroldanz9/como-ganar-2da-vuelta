@@ -19,6 +19,8 @@ bogota-campana-v2/estrategia-lineas.html
 bogota-campana-v2/estrategia-lineas.app.js
 bogota-campana-v2/doc.css
 bogota-campana-v2/bogota-v2.public.js
+bogota-campana-v2/localidad.html
+bogota-campana-v2/localidad.app.js
 protected/bogota.bundle.json.bak
 
 # Insumos y archivos de trabajo sensibles (NO publicar)
