@@ -793,6 +793,11 @@ td strong { color: var(--ink); }
 
 .hero-author2 { display: block; margin-top: 10px; }
 
+.footer .credits { margin-bottom: 14px; }
+.footer .credits h3 { margin: 0 0 8px; font-size: 1rem; color: var(--brand); }
+.footer .credits p { margin: 0 0 5px; font-size: .9rem; color: var(--ink); }
+.footer .credits a { color: var(--brand); font-weight: 700; text-decoration: underline; }
+
 .prio-vote { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 9px; margin-bottom: 8px; }
 .prio-vote span { font-size: .8rem; font-weight: 700; border-left: 4px solid var(--c, #544595); background: var(--purple-soft, #f2eef9); border-radius: 8px; padding: 6px 11px; }
 .prio-vote b { color: var(--c, #544595); margin-left: 4px; }
