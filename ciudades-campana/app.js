@@ -68,20 +68,25 @@
     layer = L.layerGroup().addTo(map);
     puestoLayer = L.layerGroup();
   }
+  const isFino = (slug) => (data.finoCiudades || []).includes(slug);
+  function puestosOf(slug) { return isFino(slug) ? (data.puestosFino[slug] || []) : (puestos[slug] || []); }
   function drawPuestos() {
     puestoLayer.clearLayers();
     renderPuestoLegend();
     if (!state.showPuestos) { if (map.hasLayer(puestoLayer)) map.removeLayer(puestoLayer); return; }
-    const ps = puestos[state.city] || [];
-    ps.forEach((p) => {
-      const c = comunaByKey.get(state.city + "|" + p.ck);
-      const col = perfColor(c);  // verde/amarillo/rojo segun donde ganamos/disputa/atras
-      const pf = c && PERF[c.perf];
+    const fino = isFino(state.city);
+    puestosOf(state.city).forEach((p) => {
+      let col, tip;
+      if (fino) {  // voto REAL por puesto
+        const pf = PERF[p.perf]; col = pf ? pf.color : "#9aa3b2";
+        tip = `<strong>${esc(p.n)}</strong><span>${esc(p.comuna)} · <b style="color:${col}">${esc(pf ? pf.label : "")}</b></span><span>${fmtPct(p.cepeda)} Cepeda · ${fmtPts(p.caida)} vs 2022</span>`;
+      } else {     // hereda el rendimiento de su comuna
+        const c = comunaByKey.get(state.city + "|" + p.ck); col = perfColor(c); const pf = c && PERF[c.perf];
+        tip = c ? `<strong>${esc(p.n)}</strong><span>${esc(c.comuna)} · <b style="color:${col}">${esc(pf ? pf.label : "")}</b></span><span>${fmtPct(c.cepeda)} Cepeda · ${fmtPts(c.caida)} vs 2022</span>`
+                : `<strong>${esc(p.n)}</strong><span>puesto de votación · sin dato de comuna</span>`;
+      }
       L.circleMarker([p.lat, p.lon], { radius: 3.4, color: "#ffffff", weight: .7, fillColor: col, fillOpacity: .95 })
-        .bindTooltip(`<div class="map-tip"><strong>${esc(p.n)}</strong>` +
-          (c ? `<span>${esc(c.comuna)} · <b style="color:${col}">${esc(pf ? pf.label : "")}</b></span><span>${fmtPct(c.cepeda)} Cepeda · ${fmtPts(c.caida)} vs 2022</span>`
-             : `<span>puesto de votación · sin dato de comuna</span>`) + `</div>`, { sticky: true })
-        .addTo(puestoLayer);
+        .bindTooltip(`<div class="map-tip">${tip}</div>`, { sticky: true }).addTo(puestoLayer);
     });
     if (!map.hasLayer(puestoLayer)) puestoLayer.addTo(map);
   }
@@ -89,7 +94,10 @@
     if (!els.puestoLegend) return;
     if (!state.showPuestos) { els.puestoLegend.innerHTML = ""; els.puestoLegend.style.display = "none"; return; }
     els.puestoLegend.style.display = "";
-    els.puestoLegend.innerHTML = `<span class="pl-title">Puestos de votación — ¿cómo vamos?</span>` +
+    const fino = isFino(state.city);
+    const sub = fino ? `<span class="pl-sub">★ Voto <b>real por puesto</b> (Cepeda y caída calculados en cada puesto).</span>`
+                     : `<span class="pl-sub">Cada puesto toma el rendimiento de <b>su comuna</b>.</span>`;
+    els.puestoLegend.innerHTML = `<span class="pl-title">Puestos de votación — ¿cómo vamos?</span>` + sub +
       (data.perfiles || []).map((p) => `<span class="pl-item"><i class="pl-dot" style="background:${p.color}"></i><b>${esc(p.label)}</b> — ${esc(p.desc)}</span>`).join("");
   }
   function drawMap() {
@@ -123,17 +131,18 @@
     els.mapTitle.textContent = `Comunas de ${city.ciudad}`;
     els.listTitle.textContent = `Comunas de ${city.ciudad} — priorización por segmento`;
     els.cityHead.innerHTML = `<div class="city-head" style="--seg:${TIER_COLOR[city.tier]}">
-      <span class="tier-badge" style="background:${TIER_COLOR[city.tier]}">${esc(city.tier)}</span>
+      <span class="tier-badge" style="background:${TIER_COLOR[city.tier]}">${esc(city.tier)}</span>${isFino(city.slug) ? '<span class="fino-badge">★ nivel puesto</span>' : ''}
       <h3>${esc(city.ciudad)}</h3><p>${fmtPct(city.cepeda)} de voto Cepeda · ${city.n_comunas} comunas</p>
       <p class="muted">${esc((data.tiers.find((t) => t.key === city.tier) || {}).desc || "")}</p></div>`;
     const list = comunasByCity.get(state.city) || [];
     const byCl = {}; list.forEach((c) => { (byCl[c.cluster] = byCl[c.cluster] || []).push(c); });
     const total = list.reduce((a, c) => a + (c.votos || 0), 0);
-    const nPuestos = (puestos[state.city] || []).length;
+    const nPuestos = puestosOf(state.city).length;
+    const fino = isFino(state.city);
     els.summary.innerHTML = `
       <div class="metric"><span>Comunas</span><strong>${list.length}</strong><span>en ${esc(city.ciudad)}</span></div>
       <div class="metric"><span>Voto Cepeda ciudad</span><strong>${fmtPct(city.cepeda)}</strong><span>${fmtNum(total)} votos</span></div>
-      <div class="metric"><span>Puestos de votación</span><strong>${fmtNum(nPuestos)}</strong><span>actívalos en el mapa</span></div>`;
+      <div class="metric${fino ? " metric-fino" : ""}"><span>Puestos de votación${fino ? " ★" : ""}</span><strong>${fmtNum(nPuestos)}</strong><span>${fino ? "voto real por puesto" : "actívalos en el mapa"}</span></div>`;
     els.comunaLists.innerHTML = [1, 2, 3, 4].map((cl) => {
       const rows = (byCl[cl] || []).slice().sort((a, b) => b.score - a.score);
       if (!rows.length) return "";
