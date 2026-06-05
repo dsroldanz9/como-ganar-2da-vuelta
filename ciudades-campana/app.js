@@ -79,7 +79,11 @@
       let col, tip;
       if (fino) {  // voto REAL por puesto
         const pf = PERF[p.perf]; col = pf ? pf.color : "#9aa3b2";
-        tip = `<strong>${esc(p.n)}</strong><span>${esc(p.comuna)} · <b style="color:${col}">${esc(pf ? pf.label : "")}</b></span><span>${fmtPct(p.cepeda)} Cepeda · ${fmtPts(p.caida)} vs 2022</span>`;
+        const head = p.metro ? `<b>${esc(p.mun)}</b> · área metro` : esc(p.comuna);
+        tip = `<strong>${esc(p.n)}</strong><span>${head} · <b style="color:${col}">${esc(pf ? pf.label : "")}</b></span><span>${fmtPct(p.cepeda)} Cepeda · ${fmtPts(p.caida)} vs 2022</span>`;
+        const mk = L.circleMarker([p.lat, p.lon], { radius: p.metro ? 2.8 : 3.4, color: p.metro ? "#3a3a3a" : "#ffffff", weight: p.metro ? .9 : .7, fillColor: col, fillOpacity: p.metro ? .85 : .95 })
+          .bindTooltip(`<div class="map-tip">${tip}</div>`, { sticky: true });
+        mk.addTo(puestoLayer); return;
       } else {     // hereda el rendimiento de su comuna
         const c = comunaByKey.get(state.city + "|" + p.ck); col = perfColor(c); const pf = c && PERF[c.perf];
         tip = c ? `<strong>${esc(p.n)}</strong><span>${esc(c.comuna)} · <b style="color:${col}">${esc(pf ? pf.label : "")}</b></span><span>${fmtPct(c.cepeda)} Cepeda · ${fmtPts(c.caida)} vs 2022</span>`
@@ -95,7 +99,8 @@
     if (!state.showPuestos) { els.puestoLegend.innerHTML = ""; els.puestoLegend.style.display = "none"; return; }
     els.puestoLegend.style.display = "";
     const fino = isFino(state.city);
-    const sub = fino ? `<span class="pl-sub">★ Voto <b>real por puesto</b> (Cepeda y caída calculados en cada puesto).</span>`
+    const hasMetro = fino && (data.puestosFino[state.city] || []).some((p) => p.metro);
+    const sub = fino ? `<span class="pl-sub">★ Voto <b>real por puesto</b> (Cepeda y caída calculados en cada puesto).${hasMetro ? ' Los puntos con borde oscuro son del <b>área metropolitana</b>.' : ''}</span>`
                      : `<span class="pl-sub">Cada puesto toma el rendimiento de <b>su comuna</b>.</span>`;
     els.puestoLegend.innerHTML = `<span class="pl-title">Puestos de votación — ¿cómo vamos?</span>` + sub +
       (data.perfiles || []).map((p) => `<span class="pl-item"><i class="pl-dot" style="background:${p.color}"></i><b>${esc(p.label)}</b> — ${esc(p.desc)}</span>`).join("");
