@@ -27,14 +27,14 @@ const swColor = n => n <= -6 ? '#c7312b' : n < -1 ? '#F3930D' : n <= 1 ? '#b9c0c
 function fillFor(p, mode, maxVotes) {
   if (mode === 'apoyo') return p.cepeda < 35 ? '#c7312b' : p.cepeda < 45 ? '#F3930D' : p.cepeda < 52 ? '#b9c0cc' : '#544595';
   if (mode === 'votos') {
-    const x = Math.max(0, Math.min(1, (p.votos || 0) / (maxVotes || 1)));
-    return x > 0.66 ? '#352963' : x > 0.4 ? '#544595' : x > 0.18 ? '#8d7cc2' : '#d8d1ea';
+    const x = Math.sqrt(Math.max(0, (p.votos || 0)) / (maxVotes || 1));
+    return x > 0.6 ? '#352963' : x > 0.36 ? '#544595' : x > 0.16 ? '#8d7cc2' : '#bcaee4';
   }
   return swColor(p.swing);
 }
 function legendHtml(mode) {
   if (mode === 'apoyo') return '<b>Apoyo a Cepeda (1ª vuelta)</b><span><i style="background:#c7312b"></i>&lt;35%</span><span><i style="background:#F3930D"></i>35–45%</span><span><i style="background:#b9c0cc"></i>45–52%</span><span><i style="background:#544595"></i>&gt;52%</span>';
-  if (mode === 'votos') return '<b>Volumen de votos por Cepeda</b><span><i style="background:#d8d1ea"></i>bajo</span><span><i style="background:#8d7cc2"></i>medio</span><span><i style="background:#544595"></i>alto</span><span><i style="background:#352963"></i>muy alto</span>';
+  if (mode === 'votos') return '<b>Volumen de votos por Cepeda</b><span><i style="background:#bcaee4"></i>bajo</span><span><i style="background:#8d7cc2"></i>medio</span><span><i style="background:#544595"></i>alto</span><span><i style="background:#352963"></i>muy alto</span>';
   return '<b>Cambio frente a 2022</b><span><i style="background:#c7312b"></i>perdimos fuerte</span><span><i style="background:#F3930D"></i>perdimos</span><span><i style="background:#b9c0cc"></i>estable</span><span><i style="background:#544595"></i>ganamos terreno</span>';
 }
 
