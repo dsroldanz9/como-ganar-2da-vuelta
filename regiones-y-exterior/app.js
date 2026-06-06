@@ -168,22 +168,27 @@ function renderMap(rows) {
     mapLegend = L.control({ position: 'bottomright' });
     mapLegend.onAdd = () => { const d = L.DomUtil.create('div', 'maplg'); d.innerHTML = legendHtml(mapMode); return d; };
     mapLegend.addTo(map);
-    // puntos para municipios sin polígono (no quedan invisibles)
+    // puntos para municipios sin polígono (no quedan invisibles), coloreados por la capa activa
     const sinPoly = rows.filter(m => m.lat != null && m.lon != null && !geoBySlug.has(m.slug));
-    sinPoly.forEach(m => L.circleMarker([m.lat, m.lon], { radius: markerRadius(m), color: '#fff', weight: 1.2, fillColor: COL[m.estado], fillOpacity: .85 })
+    sinPoly.forEach(m => L.circleMarker([m.lat, m.lon], { radius: markerRadius(m), color: '#fff', weight: 1.2, fillColor: fillFor({ cepeda: m.cepeda, swing: m.swing, votos: m.votos_total }, mapMode, maxVotes), fillOpacity: .9 })
       .addTo(markerLayer).bindTooltip(`<b>${m.municipio}</b><br>${m.depto}<br>Cepeda ${pct(m.cepeda)} · ${pts(m.swing)}`).on('click', () => selectMun(m.slug, true)));
     if (feats.length && selectedDept !== 'todos') { try { map.fitBounds(layer.getBounds(), { padding: [24, 24] }); } catch (e) {} }
     else if (selectedDept === 'todos') map.setView([4.8, -74.2], 5);
     return;
   }
 
-  // Respaldo: puntos mientras carga el geojson
+  // Respaldo: puntos (mientras carga el geojson o si no cargó), coloreados por la capa activa
+  const maxVotesP = Math.max(1, ...rows.map(m => m.votos_total || 0));
   const visible = rows.filter(m => m.lat != null && m.lon != null).slice(0, 950);
   visible.forEach(m => {
-    const mk = L.circleMarker([m.lat, m.lon], { radius: markerRadius(m), color: '#fff', weight: 1.4, fillColor: COL[m.estado], fillOpacity: .88 }).addTo(markerLayer);
+    const mk = L.circleMarker([m.lat, m.lon], { radius: markerRadius(m), color: '#fff', weight: 1.4, fillColor: fillFor({ cepeda: m.cepeda, swing: m.swing, votos: m.votos_total }, mapMode, maxVotesP), fillOpacity: .9 }).addTo(markerLayer);
     mk.bindTooltip(`<b>${m.municipio}</b><br>${m.depto}<br>Cepeda ${pct(m.cepeda)} · ${pts(m.swing)}<br>${fmt(m.votos_total)} votos`);
     mk.on('click', () => selectMun(m.slug, true));
   });
+  if (mapLegend) mapLegend.remove();
+  mapLegend = L.control({ position: 'bottomright' });
+  mapLegend.onAdd = () => { const d = L.DomUtil.create('div', 'maplg'); d.innerHTML = legendHtml(mapMode); return d; };
+  mapLegend.addTo(map);
   if (visible.length && selectedDept !== 'todos') map.fitBounds(visible.map(m => [m.lat, m.lon]), { padding: [24, 24] });
   else map.setView([4.8, -74.2], 5);
 }
