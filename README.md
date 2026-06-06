@@ -59,8 +59,8 @@ source("webapp/build_data.R")   # reescribe webapp/data.js
 - **Bogotá**: además, galería de capas (localidad, estrato, UPZ, edad) con su análisis.
 
 ## Identidad visual
-Colores oficiales de la *Línea gráfica Iván Cepeda 2026*: morado **#544595**, naranja **#F3930D**,
-magenta **#874088**; tipografía **Nunito Sans**. Para el logo oficial, deja `webapp/img/logo.png`
+Colores oficiales de la *Nueva línea gráfica Iván Cepeda — "Me la juego por la vida"*: azul eléctrico **#2B37D6**, ámbar **#F9A01B**,
+naranja-rojo **#F4501E** (+ blanco). Tipografía: titulares **Anton** (sustituto web libre de *Kurdis*) y texto **Nunito Sans**. Para el logo oficial, deja `webapp/img/logo.png`
 (aparece solo; si no, queda el recuadro provisional).
 
 ## Datos que necesita `build_data.R`

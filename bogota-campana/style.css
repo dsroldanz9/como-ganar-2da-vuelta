@@ -1,17 +1,17 @@
 :root {
-  --brand: #544595;
-  --brand-dark: #332760;
-  --purple-soft: #f2eef9;
-  --accent: #f3930d;
+  --brand: #2B37D6;
+  --brand-dark: #1D268F;
+  --purple-soft: #EAEDFF;
+  --accent: #F9A01B;
   --orange-soft: #fff4e2;
-  --danger: #c7312b;
+  --danger: #F4501E;
   --danger-soft: #fff0ed;
   --blue: #2474a6;
   --blue-soft: #edf7fc;
-  --ink: #25233a;
+  --ink: #1C1F45;
   --muted: #66657a;
-  --line: #e2dded;
-  --bg: #f8f6fc;
+  --line: #DFE3FB;
+  --bg: #F6F7FE;
   --stable: #8d97a8;
 }
 
@@ -88,7 +88,7 @@ a { color: inherit; }
 .hero {
   color: #fff;
   background:
-    linear-gradient(135deg, rgba(84,69,149,.97), rgba(135,64,136,.9)),
+    linear-gradient(135deg, rgba(43,55,214,.97), rgba(29,38,143,.9)),
     url("../img/hero_brand.webp") center/cover;
 }
 .hero-in {
@@ -255,7 +255,7 @@ input {
 .line-card[data-line="L2"]::before { background: var(--brand); }
 .line-card[data-line="L3"]::before { background: var(--accent); }
 .line-card.active {
-  outline: 3px solid rgba(84,69,149,.16);
+  outline: 3px solid rgba(43,55,214,.16);
   background: var(--purple-soft);
 }
 .line-card h3 {
@@ -735,4 +735,11 @@ td strong { color: var(--ink); }
   #map { height: 520px; min-height: 420px; }
   .panel-head { display: block; }
   .legend { justify-content: flex-start; margin-top: 10px; }
+}
+/* === Nueva línea gráfica Iván Cepeda "Me la juego por la vida" — titulares Anton === */
+h1, .hero h1, .title, .brand-t, .hero-title, .brand-name, .wordmark {
+  font-family: "Anton", "Nunito Sans", system-ui, sans-serif;
+  font-weight: 400;
+  letter-spacing: .5px;
+  text-transform: uppercase;
 }

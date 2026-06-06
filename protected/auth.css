@@ -1,7 +1,7 @@
 :root {
-  --auth-brand: #544595;
-  --auth-accent: #f3930d;
-  --auth-ink: #25233a;
+  --auth-brand: #2B37D6;
+  --auth-accent: #F9A01B;
+  --auth-ink: #1C1F45;
   --auth-muted: #68667c;
   --auth-line: #e3deef;
 }
@@ -14,7 +14,7 @@
   place-items: center;
   padding: 22px;
   background:
-    linear-gradient(135deg, rgba(84, 69, 149, .96), rgba(135, 64, 136, .93));
+    linear-gradient(135deg, rgba(43,55,214, .96), rgba(29,38,143, .93));
   color: var(--auth-ink);
 }
 
@@ -93,7 +93,7 @@
 .auth-error {
   min-height: 20px;
   margin: 0;
-  color: #c7312b;
+  color: #F4501E;
   font-size: .9rem;
   font-weight: 800;
 }
@@ -102,7 +102,7 @@
   padding: 13px 22px;
   border-top: 1px solid var(--auth-line);
   color: var(--auth-muted);
-  background: #f8f6fc;
+  background: #F6F7FE;
   font-size: .86rem;
   line-height: 1.35;
 }
