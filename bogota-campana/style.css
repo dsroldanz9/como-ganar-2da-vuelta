@@ -743,3 +743,8 @@ h1, .hero h1, .title, .brand-t, .hero-title, .brand-name, .wordmark {
   letter-spacing: .5px;
   text-transform: uppercase;
 }
+
+/* Emblema oficial (cuadrado) en cabecera */
+header img, .brand img, .logo-img { height:52px !important; width:auto !important; max-width:none !important; background:transparent !important; padding:0 !important; border-radius:50
+/* Emblema oficial (cuadrado) en cabecera */
+header img, .brand img, .logo-img { height:52px !important; width:auto !important; max-width:none !important; background:transparent !important; padding:0 !important; border-radius:50% !important; }
