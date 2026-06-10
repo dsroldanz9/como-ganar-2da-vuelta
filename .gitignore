@@ -60,3 +60,10 @@ ciudades-campana/metodologia-segmentacion.html
 ciudades-campana/metodo_data.js
 ciudades-campana/img_metodo/
 metodologia-segmentacion.pdf
+
+# Informe PCA modelo (solo-PDF, datos en claro)
+ciudades-campana/pca-modelo.html
+ciudades-campana/pca.app.js
+ciudades-campana/pca_data.js
+ciudades-campana/img_pca/
+pca-modelo.pdf
