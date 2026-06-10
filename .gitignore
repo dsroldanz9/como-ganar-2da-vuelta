@@ -48,3 +48,9 @@ optimizacion-fuerzas-bogota.pdf
 # Shapefiles crudos de la Lotería (solo se publica loteria.geo.js generado)
 Loteria/
 bogota-campana-v2/Loteria/
+
+# Informe aglomeraciones Bogotá (solo-PDF, datos en claro)
+ciudades-campana/aglomeraciones-bogota.html
+ciudades-campana/aglo.app.js
+ciudades-campana/aglo_data.js
+aglomeraciones-bogota.pdf
