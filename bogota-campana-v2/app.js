@@ -180,7 +180,8 @@
     query: "",
     active: null,
     showBarrios: true,
-    showAglomeraciones: false
+    showAglomeraciones: false,
+    showLoteria: false
   };
 
   const locByKey = new Map(data.localidades.map((d) => [d.key, d]));
@@ -210,6 +211,7 @@
     mapSubtitle: document.getElementById("mapSubtitle"),
     toggleBarrios: document.getElementById("toggleBarrios"),
     toggleAglomeraciones: document.getElementById("toggleAglomeraciones"),
+    toggleLoteria: document.getElementById("toggleLoteria"),
     clearMap: document.getElementById("clearMapBtn"),
     fitMap: document.getElementById("fitMapBtn"),
     methodology: document.getElementById("methodology"),
@@ -443,6 +445,7 @@
   let mapLayer;
   let barrioLayer;
   let agloLayer;
+  let loteriaLayer;
   let baseBounds;
 
   function initMap() {
@@ -452,6 +455,7 @@
       maxZoom: 19
     }).addTo(map);
     mapLayer = L.layerGroup().addTo(map);
+    loteriaLayer = L.layerGroup().addTo(map);
     barrioLayer = L.layerGroup().addTo(map);
     agloLayer = L.layerGroup().addTo(map);
   }
@@ -548,6 +552,17 @@
   function drawOptionalLayers() {
     barrioLayer.clearLayers();
     agloLayer.clearLayers();
+    loteriaLayer.clearLayers();
+    if (state.showLoteria && window.LOTERIA_GEO) {
+      const col = { 1: "#ffd27f", 2: "#f7a40d", 3: "#d6453d" };
+      const lab = { 1: "baja", 2: "media", 3: "alta" };
+      L.geoJSON(window.LOTERIA_GEO, {
+        style: (f) => ({ stroke: false, fillColor: col[f.properties.nivel] || "#f7a40d", fillOpacity: .42 }),
+        onEachFeature: (f, lyr) => lyr.bindTooltip(
+          `<div class="map-tip"><strong>Lotería · aglomeración</strong><span>Concurrencia ${lab[f.properties.nivel] || f.properties.nivel} (nivel ${f.properties.nivel}/3)</span><span>Zonas de mayor flujo de personas (puntos de venta)</span></div>`,
+          { sticky: true })
+      }).addTo(loteriaLayer);
+    }
     const rows = filteredPuestos();
 
     if (state.showBarrios) {
@@ -1216,6 +1231,10 @@
     });
     els.toggleAglomeraciones.addEventListener("change", () => {
       state.showAglomeraciones = els.toggleAglomeraciones.checked;
+      drawOptionalLayers();
+    });
+    if (els.toggleLoteria) els.toggleLoteria.addEventListener("change", () => {
+      state.showLoteria = els.toggleLoteria.checked;
       drawOptionalLayers();
     });
     els.clearMap.addEventListener("click", () => {

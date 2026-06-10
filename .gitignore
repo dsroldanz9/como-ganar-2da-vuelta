@@ -30,3 +30,21 @@ _export_base_municipios.R
 priorizacion_estrategica_bogota_modelos.docx
 tablero_13_ciudades_completo.xlsx
 protected/users.json.bak
+
+# Informe L2 seguridad (solo-PDF, datos en claro -> NO publicar)
+ciudades-campana/informe-seguridad-l2.html
+ciudades-campana/informe.app.js
+ciudades-campana/informe_data.js
+ciudades-campana/informe.css
+ciudades-campana/img_informe/
+informe-seguridad-l2.pdf
+
+# Optimización de fuerzas Bogotá (solo-PDF, datos en claro)
+ciudades-campana/optimizacion-fuerzas-bogota.html
+ciudades-campana/optim.app.js
+ciudades-campana/optim_data.js
+optimizacion-fuerzas-bogota.pdf
+
+# Shapefiles crudos de la Lotería (solo se publica loteria.geo.js generado)
+Loteria/
+bogota-campana-v2/Loteria/
