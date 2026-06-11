@@ -67,3 +67,23 @@ ciudades-campana/pca.app.js
 ciudades-campana/pca_data.js
 ciudades-campana/img_pca/
 pca-modelo.pdf
+
+# Cronograma de campo Bogotá (solo-PDF, datos en claro)
+ciudades-campana/cronograma-campo-bogota.html
+ciudades-campana/campo.app.js
+ciudades-campana/campo_data.js
+Cronograma_Campo_Bogota.pdf
+
+# Plan de pauta/movilización Bogotá (solo-PDF, datos en claro)
+ciudades-campana/plan-pauta-bogota.html
+Plan_Pauta_Movilizacion_Bogota.pdf
+
+# Brief de evidencia online 2da vuelta (solo-PDF, datos en claro)
+ciudades-campana/evidencia-online-2davuelta.html
+Evidencia_Online_2daVuelta.pdf
+
+# Pauta por barrio Bogotá (solo-PDF, datos en claro)
+ciudades-campana/pauta-barrios-bogota.html
+ciudades-campana/barrios.app.js
+ciudades-campana/barrios_data.js
+Pauta_Barrios_Bogota.pdf

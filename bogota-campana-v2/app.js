@@ -22,6 +22,42 @@
       if (LINE_BY_CLUSTER[m.cluster]) r.linea = LINE_BY_CLUSTER[m.cluster];
     } else { r.cluster = 0; r.segmento = "Sin clasificar"; r._v2 = null; }
   });
+  // Los puestos del bundle traen 'linea' con la numeración heredada (la base afín figuraba
+  // como L2). Se reasigna cada puesto a la línea de su UPZ real (cluster autoritativo)
+  // por punto-en-polígono, igual que la capa de UPZ del mapa.
+  {
+    const upzLineaByKey = new Map((data.upz || [])
+      .filter((r) => r._v2 && LINE_BY_CLUSTER[r.cluster])
+      .map((r) => [normKey(r.upz_key), r.linea]));
+    const byCode = new Map((data.puestos || []).map((d) => [String(d.cod_puesto), d]));
+    const polys = (geo.upz?.features || []).map((f) => {
+      const g = f.geometry || {};
+      const rings = g.type === "Polygon" ? [g.coordinates] : g.type === "MultiPolygon" ? g.coordinates : [];
+      let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+      rings.forEach((poly) => (poly[0] || []).forEach(([x, y]) => {
+        if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y;
+      }));
+      return { k: normKey(f.properties.upz_key), rings, x0, y0, x1, y1 };
+    }).filter((p) => upzLineaByKey.has(p.k));
+    const inRing = (x, y, ring) => {
+      let ins = false;
+      for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+        const xi = ring[i][0], yi = ring[i][1], xj = ring[j][0], yj = ring[j][1];
+        if ((yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi) ins = !ins;
+      }
+      return ins;
+    };
+    const inPoly = (x, y, p) => p.rings.some((poly) =>
+      inRing(x, y, poly[0]) && !poly.slice(1).some((h) => inRing(x, y, h)));
+    (geo.puestos?.features || []).forEach((f) => {
+      const c = f.geometry?.coordinates; if (!c) return;
+      const row = byCode.get(String(f.properties.cod_puesto)); if (!row) return;
+      for (const p of polys) {
+        if (c[0] < p.x0 || c[0] > p.x1 || c[1] < p.y0 || c[1] > p.y1) continue;
+        if (inPoly(c[0], c[1], p)) { row.linea = upzLineaByKey.get(p.k); break; }
+      }
+    });
+  }
   function clusterScore(r) {
     // Índice de prioridad 0-100 precalculado: z-score (estandarización) intra-segmento,
     // promedio simple de las variables orientadas (pesos iguales). Coherente con el k-means.
