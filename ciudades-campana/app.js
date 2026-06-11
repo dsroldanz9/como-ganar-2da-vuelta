@@ -8,9 +8,9 @@
   Object.entries(data.barriosData || {}).forEach(([sl, arr]) => arr.forEach((b) => barrioByKey.set(sl + "|" + b.k, b)));
   const hasBarrio = (sl) => (data.barrioCiudades || []).includes(sl) && barriosGeo[sl];
 
-  const CL_COLOR = { 1: "#7b2ff7", 2: "#c8d400", 3: "#2746e6", 4: "#8a94a6" };
+  const CL_COLOR = { 1: "#3B49EA", 2: "#c8d400", 3: "#2746e6", 4: "#8a94a6" };
   const SEG_SHORT = { 1: "Base afín", 2: "Alta competencia", 3: "Derecha en avance", 4: "No priorizado" };
-  const TIER_COLOR = { "Fortín": "#7b2ff7", "En disputa": "#c8d400", "Escenario difícil": "#2746e6" };
+  const TIER_COLOR = { "Fortín": "#3B49EA", "En disputa": "#c8d400", "Escenario difícil": "#2746e6" };
   const PERF = {}; (data.perfiles || []).forEach((p) => { PERF[p.key] = p; });
   const perfColor = (c) => (c && PERF[c.perf]) ? PERF[c.perf].color : "#9aa3b2";
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (m) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m]));
@@ -193,9 +193,9 @@
     els.votoPanel.innerHTML = head + `
       <div class="voto-block">
         <h4>Cómo votó <small>(% de votos válidos, 1ª vuelta 2026)</small></h4>
-        ${bar("Izquierda · Cepeda", t.cepeda, "#7b2ff7")}
+        ${bar("Izquierda · Cepeda", t.cepeda, "#3B49EA")}
         ${bar("Centro · Fajardo + C. López", t.centro, "#8a94a6")}
-        ${bar("Derecha · Abelardo + Paloma", t.der, "#f3930d")}
+        ${bar("Derecha · Abelardo + Paloma", t.der, "#F9A01B")}
       </div>
       <div class="voto-block">
         <h4>Perfil etario <small>(${ageLab})</small></h4>
