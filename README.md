@@ -1,4 +1,21 @@
-# Cómo ganar la segunda vuelta — análisis comparado (13 ciudades)
+# Mapa de la Resistencia · Colombia 2026
+
+Lo que empezó como una herramienta para **ganar** la segunda vuelta hoy es una **evaluación** de lo que pasó
+y un mapa de lo que sigue. Somos la mitad del país: 12,7 millones de votos. Esta es la lectura territorial,
+con ánimo y datos abiertos, de dónde resistió el voto, dónde se decidió la elección, cómo cambió frente a
+hace cuatro años, y dónde consolidar y recuperar.
+
+- **App nueva:** [`resistencia/`](resistencia/) — mapa municipal nacional con cuatro modos (Resistencia,
+  2ª vuelta, 1ª vuelta, Cambio 2022→2026), evaluación por departamento (dónde se decidió / dónde resistió /
+  dónde nos desgastamos) y rutas de acción (consolidar, recuperar, cuidar). Datos en `resistencia/data.js`,
+  generados por `_build_resistencia.R` desde el preconteo de 1ª vuelta, el boletín de escrutinio de 2ª vuelta
+  y el archivo MMV de 2022.
+- **Resultado base:** Cepeda 12.697.154 (49,5% a dos) · 400 municipios y 19 departamentos ganados ·
+  se decidió en Antioquia (−1,05 M) · resistió en Valle, Nariño, Cauca y Bogotá.
+
+---
+
+## (Histórico) Cómo ganar la segunda vuelta — análisis comparado (13 ciudades)
 
 Sitio **estático** (sin servidor) de análisis **comparado** ciudad por ciudad de cara a la 2ª vuelta
 2026: dónde se perdió el voto frente a 2022, a qué público hablarle y hacia dónde ir. El landing es

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mapa de la Resistencia · Colombia 2026</title>
+<meta name="description" content="Evaluación territorial de la segunda vuelta presidencial 2026: dónde resistió el voto, dónde se decidió la elección, la transición 2022→2026 y rutas para consolidar y recuperar." />
+<meta name="author" content="Daniel Santiago Roldán" />
+<meta name="robots" content="noindex, noarchive, noimageindex" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700;6..12,800;6..12,900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<header class="top">
+  <div class="wrap top-in">
+    <img class="logo" src="../img/brand_lockup.webp" alt="Iván Cepeda · Aída Quilcué · Pacto Histórico">
+    <a class="back" href="../">← Volver al inicio</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Segunda vuelta presidencial · 21 de junio de 2026</p>
+    <h1>Mapa de la Resistencia</h1>
+    <p class="lead">Somos <b>la mitad del país</b>. Doce millones setecientos mil votos sostuvieron el proyecto del cambio en la segunda vuelta. Este es el mapa de dónde resistió esa fuerza, dónde se decidió la elección, cómo cambió frente a hace cuatro años, y dónde hay que consolidar y recuperar para lo que viene. Datos abiertos, lectura por territorio, ánimo de seguir.</p>
+    <div class="kpis">
+      <div class="kpi"><b id="k-votos">—</b><span>votos por Cepeda<br>en 2ª vuelta</span></div>
+      <div class="kpi"><b id="k-pct">—</b><span>a dos candidatos<br>(récord de la izquierda)</span></div>
+      <div class="kpi"><b id="k-mun">—</b><span>municipios<br>ganados</span></div>
+      <div class="kpi"><b id="k-dep">—</b><span>departamentos<br>ganados</span></div>
+    </div>
+  </div>
+</section>
+
+<main class="wrap">
+  <section class="panel">
+    <div class="panel-head">
+      <div><h2>El mapa, municipio a municipio</h2><p>Elige qué mostrar. Cada área es un municipio; pasa el cursor o haz clic para ver su detalle.</p></div>
+      <div class="modes" id="modes">
+        <button data-mode="resistencia" class="active" type="button">Resistencia</button>
+        <button data-mode="v2" type="button">2ª vuelta</button>
+        <button data-mode="v1" type="button">1ª vuelta</button>
+        <button data-mode="swing" type="button">Cambio 2022→2026</button>
+      </div>
+    </div>
+    <div class="map-wrap">
+      <div id="map"></div>
+      <div class="legend" id="legend"></div>
+    </div>
+    <div class="search-row">
+      <input id="q" type="search" placeholder="Busca tu municipio: Cali, Soacha, Pasto, Apartadó..." autocomplete="off">
+      <span id="qhint" class="hint"></span>
+    </div>
+  </section>
+
+  <section id="detail" class="detail" aria-live="polite"></section>
+
+  <section class="eval">
+    <article class="panel">
+      <h2>Dónde se decidió</h2>
+      <p>El mayor déficit de votos frente a la derecha. La elección se definió en el centro andino, y sobre todo en un departamento.</p>
+      <div id="rk-decidio" class="bars"></div>
+    </article>
+    <article class="panel">
+      <h2>Dónde resistió la fuerza</h2>
+      <p>La mayor ventaja en votos. El Pacífico, el Caribe y las grandes ciudades sostuvieron el proyecto.</p>
+      <div id="rk-resistio" class="bars"></div>
+    </article>
+  </section>
+
+  <section class="panel">
+    <h2>La transición 2022 → 2026</h2>
+    <p>Frente a la segunda vuelta de 2022, el voto a dos candidatos cayó <b id="k-swing">—</b> en promedio. La caída fue pareja, y pesó más en nuestros propios bastiones: ahí está la tarea de reconquista.</p>
+    <div id="rk-desgaste" class="bars wide"></div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <div><h2>Rutas de acción</h2><p>Dónde consolidar lo ganado y dónde recuperar. Haz clic en un municipio para abrir su detalle.</p></div>
+      <div class="tabs" id="tabs">
+        <button data-tab="bastiones" class="active" type="button">Consolidar (bastiones)</button>
+        <button data-tab="recuperar" type="button">Recuperar (cerca)</button>
+        <button data-tab="desgaste_mun" type="button">Cuidar (se desgastaron)</button>
+      </div>
+    </div>
+    <div id="routes" class="routes"></div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <p><b>Cómo se construye.</b> Resultados oficiales de la Registraduría: preconteo de 1ª vuelta y boletín de escrutinio de 2ª vuelta 2026, comparados con la 1ª y 2ª vuelta de 2022 (archivo MMV). El voto a dos candidatos compara a Cepeda con la derecha. El análisis se presenta por territorio, no por persona.</p>
+    <p><b>Autor de los datos y el análisis:</b> Daniel Santiago Roldán · @RoldnSantiago. Datos públicos y abiertos. <span id="gen"></span></p>
+  </div>
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
