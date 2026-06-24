@@ -4,6 +4,9 @@ var D = window.RES_DATA; if(!D){ return; }
 var R = D.resumen;
 var byslug = {}; D.municipios.forEach(function(m){ byslug[m.slug]=m; });
 var PUE = window.RES_PUESTOS || {};
+var GEO = window.APP_GEO || {};
+var GEOKEY = {"bogota d.c.":"bogota","medellin":"medellin","cali":"cali","barranquilla":"barranquilla","cartagena":"cartagena","cucuta":"cucuta","bucaramanga":"bucaramanga","ibague":"ibague","pereira":"pereira","santa marta":"santamarta","villavicencio":"villavicencio","manizales":"manizales","pasto":"pasto"};
+function semaforo(p){ if(p==null) return "#cfc8dc"; if(p>=55) return "#1f9e4f"; if(p>=50) return "#F2C516"; if(p>=45) return "#E8702A"; return "#C0392B"; }
 var fmt = function(n){ return (n==null?"—":Number(n).toLocaleString("es-CO")); };
 var sgn = function(n){ return (n>=0?"+":"")+ (Math.round(n*10)/10).toString().replace(".",","); };
 var pc  = function(n){ return (n==null?"—":(Math.round(n*10)/10).toString().replace(".",",")+"%"); };
@@ -48,6 +51,7 @@ var map = L.map("map",{scrollWheelZoom:false, attributionControl:false, zoomCont
 L.tileLayer("https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png",{maxZoom:12,subdomains:"abcd"}).addTo(map);
 var layer=null, selected=null;
 var puestoLayer = L.layerGroup().addTo(map);
+var cityGeoLayer = L.layerGroup().addTo(map);
 function style(f){ var m=byslug[f.properties.slug];
   return { fillColor:colorFor(m,MODE), weight:.4, color:"#fff", fillOpacity:m?0.9:0.5 }; }
 function onEach(f,lyr){
@@ -111,7 +115,7 @@ function openDetail(m){
     +(m.won?"ganó":"no alcanzó")+" el municipio. En primera vuelta partía de "+pc(m.c1)
     +". Frente a 2022, "+(m.sw>=0?"creció ":"cayó ")+sgn(m.sw).replace("+","")+" puntos. <b>Estrategia — "+m.ruta+":</b> "+rutaTxt(m);
   var link = cityLink(m);
-  el.innerHTML="<div class='card'><div class='dh'><h3>"+m.nm+"</h3><span class='dep'>"+m.dnm+"</span> "+badge+"<span class='ruta-tag'>"+m.ruta+"</span></div>"
+  el.innerHTML="<div class='card'><button class='backlink' type='button'>← Volver al mapa nacional</button><div class='dh'><h3>"+m.nm+"</h3><span class='dep'>"+m.dnm+"</span> "+badge+"<span class='ruta-tag'>"+m.ruta+"</span></div>"
     +"<div class='stats'>"
     +"<div class='stat'><b>"+pc(m.c2)+"</b><span>2ª vuelta (a dos)</span></div>"
     +"<div class='stat'><b>"+pc(m.c1)+"</b><span>1ª vuelta</span></div>"
@@ -122,11 +126,12 @@ function openDetail(m){
     +"<div class='stat'><b>"+sgn(m.mob)+"%</b><span>movilización 1v→2v</span></div>"
     +"<div class='stat'><b>"+fmt(m.v2)+"</b><span>votos válidos 2ª v.</span></div>"
     +"</div><p class='txt'>"+txt+"</p>"+link+puestosBlock(m)+"</div>";
-  // mapa: seleccionar polígono + puntos de puesto + zoom
+  // mapa: seleccionar polígono + segmentación de ciudad + zoom
   if(layer) layer.eachLayer(function(l){ if(l.feature.properties.slug===m.slug) selectLayer(l); });
-  var pts = showPuestosOnMap(m);
-  if(pts && pts.length){ map.fitBounds(pts,{padding:[40,40],maxZoom:13}); }
+  var b = showCityOnMap(m);
+  if(b && b.isValid && b.isValid()){ map.fitBounds(b,{padding:[40,40],maxZoom:13}); }
   else if(layer){ layer.eachLayer(function(l){ if(l.feature.properties.slug===m.slug) map.fitBounds(l.getBounds(),{maxZoom:9,padding:[30,30]}); }); }
+  document.getElementById("resetMap").hidden=false;
   el.scrollIntoView({behavior:"smooth",block:"nearest"});
 }
 function puestosBlock(m){
@@ -139,16 +144,37 @@ function puestosBlock(m){
   return "<div class='puestos'><h4>Puestos de votación · "+ps.length+" en el municipio · "+ng+" ubicados en el mapa</h4>"
     +"<div class='ptbl'><table class='lst'><tr><th>Puesto</th><th class='r'>Zona</th><th class='r'>% Cepeda 2ª v.</th><th class='r'>Votos</th></tr>"+rows+"</table></div>"+more+"</div>";
 }
-function showPuestosOnMap(m){
-  puestoLayer.clearLayers();
-  var ps=(PUE[m.slug]||[]).filter(function(p){return p.la!=null;});
-  if(!ps.length) return null;
-  var pts=[];
-  ps.forEach(function(p){ var c=p.c2>=50?'#4a2f86':'#E0712F';
-    var mk=L.circleMarker([p.la,p.lo],{radius:4+Math.min(9,Math.sqrt(p.v)/11),color:'#fff',weight:.7,fillColor:c,fillOpacity:.88});
-    mk.bindTooltip("<b>"+p.p+"</b><br>Cepeda "+pc(p.c2)+" · "+fmt(p.v)+" votos",{direction:'top'});
-    mk.addTo(puestoLayer); pts.push([p.la,p.lo]); });
-  return pts;
+function showCityOnMap(m){
+  puestoLayer.clearLayers(); cityGeoLayer.clearLayers();
+  var bounds=null, gk=GEOKEY[nk(m.nm)];
+  if(gk && GEO[gk]){
+    var gl=L.geoJSON(GEO[gk],{ style:function(f){ return {fillColor:semaforo(f.properties.apoyo), weight:.8, color:"#fff", fillOpacity:.5}; },
+      onEachFeature:function(f,ly){ var p=f.properties; ly.bindTooltip("<b>"+p.comuna+"</b><br>Apoyo 1ª v.: "+pc(p.apoyo)+" · cambio "+sgn(p.swing)+" · "+fmt(p.votos)+" votos",{sticky:true}); } });
+    gl.addTo(cityGeoLayer); bounds=gl.getBounds();
+  }
+  var ps=(PUE[m.slug]||[]).filter(function(p){return p.la!=null;}), pts=[];
+  ps.forEach(function(p){ var mk=L.circleMarker([p.la,p.lo],{radius:4+Math.min(9,Math.sqrt(p.v)/11),color:"#fff",weight:.7,fillColor:semaforo(p.c2),fillOpacity:.92});
+    mk.bindTooltip("<b>"+p.p+"</b><br>Cepeda 2ª v. "+pc(p.c2)+" · "+fmt(p.v)+" votos",{direction:"top"}); mk.addTo(puestoLayer); pts.push([p.la,p.lo]); });
+  if(pts.length){ if(bounds&&bounds.isValid()) pts.forEach(function(c){bounds.extend(c);}); else bounds=L.latLngBounds(pts); }
+  if(gk || pts.length) semaLegend(!!(gk&&GEO[gk]), pts.length); else document.getElementById("plegend").hidden=true;
+  return bounds;
+}
+function semaLegend(hasComuna, np){
+  var el=document.getElementById("plegend"); el.hidden=false;
+  el.innerHTML="<h4>"+(np?("Puestos 2ª vuelta · "+np):"Segmentación")+"</h4>"
+    +"<div class='row'><i style='background:#1f9e4f'></i> Ganamos (≥55%)</div>"
+    +"<div class='row'><i style='background:#F2C516'></i> Ajustado (50–55%)</div>"
+    +"<div class='row'><i style='background:#E8702A'></i> Perdimos por poco (45–50%)</div>"
+    +"<div class='row'><i style='background:#C0392B'></i> Perdimos por mucho (&lt;45%)</div>"
+    +(hasComuna?"<div class='row' style='margin-top:5px;opacity:.85'>Áreas = comuna/localidad (apoyo 1ª v.)</div>":"");
+}
+function resetMap(){
+  puestoLayer.clearLayers(); cityGeoLayer.clearLayers();
+  document.getElementById("plegend").hidden=true;
+  if(selected){ layer.resetStyle(selected); selected=null; }
+  if(layer) map.fitBounds(layer.getBounds(),{padding:[6,6]});
+  document.getElementById("resetMap").hidden=true;
+  document.getElementById("detail").innerHTML="";
 }
 
 // ---- search ----
@@ -237,4 +263,6 @@ function renderDept(name){
 document.getElementById("deptPanel").addEventListener("click", function(e){
   var b=e.target.closest(".muni"); if(!b) return; var m=byslug[b.dataset.slug]; if(m) openDetail(m);
 });
+document.getElementById("resetMap").addEventListener("click", resetMap);
+document.getElementById("detail").addEventListener("click", function(e){ if(e.target.closest(".backlink")) resetMap(); });
 })();

@@ -31,6 +31,11 @@ main{ padding:24px 0 40px; }
 .map-wrap{ position:relative; }
 #map{ height:560px; border-radius:12px; border:1px solid var(--line); background:#eef0f4; }
 .legend{ position:absolute; right:12px; bottom:12px; background:rgba(255,255,255,.95); border:1px solid var(--line); border-radius:10px; padding:9px 11px; font-size:.72rem; z-index:500; box-shadow:0 1px 6px rgba(0,0,0,.08); }
+.plegend{ right:auto; left:12px; bottom:12px; }
+.mapbtn{ position:absolute; top:12px; right:12px; z-index:600; background:var(--morado); color:#fff; border:none; border-radius:999px; font-weight:800; font-size:.8rem; padding:8px 14px; cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,.25); }
+.mapbtn:hover{ background:var(--morado-d); }
+.backlink{ background:none; border:none; color:var(--morado); font-weight:800; font-size:.82rem; cursor:pointer; padding:0 0 8px; }
+.backlink:hover{ text-decoration:underline; }
 .legend h4{ margin:0 0 6px; font-size:.7rem; text-transform:uppercase; letter-spacing:.04em; color:var(--gris); }
 .legend .row{ display:flex; align-items:center; gap:6px; margin:2px 0; }
 .legend i{ width:14px; height:14px; border-radius:3px; display:inline-block; }

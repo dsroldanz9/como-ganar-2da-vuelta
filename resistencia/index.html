@@ -46,8 +46,10 @@
       </div>
     </div>
     <div class="map-wrap">
+      <button id="resetMap" class="mapbtn" type="button" hidden>⟲ Ver todo el país</button>
       <div id="map"></div>
       <div class="legend" id="legend"></div>
+      <div class="legend plegend" id="plegend" hidden></div>
     </div>
     <div class="search-row">
       <input id="q" type="search" placeholder="Busca tu municipio: Cali, Soacha, Pasto, Apartadó..." autocomplete="off">
@@ -128,6 +130,7 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="data.js"></script>
 <script src="puestos.js"></script>
+<script src="../geo.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
