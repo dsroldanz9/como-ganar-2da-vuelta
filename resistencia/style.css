@@ -80,6 +80,15 @@ main{ padding:24px 0 40px; }
 .deepbtn:hover{ border-color:var(--morado); }
 .deepbtn b{ color:var(--morado-d); font-size:1rem; } .deepbtn span{ display:block; font-size:.78rem; color:var(--gris); margin-top:3px; }
 @media(max-width:740px){ .deep-row{ grid-template-columns:1fr; } }
+.dsel{ display:flex; flex-direction:column; gap:3px; } .dsel span{ font-size:.7rem; color:var(--gris); font-weight:700; }
+#deptSel{ padding:9px 12px; border:1px solid var(--line); border-radius:10px; font-size:.9rem; font-family:inherit; min-width:230px; background:#fff; }
+.dept-card .dh{ display:flex; gap:10px; align-items:center; margin-bottom:8px; }
+.dept-card .dh h3{ font-family:"Archivo Black"; color:var(--morado-d); margin:0; font-size:1.2rem; }
+.mun-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:8px; margin-top:12px; }
+.puestos{ margin-top:14px; border-top:1px dashed var(--line); padding-top:10px; }
+.puestos h4{ margin:0 0 6px; color:var(--morado-d); font-size:.92rem; }
+.ptbl{ max-height:330px; overflow:auto; border:1px solid var(--line); border-radius:8px; }
+.ptbl table{ margin:0; } .ptbl th{ position:sticky; top:0; }
 .leaflet-container{ font-family:inherit; }
 @media(max-width:740px){
   .hero h1{ font-size:2rem; } .kpis{ grid-template-columns:1fr 1fr; } .eval{ grid-template-columns:1fr; }

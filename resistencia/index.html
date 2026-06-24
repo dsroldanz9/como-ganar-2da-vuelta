@@ -55,6 +55,16 @@
     </div>
   </section>
 
+  <section class="panel">
+    <div class="panel-head">
+      <div><h2>Explora por departamento</h2><p>Elige un departamento para ver su resultado agregado y luego entrar municipio por municipio (y de ahí, a sus puestos de votación).</p></div>
+      <label class="dsel"><span>Departamento</span>
+        <select id="deptSel"><option value="">Selecciona…</option></select>
+      </label>
+    </div>
+    <div id="deptPanel"></div>
+  </section>
+
   <section id="detail" class="detail" aria-live="polite"></section>
 
   <section class="eval">
@@ -110,12 +120,14 @@
 <footer class="foot">
   <div class="wrap">
     <p><b>Cómo se construye.</b> Resultados oficiales de la Registraduría: preconteo de 1ª vuelta y boletín de escrutinio de 2ª vuelta 2026, comparados con la 1ª y 2ª vuelta de 2022 (archivo MMV). El voto a dos candidatos compara a Cepeda con la derecha. El análisis se presenta por territorio, no por persona.</p>
+    <p><b>Detalle por puesto de votación:</b> cubre todo el país (más de 14.000 puestos, del detalle por mesa de 2ª vuelta). La cobertura varía: la ubicación en el mapa existe donde hay georreferenciación oficial (cerca del 80% de los puestos, más completa en las grandes ciudades); el resto aparece en la tabla del municipio. Para Bogotá y las 13 capitales hay vistas ampliadas con acceso del equipo.</p>
     <p><b>Autor de los datos y el análisis:</b> Daniel Santiago Roldán · @RoldnSantiago. Datos públicos y abiertos. <span id="gen"></span></p>
   </div>
 </footer>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="data.js"></script>
+<script src="puestos.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

@@ -3,6 +3,7 @@
 var D = window.RES_DATA; if(!D){ return; }
 var R = D.resumen;
 var byslug = {}; D.municipios.forEach(function(m){ byslug[m.slug]=m; });
+var PUE = window.RES_PUESTOS || {};
 var fmt = function(n){ return (n==null?"—":Number(n).toLocaleString("es-CO")); };
 var sgn = function(n){ return (n>=0?"+":"")+ (Math.round(n*10)/10).toString().replace(".",","); };
 var pc  = function(n){ return (n==null?"—":(Math.round(n*10)/10).toString().replace(".",",")+"%"); };
@@ -46,6 +47,7 @@ var MODE="resistencia";
 var map = L.map("map",{scrollWheelZoom:false, attributionControl:false, zoomControl:true}).setView([4.6,-73.8],5.4);
 L.tileLayer("https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png",{maxZoom:12,subdomains:"abcd"}).addTo(map);
 var layer=null, selected=null;
+var puestoLayer = L.layerGroup().addTo(map);
 function style(f){ var m=byslug[f.properties.slug];
   return { fillColor:colorFor(m,MODE), weight:.4, color:"#fff", fillOpacity:m?0.9:0.5 }; }
 function onEach(f,lyr){
@@ -119,8 +121,34 @@ function openDetail(m){
     +"<div class='stat'><b>"+pc(m.bl)+"</b><span>blanco 2ª v.</span></div>"
     +"<div class='stat'><b>"+sgn(m.mob)+"%</b><span>movilización 1v→2v</span></div>"
     +"<div class='stat'><b>"+fmt(m.v2)+"</b><span>votos válidos 2ª v.</span></div>"
-    +"</div><p class='txt'>"+txt+"</p>"+link+"</div>";
+    +"</div><p class='txt'>"+txt+"</p>"+link+puestosBlock(m)+"</div>";
+  // mapa: seleccionar polígono + puntos de puesto + zoom
+  if(layer) layer.eachLayer(function(l){ if(l.feature.properties.slug===m.slug) selectLayer(l); });
+  var pts = showPuestosOnMap(m);
+  if(pts && pts.length){ map.fitBounds(pts,{padding:[40,40],maxZoom:13}); }
+  else if(layer){ layer.eachLayer(function(l){ if(l.feature.properties.slug===m.slug) map.fitBounds(l.getBounds(),{maxZoom:9,padding:[30,30]}); }); }
   el.scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+function puestosBlock(m){
+  var ps = PUE[m.slug];
+  if(!ps || !ps.length) return "<p class='hint' style='margin-top:10px'>Sin detalle por puesto disponible para este municipio.</p>";
+  var ng = ps.filter(function(p){return p.la!=null;}).length;
+  var rows = ps.slice(0,40).map(function(p){
+    return "<tr><td>"+p.p+"</td><td class='r'>Z"+p.z+"</td><td class='r "+(p.c2>=50?'g':'rr')+"'>"+pc(p.c2)+"</td><td class='r'>"+fmt(p.v)+"</td></tr>"; }).join("");
+  var more = ps.length>40? "<p class='hint'>… y "+(ps.length-40)+" puestos más (orden por votos). Descarga completa en datos abiertos.</p>":"";
+  return "<div class='puestos'><h4>Puestos de votación · "+ps.length+" en el municipio · "+ng+" ubicados en el mapa</h4>"
+    +"<div class='ptbl'><table class='lst'><tr><th>Puesto</th><th class='r'>Zona</th><th class='r'>% Cepeda 2ª v.</th><th class='r'>Votos</th></tr>"+rows+"</table></div>"+more+"</div>";
+}
+function showPuestosOnMap(m){
+  puestoLayer.clearLayers();
+  var ps=(PUE[m.slug]||[]).filter(function(p){return p.la!=null;});
+  if(!ps.length) return null;
+  var pts=[];
+  ps.forEach(function(p){ var c=p.c2>=50?'#4a2f86':'#E0712F';
+    var mk=L.circleMarker([p.la,p.lo],{radius:4+Math.min(9,Math.sqrt(p.v)/11),color:'#fff',weight:.7,fillColor:c,fillOpacity:.88});
+    mk.bindTooltip("<b>"+p.p+"</b><br>Cepeda "+pc(p.c2)+" · "+fmt(p.v)+" votos",{direction:'top'});
+    mk.addTo(puestoLayer); pts.push([p.la,p.lo]); });
+  return pts;
 }
 
 // ---- search ----
@@ -134,9 +162,8 @@ q.addEventListener("input",function(){
 q.addEventListener("keydown",function(e){ if(e.key!=="Enter") return;
   var s=this.value.trim().toLowerCase(); if(!s) return;
   var hit=D.municipios.filter(function(m){ return m.nm.toLowerCase().indexOf(s)>=0; }).sort(function(a,b){return b.v2-a.v2;})[0];
-  if(hit){ openDetail(hit); flashSlug(hit.slug); }
+  if(hit){ openDetail(hit); }
 });
-function flashSlug(slug){ if(!layer) return; layer.eachLayer(function(l){ if(l.feature.properties.slug===slug){ selectLayer(l); map.fitBounds(l.getBounds(),{maxZoom:9,padding:[40,40]}); } }); }
 
 // ---- evaluation bars (departamentos) ----
 function depBars(elid, list, kind){
@@ -177,7 +204,37 @@ document.getElementById("tabs").addEventListener("click",function(e){
   renderRoute(b.dataset.tab);
 });
 document.getElementById("routes").addEventListener("click",function(e){
-  var b=e.target.closest(".muni"); if(!b) return; var m=byslug[b.dataset.slug]; if(m){ openDetail(m); flashSlug(m.slug); }
+  var b=e.target.closest(".muni"); if(!b) return; var m=byslug[b.dataset.slug]; if(m){ openDetail(m); }
 });
 renderRoute("bastiones");
+
+// ---- explorar por departamento ----
+var byDept={}; D.municipios.forEach(function(m){ (byDept[m.dnm]=byDept[m.dnm]||[]).push(m); });
+var depByName={}; D.departamentos.forEach(function(d){ depByName[d.depto]=d; });
+function renderDept(name){
+  var d=depByName[name]; if(!d){ document.getElementById("deptPanel").innerHTML=""; return; }
+  var muns=(byDept[name]||[]).slice().sort(function(a,b){return b.v2-a.v2;});
+  var estr = d.won ? (d.c2>=58?"Consolidar la base y proyectar candidaturas locales":"Cuidar lo ganado y sumar el centro")
+                   : (d.c2>=45?"Frente amplio por la vida: disputar el centro":"Sembrar y persistir");
+  var html="<div class='dept-card'><div class='dh'><h3>"+name+"</h3>"
+    +(d.won?"<span class='badge b-win'>Ganamos</span>":"<span class='badge b-lose'>Perdimos</span>")+"</div>"
+    +"<div class='stats'>"
+    +"<div class='stat'><b>"+pc(d.c2)+"</b><span>2ª vuelta (a dos)</span></div>"
+    +"<div class='stat'><b>"+sgn(d.sw)+"</b><span>cambio vs 2022</span></div>"
+    +"<div class='stat'><b>"+(d.mgv>=0?"+":"")+fmt(d.mgv)+"</b><span>margen en votos</span></div>"
+    +"<div class='stat'><b>"+d.gan+" / "+d.munis+"</b><span>municipios ganados</span></div>"
+    +"</div><p class='txt'><b>Estrategia regional:</b> "+estr+". Entra a un municipio para ver su detalle y sus puestos.</p>"
+    +"<div class='mun-grid'>"+muns.map(function(m){
+        return "<button class='muni' data-slug='"+m.slug+"'><div class='mn'>"+m.nm+"</div><div class='mv'>"+pc(m.c2)+" · "+fmt(m.v2)+" votos · "+(m.won?"ganamos":"perdimos")+"</div></button>"; }).join("")
+    +"</div></div>";
+  document.getElementById("deptPanel").innerHTML=html;
+}
+(function(){ var sel=document.getElementById("deptSel");
+  D.departamentos.slice().sort(function(a,b){return a.depto.localeCompare(b.depto);}).forEach(function(d){
+    var o=document.createElement("option"); o.value=d.depto; o.textContent=d.depto+"  ("+(d.won?"ganamos":"perdimos")+")"; sel.appendChild(o); });
+  sel.addEventListener("change", function(){ if(this.value) renderDept(this.value); });
+})();
+document.getElementById("deptPanel").addEventListener("click", function(e){
+  var b=e.target.closest(".muni"); if(!b) return; var m=byslug[b.dataset.slug]; if(m) openDetail(m);
+});
 })();
