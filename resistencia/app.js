@@ -49,15 +49,20 @@ var MODE="resistencia";
 // ---- map ----
 var map = L.map("map",{scrollWheelZoom:false, attributionControl:false, zoomControl:true}).setView([4.6,-73.8],5.4);
 L.tileLayer("https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png",{maxZoom:12,subdomains:"abcd"}).addTo(map);
+map.createPane("comunas"); map.getPane("comunas").style.zIndex=410;
+map.createPane("puntos");  map.getPane("puntos").style.zIndex=460;
 var layer=null, selected=null;
 var puestoLayer = L.layerGroup().addTo(map);
 var cityGeoLayer = L.layerGroup().addTo(map);
+var muted=false;
+var MUTE={fillColor:"#e7e4ee",fillOpacity:.28,weight:.3,color:"#fff"};
+function muteMap(on){ muted=on; if(!layer) return; if(on){ layer.eachLayer(function(l){ l.setStyle(MUTE); }); } else { layer.setStyle(style); } }
 function style(f){ var m=byslug[f.properties.slug];
   return { fillColor:colorFor(m,MODE), weight:.4, color:"#fff", fillOpacity:m?0.9:0.5 }; }
 function onEach(f,lyr){
   var m=byslug[f.properties.slug];
   lyr.on("mouseover",function(){ lyr.setStyle({weight:1.6,color:"#241a3a"}); lyr.bringToFront(); tip(m,f); });
-  lyr.on("mouseout",function(){ if(lyr!==selected) layer.resetStyle(lyr); hideTip(); });
+  lyr.on("mouseout",function(){ if(lyr!==selected){ if(muted) lyr.setStyle(MUTE); else layer.resetStyle(lyr); } hideTip(); });
   lyr.on("click",function(){ selectLayer(lyr); openDetail(m||{nm:f.properties.municipio,dnm:f.properties.depto}); });
 }
 function selectLayer(lyr){ if(selected) layer.resetStyle(selected); selected=lyr; lyr.setStyle({weight:2.2,color:"#241a3a"}); lyr.bringToFront(); }
@@ -126,7 +131,8 @@ function openDetail(m){
     +"<div class='stat'><b>"+sgn(m.mob)+"%</b><span>movilización 1v→2v</span></div>"
     +"<div class='stat'><b>"+fmt(m.v2)+"</b><span>votos válidos 2ª v.</span></div>"
     +"</div><p class='txt'>"+txt+"</p>"+link+puestosBlock(m)+"</div>";
-  // mapa: seleccionar polígono + segmentación de ciudad + zoom
+  // mapa: atenuar el resto + seleccionar polígono + segmentación de ciudad + zoom
+  muteMap(true);
   if(layer) layer.eachLayer(function(l){ if(l.feature.properties.slug===m.slug) selectLayer(l); });
   var b = showCityOnMap(m);
   if(b && b.isValid && b.isValid()){ map.fitBounds(b,{padding:[40,40],maxZoom:13}); }
@@ -148,13 +154,15 @@ function showCityOnMap(m){
   puestoLayer.clearLayers(); cityGeoLayer.clearLayers();
   var bounds=null, gk=GEOKEY[nk(m.nm)];
   if(gk && GEO[gk]){
-    var gl=L.geoJSON(GEO[gk],{ style:function(f){ return {fillColor:semaforo(f.properties.apoyo), weight:.8, color:"#fff", fillOpacity:.5}; },
+    var gl=L.geoJSON(GEO[gk],{ pane:"comunas", style:function(f){ return {fillColor:semaforo(f.properties.apoyo), weight:.8, color:"#fff", fillOpacity:.5}; },
       onEachFeature:function(f,ly){ var p=f.properties; ly.bindTooltip("<b>"+p.comuna+"</b><br>Apoyo 1ª v.: "+pc(p.apoyo)+" · cambio "+sgn(p.swing)+" · "+fmt(p.votos)+" votos",{sticky:true}); } });
     gl.addTo(cityGeoLayer); bounds=gl.getBounds();
   }
   var ps=(PUE[m.slug]||[]).filter(function(p){return p.la!=null;}), pts=[];
-  ps.forEach(function(p){ var mk=L.circleMarker([p.la,p.lo],{radius:4+Math.min(9,Math.sqrt(p.v)/11),color:"#fff",weight:.7,fillColor:semaforo(p.c2),fillOpacity:.92});
-    mk.bindTooltip("<b>"+p.p+"</b><br>Cepeda 2ª v. "+pc(p.c2)+" · "+fmt(p.v)+" votos",{direction:"top"}); mk.addTo(puestoLayer); pts.push([p.la,p.lo]); });
+  ps.forEach(function(p){ var mk=L.circleMarker([p.la,p.lo],{pane:"puntos",radius:4+Math.min(9,Math.sqrt(p.v)/11),color:"#fff",weight:.8,fillColor:semaforo(p.c2),fillOpacity:.95});
+    mk.bindTooltip("<b>"+p.p+"</b><br>Cepeda 2ª v. "+pc(p.c2)+" · "+fmt(p.v)+" votos",{direction:"top"});
+    mk.bindPopup("<b>"+p.p+"</b><br>Zona "+p.z+"<br>Cepeda 2ª vuelta: <b>"+pc(p.c2)+"</b><br>"+fmt(p.v)+" votos válidos");
+    mk.addTo(puestoLayer); pts.push([p.la,p.lo]); });
   if(pts.length){ if(bounds&&bounds.isValid()) pts.forEach(function(c){bounds.extend(c);}); else bounds=L.latLngBounds(pts); }
   if(gk || pts.length) semaLegend(!!(gk&&GEO[gk]), pts.length); else document.getElementById("plegend").hidden=true;
   return bounds;
@@ -171,7 +179,7 @@ function semaLegend(hasComuna, np){
 function resetMap(){
   puestoLayer.clearLayers(); cityGeoLayer.clearLayers();
   document.getElementById("plegend").hidden=true;
-  if(selected){ layer.resetStyle(selected); selected=null; }
+  selected=null; muteMap(false);   // restaura colores del mapa nacional
   if(layer) map.fitBounds(layer.getBounds(),{padding:[6,6]});
   document.getElementById("resetMap").hidden=true;
   document.getElementById("detail").innerHTML="";
