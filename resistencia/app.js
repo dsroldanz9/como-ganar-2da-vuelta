@@ -6,6 +6,14 @@ var byslug = {}; D.municipios.forEach(function(m){ byslug[m.slug]=m; });
 var fmt = function(n){ return (n==null?"—":Number(n).toLocaleString("es-CO")); };
 var sgn = function(n){ return (n>=0?"+":"")+ (Math.round(n*10)/10).toString().replace(".",","); };
 var pc  = function(n){ return (n==null?"—":(Math.round(n*10)/10).toString().replace(".",",")+"%"); };
+var CITIES = {"medellin":1,"cali":1,"barranquilla":1,"cartagena":1,"cucuta":1,"bucaramanga":1,"ibague":1,"pasto":1,"pereira":1,"manizales":1,"santa marta":1,"villavicencio":1};
+function nk(s){ s=(s||"").toLowerCase(); return s.replace(/á/g,"a").replace(/é/g,"e").replace(/í/g,"i").replace(/ó/g,"o").replace(/ú/g,"u").replace(/ü/g,"u"); }
+function cityLink(m){
+  var k=nk(m.nm);
+  if(m.slug==="16-001"||k.indexOf("bogot")===0) return "<a class='deeplink' href='../bogota-campana-v2/' target='_blank' rel='noopener'>Ver Bogotá puesto a puesto y por localidad (acceso del equipo) →</a>";
+  if(CITIES[k]) return "<a class='deeplink' href='../ciudades-campana/' target='_blank' rel='noopener'>Ver "+m.nm+" puesto a puesto (acceso del equipo) →</a>";
+  return "";
+}
 
 // ---- KPIs ----
 document.getElementById("k-votos").textContent = fmt(R.cep2v_total);
@@ -58,7 +66,7 @@ function tip(m,f){ if(!tipEl){ tipEl=L.DomUtil.create("div","map-tip"); tipEl.st
 function hideTip(){ if(tipEl) tipEl.style.display="none"; }
 document.getElementById("map").addEventListener("mousemove",function(e){ if(tipEl&&tipEl.style.display!=="none"){ var r=this.getBoundingClientRect(); tipEl.style.left=(e.clientX-r.left+14)+"px"; tipEl.style.top=(e.clientY-r.top+14)+"px"; }});
 
-fetch("../regiones-y-exterior/municipios.geojson").then(function(r){return r.json();}).then(function(gj){
+fetch("mapa.geojson").then(function(r){return r.json();}).then(function(gj){
   layer=L.geoJSON(gj,{style:style,onEachFeature:onEach}).addTo(map);
   map.fitBounds(layer.getBounds(),{padding:[6,6]});
 }).catch(function(){ document.getElementById("map").innerHTML="<p style='padding:20px;color:#6b647e'>El mapa carga mejor desde el sitio publicado (GitHub Pages).</p>"; });
@@ -85,28 +93,33 @@ document.getElementById("modes").addEventListener("click",function(e){
 legend();
 
 // ---- detail ----
-function rutaTxt(est){ return ({
-  bastion:"es territorio nuestro; la tarea es cuidar la organización y sacar la votación.",
-  resiste:"lo ganamos por un margen que hay que cuidar; sostener presencia y movilización.",
-  frontera:"quedó cerca; con trabajo territorial constante es recuperable.",
-  adverso:"territorio difícil; sembrar presencia de largo plazo sin dispersar recursos."
-})[est] || "mantener lectura y presencia."; }
+function rutaTxt(m){
+  switch(m.ruta){
+    case "Consolidar base": return "territorio nuestro: convertir la fuerza presidencial en estructura local —candidaturas a alcaldía, concejo y JAL— y cuidar la organización y la participación.";
+    case "Cuidar y ampliar": return "lo ganamos: asegurar con operación electoral, testigos y participación, y sumar al centro para no perderlo.";
+    case "Frente amplio por la vida": return "quedó competitivo y aquí decide el centro y el voto blando: construir un frente amplio por la vida, con empleo, costo de vida y seguridad. Hay "+pc(m.ce)+" de centro (1ª v.) y "+pc(m.bl)+" de blanco (2ª v.) por disputar.";
+    default: return "territorio difícil: sembrar presencia de largo plazo, sin dispersar recursos.";
+  }
+}
 function openDetail(m){
   var el=document.getElementById("detail");
   if(m.c2==null){ el.innerHTML="<div class='card'><div class='dh'><h3>"+m.nm+"</h3><span class='dep'>"+m.dnm+"</span></div><p class='txt'>Sin resultado enlazado para este municipio.</p></div>"; el.scrollIntoView({behavior:"smooth",block:"nearest"}); return; }
   var badge = m.won? "<span class='badge b-win'>Ganamos</span>" : "<span class='badge b-lose'>Perdimos</span>";
   var txt = m.nm+" ("+m.dnm+"). En segunda vuelta Cepeda obtuvo "+pc(m.c2)+" a dos candidatos y "
     +(m.won?"ganó":"no alcanzó")+" el municipio. En primera vuelta partía de "+pc(m.c1)
-    +". Frente a 2022, "+(m.sw>=0?"creció ":"cayó ")+sgn(m.sw).replace("+","")+" puntos. Ruta — <b>"+m.ruta+"</b>: "+rutaTxt(m.est);
-  el.innerHTML="<div class='card'><div class='dh'><h3>"+m.nm+"</h3><span class='dep'>"+m.dnm+"</span> "+badge+"</div>"
+    +". Frente a 2022, "+(m.sw>=0?"creció ":"cayó ")+sgn(m.sw).replace("+","")+" puntos. <b>Estrategia — "+m.ruta+":</b> "+rutaTxt(m);
+  var link = cityLink(m);
+  el.innerHTML="<div class='card'><div class='dh'><h3>"+m.nm+"</h3><span class='dep'>"+m.dnm+"</span> "+badge+"<span class='ruta-tag'>"+m.ruta+"</span></div>"
     +"<div class='stats'>"
     +"<div class='stat'><b>"+pc(m.c2)+"</b><span>2ª vuelta (a dos)</span></div>"
     +"<div class='stat'><b>"+pc(m.c1)+"</b><span>1ª vuelta</span></div>"
     +"<div class='stat'><b>"+sgn(m.sw)+"</b><span>cambio vs 2022</span></div>"
     +"<div class='stat'><b>"+(m.mgv>=0?"+":"")+fmt(m.mgv)+"</b><span>margen en votos</span></div>"
+    +"<div class='stat'><b>"+pc(m.ce)+"</b><span>centro 1ª v. (Fajardo+Claudia)</span></div>"
+    +"<div class='stat'><b>"+pc(m.bl)+"</b><span>blanco 2ª v.</span></div>"
     +"<div class='stat'><b>"+sgn(m.mob)+"%</b><span>movilización 1v→2v</span></div>"
     +"<div class='stat'><b>"+fmt(m.v2)+"</b><span>votos válidos 2ª v.</span></div>"
-    +"</div><p class='txt'>"+txt+"</p></div>";
+    +"</div><p class='txt'>"+txt+"</p>"+link+"</div>";
   el.scrollIntoView({behavior:"smooth",block:"nearest"});
 }
 
@@ -153,6 +166,7 @@ function renderRoute(tab){
   var list=D.rankings[tab]||[];
   document.getElementById("routes").innerHTML = list.map(function(m){
     var extra = tab==="bastiones" ? ("Cepeda "+pc(m.c2)+" · "+fmt(m.vc)+" votos")
+      : tab==="frente" ? ("Cepeda "+pc(m.c2)+" · centro "+pc(m.ce)+" · blanco "+pc(m.bl)+" · "+fmt(m.v2)+" votos")
       : ("Cepeda "+pc(m.c2)+" · vs 2022 "+sgn(m.sw)+" · "+fmt(m.v2)+" votos");
     return "<button class='muni' data-slug='"+m.slug+"'><div class='mn'>"+m.nm+"</div><div class='md'>"+m.dnm+"</div><div class='mv'>"+extra+"</div></button>";
   }).join("");

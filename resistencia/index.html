@@ -22,9 +22,9 @@
 
 <section class="hero">
   <div class="wrap">
-    <p class="eyebrow">Segunda vuelta presidencial · 21 de junio de 2026</p>
+    <p class="eyebrow">Segunda vuelta 2026 · lectura de cara a las elecciones regionales de 2027</p>
     <h1>Mapa de la Resistencia</h1>
-    <p class="lead">Somos <b>la mitad del país</b>. Doce millones setecientos mil votos sostuvieron el proyecto del cambio en la segunda vuelta. Este es el mapa de dónde resistió esa fuerza, dónde se decidió la elección, cómo cambió frente a hace cuatro años, y dónde hay que consolidar y recuperar para lo que viene. Datos abiertos, lectura por territorio, ánimo de seguir.</p>
+    <p class="lead">Somos <b>la mitad del país</b>. Doce millones setecientos mil votos sostuvieron el proyecto del cambio en la segunda vuelta. Este es el mapa de dónde resistió esa fuerza, dónde se decidió la elección y cómo cambió frente a hace cuatro años — y, sobre todo, las <b>estrategias</b> para consolidar la base y disputar el centro <b>de cara a las elecciones regionales de 2027</b> (alcaldías, gobernaciones, concejos y JAL). Datos abiertos, lectura por territorio, ánimo de seguir.</p>
     <div class="kpis">
       <div class="kpi"><b id="k-votos">—</b><span>votos por Cepeda<br>en 2ª vuelta</span></div>
       <div class="kpi"><b id="k-pct">—</b><span>a dos candidatos<br>(récord de la izquierda)</span></div>
@@ -77,15 +77,33 @@
   </section>
 
   <section class="panel">
-    <div class="panel-head">
-      <div><h2>Rutas de acción</h2><p>Dónde consolidar lo ganado y dónde recuperar. Haz clic en un municipio para abrir su detalle.</p></div>
+    <h2>Estrategias, de cara a las regionales 2027</h2>
+    <p>A cada territorio le corresponde una ruta según cómo votó y qué caudal hay por disputar (voto de centro en 1ª vuelta + voto en blanco en 2ª):</p>
+    <div class="strat-cards">
+      <div class="sc sc-cons"><b>Consolidar base</b><span>Ganamos holgado (≥58%). Convertir la fuerza en estructura local: candidaturas a alcaldía, concejo y JAL, y cuidar la organización.</span></div>
+      <div class="sc sc-cuid"><b>Cuidar y ampliar</b><span>Ganamos ajustado. Operación electoral, testigos, participación, y sumar al centro para no perderlo.</span></div>
+      <div class="sc sc-fren"><b>Frente amplio por la vida</b><span>Perdimos pero competitivo (≥45%). Disputar el centro y el voto blando con empleo, costo de vida y seguridad.</span></div>
+      <div class="sc sc-semb"><b>Sembrar</b><span>Territorio adverso. Presencia de largo plazo, sin dispersar recursos.</span></div>
+    </div>
+    <div class="panel-head" style="margin-top:14px">
+      <div><p>Municipios por estrategia. Haz clic en uno para abrir su detalle.</p></div>
       <div class="tabs" id="tabs">
-        <button data-tab="bastiones" class="active" type="button">Consolidar (bastiones)</button>
-        <button data-tab="recuperar" type="button">Recuperar (cerca)</button>
+        <button data-tab="bastiones" class="active" type="button">Consolidar base</button>
+        <button data-tab="frente" type="button">Frente amplio por la vida</button>
         <button data-tab="desgaste_mun" type="button">Cuidar (se desgastaron)</button>
       </div>
     </div>
     <div id="routes" class="routes"></div>
+  </section>
+
+  <section class="panel">
+    <h2>Detalle por puesto de votación</h2>
+    <p>Hasta donde los datos lo permiten, hay vistas puesto a puesto. Tienen <b>acceso del equipo</b> (información operativa):</p>
+    <div class="deep-row">
+      <a class="deepbtn" href="../bogota-campana-v2/" target="_blank" rel="noopener"><b>Bogotá →</b><span>Por localidad, estrato y puesto de votación</span></a>
+      <a class="deepbtn" href="../ciudades-campana/" target="_blank" rel="noopener"><b>13 capitales →</b><span>Puesto a puesto: Medellín, Cali, Barranquilla, Cartagena, Cúcuta, Bucaramanga, Ibagué, Pasto, Pereira, Manizales, Santa Marta, Villavicencio</span></a>
+    </div>
+    <p class="hint">En el resto del país el detalle llega a nivel municipio (los 1.100+ del mapa de arriba).</p>
   </section>
 </main>
 

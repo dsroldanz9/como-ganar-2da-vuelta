@@ -68,6 +68,18 @@ main{ padding:24px 0 40px; }
 .muni .mv{ font-size:.8rem; margin-top:3px; }
 .foot{ background:#efeaf7; border-top:1px solid var(--line); padding:18px 0; margin-top:24px; }
 .foot p{ font-size:.78rem; color:var(--gris); margin:4px 0; }
+.ruta-tag{ display:inline-block; padding:2px 10px; border-radius:999px; font-size:.72rem; font-weight:800; background:#efe9f8; color:var(--morado-d); }
+.deeplink{ display:inline-block; margin-top:8px; font-weight:800; font-size:.84rem; color:var(--morado-d); background:#efe9f8; border:1px solid var(--line); border-radius:8px; padding:7px 11px; text-decoration:none; }
+.deeplink:hover{ background:#e4dcf4; }
+.strat-cards{ display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:10px; }
+.sc{ border:1px solid var(--line); border-radius:10px; padding:10px 12px; border-left:5px solid var(--morado); }
+.sc b{ display:block; color:var(--morado-d); font-size:.92rem; margin-bottom:3px; } .sc span{ font-size:.78rem; color:var(--gris); }
+.sc-cons{ border-left-color:#1f5d3a; } .sc-cuid{ border-left-color:#3f9e6b; } .sc-fren{ border-left-color:var(--naranja); } .sc-semb{ border-left-color:#b6543a; }
+.deep-row{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.deepbtn{ display:block; border:1px solid var(--line); border-radius:10px; padding:12px 14px; text-decoration:none; background:#f7f4fc; }
+.deepbtn:hover{ border-color:var(--morado); }
+.deepbtn b{ color:var(--morado-d); font-size:1rem; } .deepbtn span{ display:block; font-size:.78rem; color:var(--gris); margin-top:3px; }
+@media(max-width:740px){ .deep-row{ grid-template-columns:1fr; } }
 .leaflet-container{ font-family:inherit; }
 @media(max-width:740px){
   .hero h1{ font-size:2rem; } .kpis{ grid-template-columns:1fr 1fr; } .eval{ grid-template-columns:1fr; }
