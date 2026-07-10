@@ -211,7 +211,7 @@ analizar <- function(slug){
     dir.create("webapp/img/maps", showWarnings=FALSE, recursive=TRUE)
     th <- ggplot2::ggplot(com) +
       ggplot2::geom_sf(ggplot2::aes(fill=swing), color="white", linewidth=.12) +
-      ggplot2::scale_fill_gradient2(low="#7f0000", mid="#ece9f3", high="#544595", midpoint=0, guide="none") +
+      ggplot2::scale_fill_gradient2(low="#F4501E", mid="#eef0fb", high="#2B37D6", midpoint=0, guide="none") +
       ggplot2::theme_void() + ggplot2::theme(plot.margin=ggplot2::margin(2,2,2,2))
     suppressWarnings(ggplot2::ggsave(sprintf("webapp/img/maps/%s.png", slug), th, width=3.4, height=3, dpi=80, bg="white"))
     thumb <- sprintf("img/maps/%s.png", slug)

@@ -50,8 +50,8 @@
     L2: {
       title: "No estamos dispuestos a renunciar a...",
       short: "Movilizar multiplicadores",
-      color: "#544595",
-      soft: "#f2eef9",
+      color: "#2B37D6",
+      soft: "#EAEDFF",
       objective: "Convertir simpatizantes en multiplicadores activos: que no solo voten, sino que inviten, expliquen programa, muevan familia, tomen tinto con un amigo, acompañen al puesto y ayuden a subir participación.",
       audience: "sectores populares, clases medias progresistas, jóvenes, militancia territorial, familias del sur y territorios afines donde toca subir participación.",
       frame: "No regresar al pasado exige organización: defender salario vital, universidad pública, vivienda digna, tierra, derechos, vida y futuro saliendo a buscar más votos.",
@@ -98,7 +98,7 @@
     L3: {
       title: "Superioridad ética y contraste democrático",
       short: "Contraste ético",
-      color: "#f3930d",
+      color: "#F9A01B",
       soft: "#fff4e2",
       objective: "Contrastar trayectorias, valores y riesgos políticos para recuperar voto en sectores aspiracionales, populares no convencidos y zonas donde creció la derecha.",
       audience: "clases medias aspiracionales, sectores populares con rabia contra élites corruptas, derecha blanda, técnicos y territorios de caída o derecha fuerte.",
@@ -404,15 +404,15 @@
 
   function rowColor(row) {
     if (!row) return "#8d97a8";
-    if (row.swing <= -7) return "#c7312b";
+    if (row.swing <= -7) return "#F4501E";
     if (row.linea === "L3") return lineInfo.L3.color;
     if (row.linea === "L2") return lineInfo.L2.color;
     return lineInfo.L1.color;
   }
 
   function rowStroke(row) {
-    if (state.active?.row === row) return "#25233a";
-    if (row?.swing <= -6) return "#c7312b";
+    if (state.active?.row === row) return "#1C1F45";
+    if (row?.swing <= -6) return "#F4501E";
     return "#ffffff";
   }
 
@@ -491,7 +491,7 @@
           const row = g.row;
           const marker = L.circleMarker(g.latlng, {
             radius: clamp(Math.sqrt(Number(g.validos) || 0) / 18, 4, 10),
-            color: "#25233a",
+            color: "#1C1F45",
             weight: 1,
             fillColor: rowColor(row),
             fillOpacity: .92
@@ -530,7 +530,7 @@
             radius: clamp(Math.sqrt(Number(row.validos) || 0) / 10, 7, 18),
             color: "#111827",
             weight: 2,
-            fillColor: row.swing <= -7 ? "#c7312b" : "#f3930d",
+            fillColor: row.swing <= -7 ? "#F4501E" : "#F9A01B",
             fillOpacity: .58
           });
           marker.bindTooltip(`

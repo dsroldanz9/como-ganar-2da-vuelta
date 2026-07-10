@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Iván Cepeda · Por la vida">
+  <!-- Recreación vectorial del emblema oficial "Iván Cepeda - Por la vida".
+       Placeholder en los colores oficiales hasta cargar el PNG/SVG original. -->
+  <defs>
+    <path id="arcTop" d="M27,100 A74,74 0 0 1 173,100" fill="none"/>
+    <path id="arcBot" d="M26,100 A74,74 0 0 0 174,100" fill="none"/>
+  </defs>
+
+  <!-- disco ámbar -->
+  <circle cx="100" cy="100" r="96" fill="#F9A01B"/>
+  <!-- anillo azul -->
+  <circle cx="100" cy="100" r="75" fill="none" stroke="#2B37D6" stroke-width="30"/>
+  <!-- círculo interior naranja -->
+  <circle cx="100" cy="100" r="46" fill="none" stroke="#F4501E" stroke-width="2.6"/>
+
+  <!-- estrellas superiores -->
+  <g fill="#2B37D6">
+    <path d="M88,40 l2.2,4.6 5,0.6 -3.7,3.5 1,5 -4.5,-2.5 -4.5,2.5 1,-5 -3.7,-3.5 5,-0.6 z"/>
+    <path d="M112,40 l2.2,4.6 5,0.6 -3.7,3.5 1,5 -4.5,-2.5 -4.5,2.5 1,-5 -3.7,-3.5 5,-0.6 z"/>
+  </g>
+
+  <!-- destellos naranja laterales -->
+  <g fill="#F4501E">
+    <path d="M26,100 l4,-9 4,9 9,4 -9,4 -4,9 -4,-9 -9,-4 z"/>
+    <path d="M174,100 l4,-9 4,9 9,4 -9,4 -4,9 -4,-9 -9,-4 z"/>
+  </g>
+
+  <!-- corazón central -->
+  <path d="M100,130 C76,108 68,97 68,85 C68,73 78,67 88,69 C95,70.5 99,75 100,79 C101,75 105,70.5 112,69 C122,67 132,73 132,85 C132,97 124,108 100,130 Z"
+        fill="#F26B5E" stroke="#2B37D6" stroke-width="2.4"/>
+
+  <!-- texto curvo -->
+  <g fill="#F9A01B" font-family="'Arial Black','Helvetica Neue',Helvetica,Arial,sans-serif" font-weight="900" letter-spacing="1.4">
+    <text font-size="16.5"><textPath href="#arcTop" startOffset="50%" text-anchor="middle">IVÁN CEPEDA</textPath></text>
+    <text font-size="16.5"><textPath href="#arcBot" startOffset="50%" text-anchor="middle">POR LA VIDA</textPath></text>
+  </g>
+</svg>

@@ -35,30 +35,30 @@
 /* Leyenda de puestos (rendimiento) */
 .puesto-legend { display:flex; flex-wrap:wrap; gap:6px 16px; align-items:center; padding:10px 12px; margin-top:8px;
   background:#f7f8fb; border:1px solid #e2e5ee; border-radius:10px; }
-.puesto-legend .pl-title { font-weight:800; font-size:.82rem; color:#2a2152; width:100%; }
+.puesto-legend .pl-title { font-weight:800; font-size:.82rem; color:#18207A; width:100%; }
 .puesto-legend .pl-item { font-size:.78rem; color:#4b5563; display:flex; align-items:center; gap:5px; max-width:30%; }
 .puesto-legend .pl-dot { width:11px; height:11px; border-radius:50%; flex:none; border:1px solid #fff; box-shadow:0 0 0 1px #ccc; }
 @media (max-width:860px){ .puesto-legend .pl-item { max-width:100%; } }
 
 /* Panel Voto y perfil */
 .voto-grid { display:grid; gap:16px; }
-.voto-block h4 { margin:0 0 8px; font-size:.92rem; color:#2a2152; }
+.voto-block h4 { margin:0 0 8px; font-size:.92rem; color:#18207A; }
 .voto-block h4 small { font-weight:600; color:#6b7280; }
 .vbar { display:grid; grid-template-columns:150px 1fr 92px; align-items:center; gap:8px; margin:4px 0; }
 .vbar-l { font-size:.8rem; color:#374151; }
 .vbar-track { background:#eceef4; border-radius:6px; height:11px; overflow:hidden; }
 .vbar-track i { display:block; height:100%; border-radius:6px; }
-.vbar-v { font-size:.82rem; font-weight:800; color:#2a2152; text-align:right; }
+.vbar-v { font-size:.82rem; font-weight:800; color:#18207A; text-align:right; }
 .vbar-v small { font-weight:600; color:#9aa3b2; }
 .vsmall { font-size:.78rem; margin:8px 0 0; line-height:1.4; }
 
 /* Panel Prioridades */
 .prio-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
-.prio-col h4 { margin:0 0 2px; font-size:.92rem; color:#2a2152; }
+.prio-col h4 { margin:0 0 2px; font-size:.92rem; color:#18207A; }
 .prio-item { display:flex; justify-content:space-between; align-items:center; gap:8px; padding:6px 0; border-bottom:1px solid #eef0f5; }
 .prio-item > span:first-child { display:flex; flex-direction:column; }
 .prio-item small { color:#9aa3b2; font-size:.72rem; }
-.prio-m { text-align:right; display:flex; flex-direction:column; font-size:.82rem; color:#2a2152; }
+.prio-m { text-align:right; display:flex; flex-direction:column; font-size:.82rem; color:#18207A; }
 .prio-m small { color:#9aa3b2; font-weight:600; }
 @media (max-width:860px){ .vbar { grid-template-columns:120px 1fr 80px; } .prio-grid { grid-template-columns:1fr; } }
 
@@ -72,7 +72,19 @@
 
 /* Perfil por comuna (clic en el mapa) */
 .prof-head { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:10px; padding-bottom:8px; border-bottom:1px solid #eef0f5; font-size:.95rem; }
-.prof-tag { background:#2a2152; color:#fff; font-weight:800; font-size:.7rem; border-radius:999px; padding:2px 9px; text-transform:uppercase; letter-spacing:.03em; }
+.prof-tag { background:#18207A; color:#fff; font-weight:800; font-size:.7rem; border-radius:999px; padding:2px 9px; text-transform:uppercase; letter-spacing:.03em; }
 .prof-head small { color:#9aa3b2; font-weight:600; }
-.prof-reset { margin-left:auto; background:#eef0fb; color:#2746e6; border:0; border-radius:7px; padding:5px 11px; font-weight:800; font-size:.78rem; cursor:pointer; }
+.prof-reset { margin-left:auto; background:#EEF1FF; color:#2746e6; border:0; border-radius:7px; padding:5px 11px; font-weight:800; font-size:.78rem; cursor:pointer; }
 .prof-reset:hover { background:#dfe4f8; }
+/* === Nueva línea gráfica Iván Cepeda "Me la juego por la vida" — titulares Anton === */
+h1, .hero h1, .title, .brand-t, .hero-title, .brand-name, .wordmark {
+  font-family: "Anton", "Nunito Sans", system-ui, sans-serif;
+  font-weight: 400;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+}
+
+/* Emblema oficial (cuadrado) en cabecera */
+header img, .brand img, .logo-img { height:52px !important; width:auto !important; max-width:none !important; background:transparent !important; padding:0 !important; border-radius:50
+/* Emblema oficial (cuadrado) en cabecera */
+header img, .brand img, .logo-img { height:52px !important; width:auto !important; max-width:none !important; background:transparent !important; padding:0 !important; border-radius:50% !important; }

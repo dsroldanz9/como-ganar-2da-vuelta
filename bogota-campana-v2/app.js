@@ -4,7 +4,7 @@
   const v2 = window.BOGOTA_V2 || { clusters: [], upz: [], pesos: {}, metodologia: {}, sin_match: [] };
 
   // --- Segmentación por clúster (v2) ---
-  const CLUSTER_COLOR = { 1: "#7b2ff7", 2: "#c8d400", 3: "#2746e6", 4: "#8a94a6", 0: "#cbd2dc" };
+  const CLUSTER_COLOR = { 1: "#3B49EA", 2: "#c8d400", 3: "#2746e6", 4: "#8a94a6", 0: "#cbd2dc" };
   const clusterById = new Map((v2.clusters || []).map((c) => [c.id, c]));
   const pesos = JSON.parse(JSON.stringify(v2.pesos || {
     c1: { part: 1, fall: 1, censo: 1 },
@@ -114,8 +114,8 @@
     L2: {
       title: "No estamos dispuestos a renunciar a...",
       short: "Movilizar multiplicadores",
-      color: "#544595",
-      soft: "#f2eef9",
+      color: "#2B37D6",
+      soft: "#EAEDFF",
       objective: "Convertir simpatizantes en multiplicadores activos: que no solo voten, sino que inviten, expliquen programa, muevan familia, tomen tinto con un amigo, acompañen al puesto y ayuden a subir participación.",
       audience: "sectores populares, clases medias progresistas, jóvenes, militancia territorial, familias del sur y territorios afines donde toca subir participación.",
       frame: "No regresar al pasado exige organización: defender salario vital, universidad pública, vivienda digna, tierra, derechos, vida y futuro saliendo a buscar más votos.",
@@ -162,7 +162,7 @@
     L3: {
       title: "Superioridad ética y contraste democrático",
       short: "Contraste ético",
-      color: "#f3930d",
+      color: "#F9A01B",
       soft: "#fff4e2",
       objective: "Contrastar trayectorias, valores y riesgos políticos para recuperar voto en sectores aspiracionales, populares no convencidos y zonas donde creció la derecha.",
       audience: "clases medias aspiracionales, sectores populares con rabia contra élites corruptas, derecha blanda, técnicos y territorios de caída o derecha fuerte.",
@@ -502,8 +502,8 @@
     if (row.cluster) return CLUSTER_COLOR[row.cluster] || "#cbd2dc";
     if (row.cluster === 0) return "#cbd2dc";   // UPZ sin clasificar (rural): gris neutro
     // puestos (sin propiedad cluster): matiz por caída
-    if (row.swing <= -7) return "#c7312b";
-    if (row.swing <= -3) return "#f3930d";
+    if (row.swing <= -7) return "#F4501E";
+    if (row.swing <= -3) return "#F9A01B";
     return "#8d97a8";
   }
 
@@ -511,15 +511,15 @@
     if (!els.mapLegend) return;
     els.mapLegend.innerHTML = mapColorMode === "linea"
       ? ["L1", "L2", "L3"].map((k) => `<span><i class="sw" style="background:${lineInfo[k].color}"></i> ${k} · ${esc(lineInfo[k].short)}</span>`).join("")
-      : `<span><i class="sw" style="background:#7b2ff7"></i> Base afín · abstencionistas</span>
+      : `<span><i class="sw" style="background:#3B49EA"></i> Base afín · abstencionistas</span>
          <span><i class="sw" style="background:#c8d400"></i> Alta competencia</span>
          <span><i class="sw" style="background:#2746e6"></i> Derecha en avance</span>
          <span><i class="sw" style="background:#8a94a6"></i> No priorizado</span>`;
   }
 
   function rowStroke(row) {
-    if (state.active?.row === row) return "#25233a";
-    if (row?.swing <= -6) return "#c7312b";
+    if (state.active?.row === row) return "#1C1F45";
+    if (row?.swing <= -6) return "#F4501E";
     return "#ffffff";
   }
 
@@ -609,7 +609,7 @@
           const row = g.row;
           const marker = L.circleMarker(g.latlng, {
             radius: clamp(Math.sqrt(Number(g.validos) || 0) / 18, 4, 10),
-            color: "#25233a",
+            color: "#1C1F45",
             weight: 1,
             fillColor: rowColor(row),
             fillOpacity: .92
@@ -648,7 +648,7 @@
             radius: clamp(Math.sqrt(Number(row.validos) || 0) / 10, 7, 18),
             color: "#111827",
             weight: 2,
-            fillColor: row.swing <= -7 ? "#c7312b" : "#f3930d",
+            fillColor: row.swing <= -7 ? "#F4501E" : "#F9A01B",
             fillOpacity: .58
           });
           marker.bindTooltip(`
@@ -687,7 +687,7 @@
         style: (f) => {
           const row = locByKey.get(f.properties.key);
           return {
-            color: state.locKey === row?.key ? "#25233a" : "#ffffff",
+            color: state.locKey === row?.key ? "#1C1F45" : "#ffffff",
             weight: state.locKey === row?.key ? 3 : 1.2,
             fillColor: rowColor(row),
             fillOpacity: state.locKey && state.locKey !== row?.key ? .35 : .78
@@ -876,14 +876,14 @@
     const blocHtml = `
       <div class="bar-group">
         <h3>Cómo votó el territorio <small style="color:var(--muted);font-weight:600">(% de votos válidos)</small></h3>
-        ${bar("Izquierda · Cepeda", v.izq, "#544595")}
+        ${bar("Izquierda · Cepeda", v.izq, "#2B37D6")}
         ${bar("Centro · Fajardo + C. López", v.cen, "#8a94a6")}
-        ${bar("Derecha · Abelardo + Paloma", v.der, "#f3930d")}
+        ${bar("Derecha · Abelardo + Paloma", v.der, "#F9A01B")}
       </div>
       <div class="bar-group">
         <h3>Participación y abstención <small style="color:var(--muted);font-weight:600">(% del censo)</small></h3>
         ${bar("Participación", v.part, "#2474a6")}
-        ${bar("Abstención", v.abst, "#c7312b")}
+        ${bar("Abstención", v.abst, "#F4501E")}
       </div>`;
     const estratos = aggregateEstratos(data.estratos.filter((r) => !state.locKey || r.key === state.locKey));
     const ageRows = [
@@ -933,10 +933,10 @@
     const lineRows = puestosRows.slice().sort((a, b) => a.swing - b.swing || b.validos - a.validos).slice(0, 6);
     const v = voteAgg();
     const voteChips = `<div class="prio-vote">
-      <span style="--c:#544595">Izquierda <b>${fmtPct(v.izq)}</b></span>
+      <span style="--c:#2B37D6">Izquierda <b>${fmtPct(v.izq)}</b></span>
       <span style="--c:#8a94a6">Centro <b>${fmtPct(v.cen)}</b></span>
-      <span style="--c:#f3930d">Derecha <b>${fmtPct(v.der)}</b></span>
-      <span style="--c:#c7312b">Abstención <b>${fmtPct(v.abst)}</b></span>
+      <span style="--c:#F9A01B">Derecha <b>${fmtPct(v.der)}</b></span>
+      <span style="--c:#F4501E">Abstención <b>${fmtPct(v.abst)}</b></span>
     </div>`;
     els.priority.innerHTML = voteChips + [
       miniList("Recuperar UPZ", recover, (r) => `${fmtPts(r.swing)} · ${fmtNum(r.votos)} votos`, "upz"),

@@ -1,15 +1,15 @@
 :root {
-  --brand: #544595;
-  --brand-d: #352963;
-  --brand2: #874088;
-  --accent: #F3930D;
-  --ink: #25233a;
+  --brand: #2B37D6;
+  --brand-d: #1D268F;
+  --brand2: #F4501E;
+  --accent: #F9A01B;
+  --ink: #1C1F45;
   --muted: #67667a;
-  --line: #e5e1ef;
-  --bg: #f7f5fb;
+  --line: #DFE3FB;
+  --bg: #F6F7FE;
   --soft: #fdf7ed;
-  --danger: #c7312b;
-  --ok: #544595;
+  --danger: #F4501E;
+  --ok: #2B37D6;
   --stable: #8a94a6;
 }
 
@@ -65,7 +65,7 @@ a { color: inherit; }
 .hero {
   color: #fff;
   background:
-    linear-gradient(135deg, rgba(84,69,149,.96), rgba(135,64,136,.9)),
+    linear-gradient(135deg, rgba(43,55,214,.96), rgba(29,38,143,.9)),
     url("img/hero_brand.webp") center/cover;
   padding: 34px 0 38px;
 }
@@ -584,3 +584,15 @@ a { color: inherit; }
   .detail-head h2 { font-size: 1.7rem; }
   #map, #cmap { height: 360px; }
 }
+/* === Nueva línea gráfica Iván Cepeda "Me la juego por la vida" — titulares Anton === */
+h1, .hero h1, .title, .brand-t, .hero-title, .brand-name, .wordmark {
+  font-family: "Anton", "Nunito Sans", system-ui, sans-serif;
+  font-weight: 400;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+}
+
+/* Emblema oficial (cuadrado) en cabecera */
+header img, .brand img, .logo-img { height:52px !important; width:auto !important; max-width:none !important; background:transparent !important; padding:0 !important; border-radius:50
+/* Emblema oficial (cuadrado) en cabecera */
+header img, .brand img, .logo-img { height:52px !important; width:auto !important; max-width:none !important; background:transparent !important; padding:0 !important; border-radius:50% !important; }

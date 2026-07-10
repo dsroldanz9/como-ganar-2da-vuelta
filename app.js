@@ -1,6 +1,6 @@
 const DATA = window.APP_DATA;
 
-const COL = { ganada: '#544595', disputa: '#F3930D', adversa: '#8a94a6' };
+const COL = { ganada: '#2B37D6', disputa: '#F9A01B', adversa: '#8a94a6' };
 const TAG = { ganada: 'g', disputa: 'd', adversa: 'a' };
 const ESTADO_TXT = { ganada: 'Ganamos', disputa: 'En disputa', adversa: 'Difícil' };
 const PRIORIDAD = { disputa: 0, ganada: 1, adversa: 2 };
@@ -13,7 +13,7 @@ let currentMapMode = 'swing';
 const fmt = n => (n == null || Number.isNaN(Number(n))) ? '—' : Number(n).toLocaleString('es-CO');
 const co = n => (n == null || Number.isNaN(Number(n))) ? '—' : Number(n).toString().replace('.', ',');
 const pts = n => (n == null || Number.isNaN(Number(n))) ? '—' : `${n >= 0 ? '+' : ''}${co(n)} pts`;
-const swColor = s => s <= -6 ? '#c7312b' : s < -1 ? '#F3930D' : s <= 1 ? '#b9c0cc' : '#544595';
+const swColor = s => s <= -6 ? '#F4501E' : s < -1 ? '#F9A01B' : s <= 1 ? '#b9c0cc' : '#2B37D6';
 const swLabel = s => s <= -6 ? 'Perdimos fuerte' : s < -1 ? 'Perdimos' : s <= 1 ? 'Estable' : 'Ganamos terreno';
 const swClass = s => s <= -6 ? 'loss-strong' : s < -1 ? 'loss' : s <= 1 ? 'stable' : 'gain';
 const swText = s => `<span class="swing-text ${swClass(s)}">${pts(s)}</span>`;
@@ -26,24 +26,24 @@ const mapModeLabel = {
 
 function legendHtml(mode) {
   if (mode === 'apoyo') {
-    return '<b>Apoyo actual</b><i style="background:#c7312b"></i><35%<i style="background:#F3930D"></i>35-45%<i style="background:#b9c0cc"></i>45-52%<i style="background:#544595"></i>>52%<br><span class="maplg-note">Áreas: comuna/localidad · puntos: puestos</span>';
+    return '<b>Apoyo actual</b><i style="background:#F4501E"></i><35%<i style="background:#F9A01B"></i>35-45%<i style="background:#b9c0cc"></i>45-52%<i style="background:#2B37D6"></i>>52%<br><span class="maplg-note">Áreas: comuna/localidad · puntos: puestos</span>';
   }
   if (mode === 'volumen') {
-    return '<b>Volumen de votos</b><i style="background:#d8d1ea"></i>bajo<i style="background:#8d7cc2"></i>medio<i style="background:#544595"></i>alto<i style="background:#352963"></i>muy alto<br><span class="maplg-note">Intensidad morada = más votos por Cepeda</span>';
+    return '<b>Volumen de votos</b><i style="background:#CCD2F7"></i>bajo<i style="background:#7D86E8"></i>medio<i style="background:#2B37D6"></i>alto<i style="background:#1D268F"></i>muy alto<br><span class="maplg-note">Intensidad morada = más votos por Cepeda</span>';
   }
-  return '<b>Cambio vs 2022</b><i style="background:#c7312b"></i>perdimos fuerte<i style="background:#F3930D"></i>perdimos<i style="background:#b9c0cc"></i>estable<i style="background:#544595"></i>ganamos<br><span class="maplg-note">Áreas: comuna/localidad · puntos: puestos</span>';
+  return '<b>Cambio vs 2022</b><i style="background:#F4501E"></i>perdimos fuerte<i style="background:#F9A01B"></i>perdimos<i style="background:#b9c0cc"></i>estable<i style="background:#2B37D6"></i>ganamos<br><span class="maplg-note">Áreas: comuna/localidad · puntos: puestos</span>';
 }
 
 function mapFillColor(props, mode, maxVotes = 1) {
   if (mode === 'apoyo') {
-    return props.apoyo < 35 ? '#c7312b' : props.apoyo < 45 ? '#F3930D' : props.apoyo < 52 ? '#b9c0cc' : '#544595';
+    return props.apoyo < 35 ? '#F4501E' : props.apoyo < 45 ? '#F9A01B' : props.apoyo < 52 ? '#b9c0cc' : '#2B37D6';
   }
   if (mode === 'volumen') {
     const x = Math.max(0, Math.min(1, (props.votos || 0) / maxVotes));
-    if (x > .75) return '#352963';
-    if (x > .5) return '#544595';
-    if (x > .25) return '#8d7cc2';
-    return '#d8d1ea';
+    if (x > .75) return '#1D268F';
+    if (x > .5) return '#2B37D6';
+    if (x > .25) return '#7D86E8';
+    return '#CCD2F7';
   }
   return swColor(props.swing);
 }
